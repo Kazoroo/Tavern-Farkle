@@ -13,7 +13,7 @@
     <dimen name="small_padding">10dp</dimen>
     <dimen name="dice_size">130dp</dimen>
     <dimen name="buttons_vertical_padding">50dp</dimen>
-    <dimen name="table_cell_width">80dp</dimen>
+    <dimen name="table_cell_width">90dp</dimen>
     <dimen name="dialog_text_field_width">150dp</dimen>
     <dimen name="coin_icon_size">36dp</dimen>
     <dimen name="dialog_height">250dp</dimen>

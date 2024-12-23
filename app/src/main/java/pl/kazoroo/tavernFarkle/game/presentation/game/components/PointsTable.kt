@@ -100,7 +100,8 @@ fun PointsTable(
                             textAlign = TextAlign.Center,
                             modifier = Modifier
                                 .width(dimensionResource(R.dimen.table_cell_width))
-                                .semantics { contentDescription = "points type ${record.pointsType}" }
+                                .semantics { contentDescription = "points type ${record.pointsType}" },
+                            maxLines = 1
                         )
                     }
                     cell(contentAlignment = Alignment.Center) {
@@ -109,7 +110,8 @@ fun PointsTable(
                             textAlign = TextAlign.Center,
                             modifier = Modifier
                                 .width(dimensionResource(R.dimen.table_cell_width))
-                                .semantics { contentDescription = "Number of your points ${record.yourPoints}" }
+                                .semantics { contentDescription = "Number of your points ${record.yourPoints}" },
+                            maxLines = 1
                         )
                     }
                     cell(contentAlignment = Alignment.Center) {
@@ -118,7 +120,8 @@ fun PointsTable(
                             textAlign = TextAlign.Center,
                             modifier = Modifier
                                 .width(dimensionResource(R.dimen.table_cell_width))
-                                .semantics { contentDescription = "Number of your opponent points ${record.opponentPoints}" }
+                                .semantics { contentDescription = "Number of your opponent points ${record.opponentPoints}" },
+                            maxLines = 1
                         )
                     }
                 }

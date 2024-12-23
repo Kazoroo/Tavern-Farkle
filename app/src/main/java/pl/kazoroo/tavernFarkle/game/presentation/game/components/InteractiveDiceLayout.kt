@@ -41,7 +41,7 @@ fun InteractiveDiceLayout(
 ) {
     Column(
         modifier = Modifier
-            .padding(vertical = 34.dp, horizontal = dimensionResource(id = R.dimen.small_padding))
+            .padding(vertical = 30.dp, horizontal = dimensionResource(id = R.dimen.small_padding))
             .fillMaxWidth(),
         verticalArrangement = Arrangement.Bottom,
         horizontalAlignment = Alignment.CenterHorizontally
