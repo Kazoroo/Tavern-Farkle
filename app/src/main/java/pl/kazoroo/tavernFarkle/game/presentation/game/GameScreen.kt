@@ -34,6 +34,7 @@ import pl.kazoroo.tavernFarkle.R
 import pl.kazoroo.tavernFarkle.core.data.presentation.BettingActions
 import pl.kazoroo.tavernFarkle.game.domain.model.TableData
 import pl.kazoroo.tavernFarkle.game.presentation.components.ButtonInfo
+import pl.kazoroo.tavernFarkle.game.presentation.components.HowToPlayButton
 import pl.kazoroo.tavernFarkle.game.presentation.game.components.ExitDialog
 import pl.kazoroo.tavernFarkle.game.presentation.game.components.GameButtons
 import pl.kazoroo.tavernFarkle.game.presentation.game.components.InteractiveDiceLayout
@@ -110,10 +111,16 @@ fun GameScreen(
         Column(
             modifier = Modifier.fillMaxSize()
         ) {
-            PointsTable(
-                data = tableData,
-                isOpponentTurn = isOpponentTurn
-            )
+            Box {
+                PointsTable(
+                    data = tableData,
+                    isOpponentTurn = isOpponentTurn
+                )
+                HowToPlayButton(
+                    modifier = Modifier.align(Alignment.TopStart),
+                    tint = Color.Black
+                )
+            }
             InteractiveDiceLayout(
                 diceState = viewModel.diceState.collectAsState().value,
                 diceOnClick = { index ->

@@ -11,10 +11,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Info
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -38,9 +34,9 @@ import pl.kazoroo.tavernFarkle.core.presentation.CoinsViewModel
 import pl.kazoroo.tavernFarkle.core.presentation.components.CoinAmountIndicator
 import pl.kazoroo.tavernFarkle.game.presentation.components.ButtonInfo
 import pl.kazoroo.tavernFarkle.game.presentation.components.DiceButton
+import pl.kazoroo.tavernFarkle.game.presentation.components.HowToPlayButton
 import pl.kazoroo.tavernFarkle.game.presentation.mainmenu.components.AppTitleText
 import pl.kazoroo.tavernFarkle.game.presentation.mainmenu.components.BettingDialog
-import pl.kazoroo.tavernFarkle.game.presentation.mainmenu.components.HowToPlayDialog
 import pl.kazoroo.tavernFarkle.game.presentation.navigation.Screen
 import pl.kazoroo.tavernFarkle.game.presentation.sound.SoundPlayer
 import pl.kazoroo.tavernFarkle.game.presentation.sound.SoundType
@@ -54,7 +50,6 @@ fun MainMenuScreen(navController: NavController, coinsViewModel: CoinsViewModel)
         .padding(bottom = dimensionResource(R.dimen.small_padding))
     val screenWidth = LocalConfiguration.current.screenWidthDp.dp
     val imageSize = (screenWidth / 1.6f)
-    var isHelpDialogVisible by remember { mutableStateOf(false) }
     var isBettingDialogVisible by remember { mutableStateOf(false) }
     val buttons = listOf(
         ButtonInfo(
@@ -73,12 +68,6 @@ fun MainMenuScreen(navController: NavController, coinsViewModel: CoinsViewModel)
             navController.navigate(Screen.ShopScreen.route)
         }
     )
-
-    if(isHelpDialogVisible) {
-        HowToPlayDialog(
-            onCloseClick = { isHelpDialogVisible = false }
-        )
-    }
 
     if(isBettingDialogVisible) {
         BettingDialog(
@@ -105,23 +94,10 @@ fun MainMenuScreen(navController: NavController, coinsViewModel: CoinsViewModel)
             modifier = Modifier.fillMaxSize()
         )
 
-        IconButton(
-            onClick = { isHelpDialogVisible = true },
-            modifier = Modifier
-                .align(Alignment.TopEnd)
-                .padding(
-                    top = dimensionResource(R.dimen.large_padding),
-                    end = dimensionResource(R.dimen.small_padding)
-                )
-                .size(dimensionResource(R.dimen.icon_button_size))
-        ) {
-            Icon(
-                imageVector = Icons.Default.Info,
-                contentDescription = "Info icon",
-                tint = Color.White,
-                modifier = Modifier.size(dimensionResource(R.dimen.icon_button_size))
-            )
-        }
+        HowToPlayButton(
+            modifier = Modifier.align(Alignment.TopEnd),
+            tint = Color.White
+        )
 
         CoinAmountIndicator(
             coinsAmount = coinsViewModel.coinsAmount.collectAsState().value,
