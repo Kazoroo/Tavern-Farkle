@@ -45,9 +45,9 @@ import pl.kazoroo.tavernFarkle.game.presentation.sound.SoundType
 fun MainMenuScreen(navController: NavController, coinsViewModel: CoinsViewModel) {
     val activity = (LocalContext.current as? Activity)
     val buttonsModifier: Modifier = Modifier
+        .padding(bottom = dimensionResource(R.dimen.medium_padding))
         .height(dimensionResource(R.dimen.menu_button_height))
         .width(dimensionResource(R.dimen.menu_button_width))
-        .padding(bottom = dimensionResource(R.dimen.small_padding))
     val screenWidth = LocalConfiguration.current.screenWidthDp.dp
     val imageSize = (screenWidth / 1.6f)
     var isBettingDialogVisible by remember { mutableStateOf(false) }
@@ -107,13 +107,16 @@ fun MainMenuScreen(navController: NavController, coinsViewModel: CoinsViewModel)
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Top,
-            modifier = Modifier.testTag("Main menu screen").padding(top = dimensionResource(R.dimen.small_padding))
+            modifier = Modifier
+                .testTag("Main menu screen")
+                .padding(top = dimensionResource(R.dimen.small_padding))
         ) {
             Image(
                 painter = painterResource(id = R.drawable.dice_1),
                 contentDescription = "Dice",
                 modifier = Modifier.size(imageSize)
             )
+
             AppTitleText()
 
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.large_padding)))

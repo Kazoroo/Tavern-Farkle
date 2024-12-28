@@ -131,12 +131,12 @@ class GameViewModel(
     }
 
     fun checkForSkucha(navController: NavHostController) {
+        if(startNewRoundIfAllDiceInvisible(navController)) return
+
         val isSkucha = checkForSkuchaUseCase(
             diceState.value.diceList,
             diceState.value.isDiceVisible
         )
-
-        if(startNewRoundIfAllDiceInvisible()) return
 
         if(isSkucha) {
             viewModelScope.launch {
@@ -145,15 +145,15 @@ class GameViewModel(
         }
     }
 
-    private fun startNewRoundIfAllDiceInvisible(): Boolean {
+    private fun startNewRoundIfAllDiceInvisible(navController: NavHostController): Boolean {
         return if (diceState.value.isDiceVisible.all { !it }) {
             _diceState.update { currentState ->
                 currentState.copy(
-                    diceList = drawDiceUseCase(),
                     isDiceSelected = List(6) { false },
                     isDiceVisible = List(6) { true }
                 )
             }
+            checkForSkucha(navController)
             true
         } else {
             false
@@ -282,7 +282,7 @@ class GameViewModel(
     /**
      * Reset the value of diceState, opponentPointsState, userPointsState, isOpponentTurn and isDiceVisibleAfterGameEnd to their default values.
      */
-    fun resetState() {
+    private fun resetState() {
         _diceState.update { currentState ->
             currentState.copy(
                 diceList = drawDiceUseCase(),
