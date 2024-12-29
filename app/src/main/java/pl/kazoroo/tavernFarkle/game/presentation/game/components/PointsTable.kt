@@ -1,5 +1,12 @@
 package pl.kazoroo.tavernFarkle.game.presentation.game.components
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.SizeTransform
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -105,27 +112,51 @@ fun PointsTable(
                         )
                     }
                     cell(contentAlignment = Alignment.Center) {
-                        Text(
-                            text = record.yourPoints,
-                            textAlign = TextAlign.Center,
-                            modifier = Modifier
-                                .width(dimensionResource(R.dimen.table_cell_width))
-                                .semantics { contentDescription = "Number of your points ${record.yourPoints}" },
-                            maxLines = 1
-                        )
+                        AnimatedTableCell(record.yourPoints)
                     }
                     cell(contentAlignment = Alignment.Center) {
-                        Text(
-                            text = record.opponentPoints,
-                            textAlign = TextAlign.Center,
-                            modifier = Modifier
-                                .width(dimensionResource(R.dimen.table_cell_width))
-                                .semantics { contentDescription = "Number of your opponent points ${record.opponentPoints}" },
-                            maxLines = 1
-                        )
+                        AnimatedTableCell(record.opponentPoints)
                     }
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun AnimatedTableCell(cellValue: String) {
+    val initialOffsetMultiplier = 0.4f
+
+    AnimatedContent(
+        targetState = cellValue,
+        transitionSpec = {
+            if (targetState > initialState) {
+                slideInHorizontally(
+                    initialOffsetX = { (it * initialOffsetMultiplier).toInt() }
+                ) + fadeIn() togetherWith
+                slideOutHorizontally(
+                    targetOffsetX = { (-it * initialOffsetMultiplier).toInt() }
+                ) + fadeOut()
+            } else {
+                slideInHorizontally(
+                    initialOffsetX = { (-it * initialOffsetMultiplier).toInt() }
+                ) + fadeIn() togetherWith
+                slideOutHorizontally(
+                    targetOffsetX = { (it * initialOffsetMultiplier).toInt() }
+                ) + fadeOut()
+            }.using(SizeTransform(clip = false))
+        },
+        label = "Animated points"
+    ) { targetCount ->
+        Text(
+            text = targetCount,
+            textAlign = TextAlign.Center,
+            modifier = Modifier
+                .width(dimensionResource(R.dimen.table_cell_width))
+                .semantics {
+                    contentDescription = "Number of your opponent points $cellValue"
+                },
+            maxLines = 1
+        )
     }
 }
