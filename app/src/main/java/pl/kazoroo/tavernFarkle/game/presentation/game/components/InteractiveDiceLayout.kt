@@ -124,7 +124,7 @@ fun Modifier.animatedCircularBorder(
     val sweepAngle by animateFloatAsState(
         targetValue = if (isSelected) 360f else 0f,
         animationSpec = tween(durationMillis = 300, easing = EaseInOutCubic),
-        label = ""
+        label = "Animation of drawing circle around dice"
     )
 
     return this.drawBehind {
