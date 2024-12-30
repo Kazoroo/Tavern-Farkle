@@ -31,7 +31,7 @@ import pl.kazoroo.tavernFarkle.core.domain.SaveUserDataUseCase
 import pl.kazoroo.tavernFarkle.core.presentation.CoinsViewModel
 import pl.kazoroo.tavernFarkle.game.presentation.navigation.Navigation
 import pl.kazoroo.tavernFarkle.game.presentation.sound.SoundPlayer
-import pl.kazoroo.tavernFarkle.game.presentation.splashscreen.SplashScreenViewModel
+import pl.kazoroo.tavernFarkle.game.presentation.splashscreen.StartingScreenViewModel
 import pl.kazoroo.tavernFarkle.game.service.MusicService
 import pl.kazoroo.tavernFarkle.shop.domain.AdManager
 import pl.kazoroo.tavernFarkle.ui.theme.DicesTheme
@@ -106,11 +106,11 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun showSplashScreen() {
-        val splashScreenViewModel by viewModels<SplashScreenViewModel>()
+        val startingScreenViewModel by viewModels<StartingScreenViewModel>()
 
         installSplashScreen().apply {
             setKeepOnScreenCondition {
-                !splashScreenViewModel.isReady.value
+                !startingScreenViewModel.isReady.value
             }
             setOnExitAnimationListener { screen ->
                 val zoomX = ObjectAnimator.ofFloat(
