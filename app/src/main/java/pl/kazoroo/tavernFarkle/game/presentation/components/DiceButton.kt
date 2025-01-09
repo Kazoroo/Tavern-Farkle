@@ -4,6 +4,7 @@ import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.EaseInOutQuad
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,7 +19,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
@@ -33,7 +33,7 @@ fun DiceButton(
     modifier: Modifier = Modifier
 ) {
     val imageTint by animateColorAsState(
-        targetValue = if (!buttonInfo.enabled) Color(0xDD4A4A4A) else Color(0xFFFFFFFF),
+        targetValue = if (buttonInfo.enabled) Color(0x00FFFFFF) else Color(0xDD4A4A4A),
         animationSpec = tween(durationMillis = 100, easing = EaseInOutQuad),
         label = "Animate game buttons tint"
     )
@@ -56,7 +56,14 @@ fun DiceButton(
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .clip(RoundedCornerShape(dimensionResource(id = R.dimen.rounded_corner))),
-                colorFilter = ColorFilter.tint(imageTint)
+            )
+
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(
+                        color = imageTint
+                    )
             )
 
             Text(
