@@ -27,6 +27,7 @@ import pl.kazoroo.tavernFarkle.core.presentation.CoinsViewModel
 import pl.kazoroo.tavernFarkle.core.presentation.components.CoinAmountIndicator
 import pl.kazoroo.tavernFarkle.game.presentation.components.ButtonInfo
 import pl.kazoroo.tavernFarkle.game.presentation.components.DiceButton
+import pl.kazoroo.tavernFarkle.shop.domain.model.SpecialDice
 import pl.kazoroo.tavernFarkle.shop.presentation.components.SpecialDiceCard
 
 @Composable
@@ -35,6 +36,14 @@ fun ShopScreen(
     adViewModel: AdViewModel = viewModel()
 ) {
     val context = LocalContext.current
+    val specialDiceList = listOf(
+        SpecialDice(
+            name = "Odd dice",
+            price = 500,
+            image = R.drawable.odd_dice_1,
+            chancesOfDrawingValue = listOf(26.7f, 6.7f, 26.7f, 6.7f, 26.7f, 6.7f),
+        )
+    )
 
     Box(modifier = Modifier.fillMaxSize()) {
         Image(
@@ -94,8 +103,8 @@ fun ShopScreen(
                     )
                 }
                 
-                items(6) {
-                    SpecialDiceCard()
+                items(specialDiceList.size) { index ->
+                    SpecialDiceCard(specialDiceList[index])
                 }
             }
         }

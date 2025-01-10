@@ -22,10 +22,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import pl.kazoroo.tavernFarkle.R
+import pl.kazoroo.tavernFarkle.shop.domain.model.SpecialDice
 
 
 @Composable
-fun SpecialDiceCard() {
+fun SpecialDiceCard(
+    specialDice: SpecialDice
+) {
     Card(
         modifier = Modifier
             .padding(dimensionResource(R.dimen.medium_padding))
@@ -52,14 +55,14 @@ fun SpecialDiceCard() {
                         )
                 ) {
                     Image(
-                        painter = painterResource(id = R.drawable.dice_1),
+                        painter = painterResource(id = specialDice.image),
                         contentDescription = null,
                         modifier = Modifier.size(dimensionResource(R.dimen.special_dice_icon_size))
                     )
 
                     Column {
                         Text(
-                            text = "Ambrose Die",
+                            text = specialDice.name,
                             fontWeight = FontWeight.Bold,
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -72,12 +75,17 @@ fun SpecialDiceCard() {
                             horizontalArrangement = Arrangement.SpaceAround
                         ) {
                             Text(
-                                text = "1 - 20%\n2 - 13%\n3 - 36%"
+                                text = "1 - ${specialDice.chancesOfDrawingValue[0]}%\n" +
+                                        "2 - ${specialDice.chancesOfDrawingValue[1]}%\n" +
+                                        "3 - ${specialDice.chancesOfDrawingValue[2]}%"
                             )
 
                             Text(
-                                text = "4 - 12%\n5 - 18%\n6 - 41%"
+                                text = "4 - ${specialDice.chancesOfDrawingValue[3]}%\n" +
+                                        "5 - ${specialDice.chancesOfDrawingValue[4]}%\n" +
+                                        "6 - ${specialDice.chancesOfDrawingValue[5]}%"
                             )
+
                         }
                     }
                 }
@@ -94,7 +102,7 @@ fun SpecialDiceCard() {
                         .fillMaxWidth()
                 ) {
                     Text(
-                        text = "Buy for 500",
+                        text = "Buy for ${specialDice.price}",
                         textAlign = TextAlign.Center
                     )
 
