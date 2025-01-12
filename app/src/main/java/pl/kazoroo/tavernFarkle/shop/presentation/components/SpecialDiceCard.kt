@@ -27,7 +27,8 @@ import pl.kazoroo.tavernFarkle.shop.domain.model.SpecialDice
 
 @Composable
 fun SpecialDiceCard(
-    specialDice: SpecialDice
+    specialDice: SpecialDice,
+    onClick: () -> Unit
 ) {
     Card(
         modifier = Modifier
@@ -85,7 +86,6 @@ fun SpecialDiceCard(
                                         "5 - ${specialDice.chancesOfDrawingValue[4]}%\n" +
                                         "6 - ${specialDice.chancesOfDrawingValue[5]}%"
                             )
-
                         }
                     }
                 }
@@ -93,7 +93,7 @@ fun SpecialDiceCard(
                 Spacer(modifier = Modifier.weight(1f))
 
                 Button(
-                    onClick = { },
+                    onClick = onClick,
                     modifier = Modifier
                         .padding(
                             horizontal = dimensionResource(R.dimen.medium_padding),

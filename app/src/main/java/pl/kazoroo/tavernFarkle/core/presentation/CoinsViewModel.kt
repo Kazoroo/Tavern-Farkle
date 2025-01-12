@@ -63,4 +63,14 @@ class CoinsViewModel(
             readCoinsAmount()
         }
     }
+
+    fun takeCoinsFromWallet(amount: Int) {
+        viewModelScope.launch {
+            val newCoinBalance = (coinsAmount.value.toInt() - amount).toString()
+
+            saveUserDataUseCase.invoke(newCoinBalance)
+
+            readCoinsAmount()
+        }
+    }
 }

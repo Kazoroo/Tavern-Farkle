@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -35,11 +36,17 @@ fun ShopScreen(
     coinsViewModel: CoinsViewModel,
     adViewModel: AdViewModel = viewModel()
 ) {
+    val viewModel =  remember {
+        ShopViewModel { amount ->
+            coinsViewModel.takeCoinsFromWallet(amount)
+        }
+    }
+
     val context = LocalContext.current
     val specialDiceList = listOf(
         SpecialDice(
             name = "Odd dice",
-            price = 500,
+            price = 2,
             image = R.drawable.odd_dice_1,
             chancesOfDrawingValue = listOf(26.7f, 6.7f, 26.7f, 6.7f, 26.7f, 6.7f),
         )
@@ -104,7 +111,10 @@ fun ShopScreen(
                 }
                 
                 items(specialDiceList.size) { index ->
-                    SpecialDiceCard(specialDiceList[index])
+                    SpecialDiceCard(
+                        specialDice = specialDiceList[index],
+                        onClick = { viewModel.buySpecialDice(specialDiceList[index]) }
+                    )
                 }
             }
         }
