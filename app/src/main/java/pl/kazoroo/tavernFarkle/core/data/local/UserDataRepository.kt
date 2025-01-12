@@ -8,16 +8,16 @@ import kotlinx.coroutines.flow.first
 
 class UserDataRepository(private val dataStore: DataStore<Preferences>) {
 
-    suspend fun saveNewValue(key: UserDataKey, value: String) {
-        val dataStoreKey = stringPreferencesKey(key.name)
+    suspend fun saveNewValue(key: String, value: String) {
+        val dataStoreKey = stringPreferencesKey(key)
 
         dataStore.edit { userData ->
             userData[dataStoreKey] = value
         }
     }
 
-    suspend fun readValue(key: UserDataKey): String? {
-        val dataStoreKey = stringPreferencesKey(key.name)
+    suspend fun readValue(key: String): String? {
+        val dataStoreKey = stringPreferencesKey(key)
         val preferences = dataStore.data.first()
 
         return if(dataStoreKey.name == UserDataKey.COINS.name && preferences[dataStoreKey] == null) {
