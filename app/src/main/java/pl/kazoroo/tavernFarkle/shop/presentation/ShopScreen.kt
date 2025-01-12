@@ -24,6 +24,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import io.github.windedge.table.components.Divider
 import pl.kazoroo.tavernFarkle.R
+import pl.kazoroo.tavernFarkle.core.domain.ReadUserDataUseCase
+import pl.kazoroo.tavernFarkle.core.domain.SaveUserDataUseCase
 import pl.kazoroo.tavernFarkle.core.presentation.CoinsViewModel
 import pl.kazoroo.tavernFarkle.core.presentation.components.CoinAmountIndicator
 import pl.kazoroo.tavernFarkle.game.presentation.components.ButtonInfo
@@ -34,10 +36,15 @@ import pl.kazoroo.tavernFarkle.shop.presentation.components.SpecialDiceCard
 @Composable
 fun ShopScreen(
     coinsViewModel: CoinsViewModel,
-    adViewModel: AdViewModel = viewModel()
+    adViewModel: AdViewModel = viewModel(),
+    saveUserDataUseCase: SaveUserDataUseCase,
+    readUserDataUseCase: ReadUserDataUseCase
 ) {
     val viewModel =  remember {
-        ShopViewModel { amount ->
+        ShopViewModel(
+            saveUserDataUseCase = saveUserDataUseCase,
+            readUserDataUseCase = readUserDataUseCase,
+        ) { amount ->
             coinsViewModel.takeCoinsFromWallet(amount)
         }
     }
@@ -113,7 +120,9 @@ fun ShopScreen(
                 items(specialDiceList.size) { index ->
                     SpecialDiceCard(
                         specialDice = specialDiceList[index],
-                        onClick = { viewModel.buySpecialDice(specialDiceList[index]) }
+                        onClick = {
+                            viewModel.buySpecialDice(specialDiceList[index])
+                        }
                     )
                 }
             }
