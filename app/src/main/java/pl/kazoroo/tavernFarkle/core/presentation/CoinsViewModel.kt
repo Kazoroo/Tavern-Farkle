@@ -30,7 +30,7 @@ class CoinsViewModel(
             val coins = readCoinsAmount()
             val newCoinBalance = (coins.toInt() + rewardAmount.toInt()).toString()
 
-            saveUserDataUseCase.invoke(newCoinBalance)
+            saveUserDataUseCase.invoke(value = newCoinBalance)
             readCoinsAmount()
             _coinsAmount.value = newCoinBalance
         }
@@ -42,7 +42,7 @@ class CoinsViewModel(
         viewModelScope.launch {
             val coins = readCoinsAmount()
             val newCoinBalance = (coins.toInt() - value.toInt()).toString()
-            saveUserDataUseCase.invoke(newCoinBalance)
+            saveUserDataUseCase.invoke(value = newCoinBalance)
             readCoinsAmount()
         }
     }
@@ -59,7 +59,7 @@ class CoinsViewModel(
         viewModelScope.launch {
             _coinsAmount.value = (coinsAmount.value.toInt() + betValue.value.toInt() * 2).toString()
 
-            saveUserDataUseCase.invoke(_coinsAmount.value)
+            saveUserDataUseCase.invoke(value = _coinsAmount.value)
             readCoinsAmount()
         }
     }
@@ -68,7 +68,7 @@ class CoinsViewModel(
         viewModelScope.launch {
             val newCoinBalance = (coinsAmount.value.toInt() - amount).toString()
 
-            saveUserDataUseCase.invoke(newCoinBalance)
+            saveUserDataUseCase.invoke(value = newCoinBalance)
 
             readCoinsAmount()
         }

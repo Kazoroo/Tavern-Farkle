@@ -26,9 +26,6 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
 import com.google.android.gms.ads.MobileAds
 import pl.kazoroo.tavernFarkle.core.data.local.UserDataRepository
-import pl.kazoroo.tavernFarkle.core.domain.ReadUserDataUseCase
-import pl.kazoroo.tavernFarkle.core.domain.SaveUserDataUseCase
-import pl.kazoroo.tavernFarkle.core.presentation.CoinsViewModel
 import pl.kazoroo.tavernFarkle.game.presentation.navigation.Navigation
 import pl.kazoroo.tavernFarkle.game.presentation.sound.SoundPlayer
 import pl.kazoroo.tavernFarkle.game.presentation.splashscreen.StartingScreenViewModel
@@ -64,10 +61,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             DicesTheme {
                 val userDataRepository = UserDataRepository(dataStore)
-                val coinsViewModel = CoinsViewModel(
-                    saveUserDataUseCase = SaveUserDataUseCase(userDataRepository),
-                    readUserDataUseCase = ReadUserDataUseCase(userDataRepository)
-                )
+
                 val context = LocalContext.current
                 LaunchedEffect(Unit) {
                     val intent = Intent(context, MusicService::class.java)
@@ -78,7 +72,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    Navigation(coinsViewModel)
+                    Navigation(userDataRepository)
                 }
             }
         }
