@@ -20,10 +20,6 @@ class UserDataRepository(private val dataStore: DataStore<Preferences>) {
         val dataStoreKey = stringPreferencesKey(key)
         val preferences = dataStore.data.first()
 
-        return if(dataStoreKey.name == UserDataKey.COINS.name && preferences[dataStoreKey] == null) {
-            "200"
-        } else {
-            preferences[dataStoreKey]
-        }
+        return preferences[dataStoreKey]
     }
 }
