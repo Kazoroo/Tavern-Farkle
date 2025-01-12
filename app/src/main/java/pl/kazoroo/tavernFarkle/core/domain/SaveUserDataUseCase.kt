@@ -5,7 +5,7 @@ import pl.kazoroo.tavernFarkle.core.data.local.UserDataRepository
 
 class SaveUserDataUseCase(private val userDataRepository: UserDataRepository) {
     suspend operator fun invoke(
-        key: UserDataKey = UserDataKey.COINS,
+        key: String = UserDataKey.COINS.name,
         value: String
     ) {
         userDataRepository.saveNewValue(
