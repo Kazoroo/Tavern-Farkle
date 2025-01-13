@@ -56,7 +56,13 @@ fun ShopScreen(
             price = 2,
             image = R.drawable.odd_dice_1,
             chancesOfDrawingValue = listOf(26.7f, 6.7f, 26.7f, 6.7f, 26.7f, 6.7f),
-        )
+        ),
+        SpecialDice(
+            name = "Alfonse's dice",
+            price = 1000,
+            image = R.drawable.alfonses_dice_1,
+            chancesOfDrawingValue = listOf(38.5f, 7.7f, 7.7f, 7.7f, 15.4f, 23f),
+        ),
     )
 
     Box(modifier = Modifier.fillMaxSize()) {
