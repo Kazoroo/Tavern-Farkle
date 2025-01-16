@@ -19,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import pl.kazoroo.tavernFarkle.R
@@ -28,6 +29,7 @@ import pl.kazoroo.tavernFarkle.shop.domain.model.SpecialDice
 @Composable
 fun SpecialDiceCard(
     specialDice: SpecialDice,
+    isInventoryCard: Boolean = false,
     onClick: () -> Unit
 ) {
     Card(
@@ -76,15 +78,15 @@ fun SpecialDiceCard(
                             horizontalArrangement = Arrangement.SpaceAround
                         ) {
                             Text(
-                                text = "1 - ${specialDice.chancesOfDrawingValue[0]}%\n" +
-                                        "2 - ${specialDice.chancesOfDrawingValue[1]}%\n" +
-                                        "3 - ${specialDice.chancesOfDrawingValue[2]}%"
+                                text = "⚀ - ${specialDice.chancesOfDrawingValue[0]}%\n" +
+                                        "⚁ - ${specialDice.chancesOfDrawingValue[1]}%\n" +
+                                        "⚂ - ${specialDice.chancesOfDrawingValue[2]}%"
                             )
 
                             Text(
-                                text = "4 - ${specialDice.chancesOfDrawingValue[3]}%\n" +
-                                        "5 - ${specialDice.chancesOfDrawingValue[4]}%\n" +
-                                        "6 - ${specialDice.chancesOfDrawingValue[5]}%"
+                                text = "⚃ - ${specialDice.chancesOfDrawingValue[3]}%\n" +
+                                        "⚄ - ${specialDice.chancesOfDrawingValue[4]}%\n" +
+                                        "⚅ - ${specialDice.chancesOfDrawingValue[5]}%"
                             )
                         }
                     }
@@ -101,18 +103,28 @@ fun SpecialDiceCard(
                         )
                         .fillMaxWidth()
                 ) {
-                    Text(
-                        text = "Buy for ${specialDice.price}",
-                        textAlign = TextAlign.Center
-                    )
+                    if(isInventoryCard) {
+                        //TODO: another if(isSelected) and then different background color and text ,,Select" and ,,Selected"
+                        Text(
+                            text = stringResource(R.string.select),
+                            textAlign = TextAlign.Center
+                        )
+                    } else {
+                        Text(
+                            text = stringResource(R.string.buy_for, specialDice.price),
+                            textAlign = TextAlign.Center
+                        )
+                    }
 
-                    Image(
-                        painter = painterResource(R.drawable.coin),
-                        contentDescription = "Coin icon",
-                        modifier = Modifier
-                            .size(dimensionResource(R.dimen.coin_icon_size))
-                            .padding(start = dimensionResource(R.dimen.small_padding))
-                    )
+                    if(!isInventoryCard) {
+                        Image(
+                            painter = painterResource(R.drawable.coin),
+                            contentDescription = "Coin icon",
+                            modifier = Modifier
+                                .size(dimensionResource(R.dimen.coin_icon_size))
+                                .padding(start = dimensionResource(R.dimen.small_padding))
+                        )
+                    }
                 }
             }
         }

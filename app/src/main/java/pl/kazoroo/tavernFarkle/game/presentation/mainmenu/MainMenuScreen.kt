@@ -66,6 +66,14 @@ fun MainMenuScreen(navController: NavController, coinsViewModel: CoinsViewModel)
                 .testTag("Shop")
         ) {
             navController.navigate(Screen.ShopScreen.route)
+        },
+
+        ButtonInfo(
+            text = stringResource(R.string.inventory),
+            modifier = buttonsModifier
+                .testTag("Inventory")
+        ) {
+            navController.navigate(Screen.InventoryScreen.route)
         }
     )
 

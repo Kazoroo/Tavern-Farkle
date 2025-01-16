@@ -1,4 +1,4 @@
-package pl.kazoroo.tavernFarkle.shop.presentation
+package pl.kazoroo.tavernFarkle.shop.presentation.shop
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

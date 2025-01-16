@@ -1,6 +1,5 @@
 package pl.kazoroo.tavernFarkle.game.presentation.navigation
 
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -11,9 +10,9 @@ import pl.kazoroo.tavernFarkle.core.domain.SaveUserDataUseCase
 import pl.kazoroo.tavernFarkle.core.presentation.CoinsViewModel
 import pl.kazoroo.tavernFarkle.game.presentation.game.GameScreen
 import pl.kazoroo.tavernFarkle.game.presentation.mainmenu.MainMenuScreen
-import pl.kazoroo.tavernFarkle.shop.presentation.ShopScreen
+import pl.kazoroo.tavernFarkle.shop.presentation.inventory.InventoryScreen
+import pl.kazoroo.tavernFarkle.shop.presentation.shop.ShopScreen
 
-@ExperimentalMaterial3Api
 @Composable
 fun Navigation(
     userDataRepository: UserDataRepository
@@ -54,6 +53,15 @@ fun Navigation(
                 coinsViewModel = coinsViewModel,
                 saveUserDataUseCase = saveUserDataUseCase,
                 readUserDataUseCase = readUserDataUseCase,
+            )
+        }
+
+        composable(
+            route = Screen.InventoryScreen.route
+        ) {
+            InventoryScreen(
+                readUserDataUseCase = readUserDataUseCase,
+                saveUserDataUseCase = saveUserDataUseCase
             )
         }
     }
