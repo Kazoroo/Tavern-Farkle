@@ -21,4 +21,7 @@
     <string name="leaving_a_match">Leaving a match</string>
     <string name="shop">Shop</string>
     <string name="get_100_coins">Get +100 coins</string>
+    <string name="inventory">Inventory</string>
+    <string name="buy_for">Buy for %1$s</string>
+    <string name="select">Select</string>
 </resources>

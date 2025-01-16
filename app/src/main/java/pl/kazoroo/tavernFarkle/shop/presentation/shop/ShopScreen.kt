@@ -1,4 +1,4 @@
-package pl.kazoroo.tavernFarkle.shop.presentation
+package pl.kazoroo.tavernFarkle.shop.presentation.shop
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -31,6 +31,7 @@ import pl.kazoroo.tavernFarkle.core.presentation.components.CoinAmountIndicator
 import pl.kazoroo.tavernFarkle.game.presentation.components.ButtonInfo
 import pl.kazoroo.tavernFarkle.game.presentation.components.DiceButton
 import pl.kazoroo.tavernFarkle.shop.domain.model.SpecialDice
+import pl.kazoroo.tavernFarkle.shop.presentation.AdViewModel
 import pl.kazoroo.tavernFarkle.shop.presentation.components.SpecialDiceCard
 
 @Composable
@@ -125,11 +126,10 @@ fun ShopScreen(
                 
                 items(specialDiceList.size) { index ->
                     SpecialDiceCard(
-                        specialDice = specialDiceList[index],
-                        onClick = {
-                            viewModel.buySpecialDice(specialDiceList[index])
-                        }
-                    )
+                        specialDice = specialDiceList[index]
+                    ) {
+                        viewModel.buySpecialDice(specialDiceList[index])
+                    }
                 }
             }
         }
