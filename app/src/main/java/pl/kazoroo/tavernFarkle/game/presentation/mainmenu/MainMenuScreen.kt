@@ -1,6 +1,6 @@
 package pl.kazoroo.tavernFarkle.game.presentation.mainmenu
 
-import android.app.Activity
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -22,7 +22,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
@@ -43,7 +42,7 @@ import pl.kazoroo.tavernFarkle.game.presentation.sound.SoundType
 
 @Composable
 fun MainMenuScreen(navController: NavController, coinsViewModel: CoinsViewModel) {
-    val activity = (LocalContext.current as? Activity)
+    val activity = LocalActivity.current
     val buttonsModifier: Modifier = Modifier
         .padding(bottom = dimensionResource(R.dimen.medium_padding))
         .height(dimensionResource(R.dimen.menu_button_height))
