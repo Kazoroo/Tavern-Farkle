@@ -24,13 +24,12 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import io.github.windedge.table.components.Divider
 import pl.kazoroo.tavernFarkle.R
-import pl.kazoroo.tavernFarkle.core.domain.ReadUserDataUseCase
-import pl.kazoroo.tavernFarkle.core.domain.SaveUserDataUseCase
+import pl.kazoroo.tavernFarkle.core.data.local.repository.SpecialDiceList.specialDiceList
 import pl.kazoroo.tavernFarkle.core.presentation.CoinsViewModel
 import pl.kazoroo.tavernFarkle.core.presentation.components.CoinAmountIndicator
 import pl.kazoroo.tavernFarkle.game.presentation.components.ButtonInfo
 import pl.kazoroo.tavernFarkle.game.presentation.components.DiceButton
-import pl.kazoroo.tavernFarkle.shop.domain.model.SpecialDice
+import pl.kazoroo.tavernFarkle.shop.domain.usecase.BuySpecialDiceUseCase
 import pl.kazoroo.tavernFarkle.shop.presentation.AdViewModel
 import pl.kazoroo.tavernFarkle.shop.presentation.components.SpecialDiceCard
 
@@ -38,33 +37,17 @@ import pl.kazoroo.tavernFarkle.shop.presentation.components.SpecialDiceCard
 fun ShopScreen(
     coinsViewModel: CoinsViewModel,
     adViewModel: AdViewModel = viewModel(),
-    saveUserDataUseCase: SaveUserDataUseCase,
-    readUserDataUseCase: ReadUserDataUseCase
+    buySpecialDiceUseCase: BuySpecialDiceUseCase
 ) {
     val viewModel =  remember {
         ShopViewModel(
-            saveUserDataUseCase = saveUserDataUseCase,
-            readUserDataUseCase = readUserDataUseCase,
+            buySpecialDiceUseCase
         ) { amount ->
             coinsViewModel.takeCoinsFromWallet(amount)
         }
     }
 
     val context = LocalContext.current
-    val specialDiceList = listOf(
-        SpecialDice(
-            name = "Odd dice",
-            price = 2,
-            image = R.drawable.odd_dice_1,
-            chancesOfDrawingValue = listOf(26.7f, 6.7f, 26.7f, 6.7f, 26.7f, 6.7f),
-        ),
-        SpecialDice(
-            name = "Alfonse's dice",
-            price = 1000,
-            image = R.drawable.alfonses_dice_1,
-            chancesOfDrawingValue = listOf(38.5f, 7.7f, 7.7f, 7.7f, 15.4f, 23f),
-        ),
-    )
 
     Box(modifier = Modifier.fillMaxSize()) {
         Image(
@@ -126,7 +109,10 @@ fun ShopScreen(
                 
                 items(specialDiceList.size) { index ->
                     SpecialDiceCard(
-                        specialDice = specialDiceList[index]
+                        name = specialDiceList[index].name,
+                        image = specialDiceList[index].image,
+                        chancesOfDrawingValue = specialDiceList[index].chancesOfDrawingValue,
+                        price = specialDiceList[index].price
                     ) {
                         viewModel.buySpecialDice(specialDiceList[index])
                     }

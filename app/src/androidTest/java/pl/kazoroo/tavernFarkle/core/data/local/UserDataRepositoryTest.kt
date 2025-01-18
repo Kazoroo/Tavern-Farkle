@@ -13,6 +13,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
+import pl.kazoroo.tavernFarkle.core.data.local.repository.UserDataRepository
 import java.io.File
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -38,13 +39,13 @@ class UserDataRepositoryTest {
     fun saveNewValue() = runTest {
         val coins = "1100"
 
-        userDataRepository.saveNewValue(key = UserDataKey.COINS, value = coins)
+        userDataRepository.saveNewValue(key = UserDataKey.COINS.name, value = coins)
         advanceUntilIdle()
     }
 
     @Test
     fun checkForDefaultValue() = runTest {
-        assertEquals(null, userDataRepository.readValue(key = UserDataKey.COINS))
+        assertEquals(null, userDataRepository.readValue(key = UserDataKey.COINS.name))
         advanceUntilIdle()
     }
 
@@ -52,8 +53,8 @@ class UserDataRepositoryTest {
     fun saveAndReadValue() = runTest {
         val coins = "1100"
 
-        userDataRepository.saveNewValue(key = UserDataKey.COINS, value = coins)
-        assertEquals(coins, userDataRepository.readValue(key = UserDataKey.COINS))
+        userDataRepository.saveNewValue(key = UserDataKey.COINS.name, value = coins)
+        assertEquals(coins, userDataRepository.readValue(key = UserDataKey.COINS.name))
         advanceUntilIdle()
     }
 }
