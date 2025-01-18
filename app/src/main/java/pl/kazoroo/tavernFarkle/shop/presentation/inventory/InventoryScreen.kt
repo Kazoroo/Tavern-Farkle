@@ -43,12 +43,19 @@ fun InventoryScreen(inventoryViewModel: InventoryViewModel) {
         ) {
             if(ownedSpecialDiceList.isEmpty()) {
                 item {
-                    Text(
-                        text = stringResource(R.string.your_inventory_is_empty_buy_some_special_dice_in_shop),
-                        color = Color.White,
-                        modifier = Modifier.align(Alignment.Center).width((LocalConfiguration.current.screenWidthDp / 2).dp),
-                        textAlign = TextAlign.Center
-                    )
+                    Box(
+                        modifier = Modifier.fillParentMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = stringResource(R.string.your_inventory_is_empty_buy_some_special_dice_in_shop),
+                            color = Color.White,
+                            modifier = Modifier
+                                .width((LocalConfiguration.current.screenWidthDp / 2).dp)
+                                .align(Alignment.Center),
+                            textAlign = TextAlign.Center
+                        )
+                    }
                 }
             } else {
                 items(ownedSpecialDiceList.size) { index ->
