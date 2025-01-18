@@ -1,21 +1,28 @@
 package pl.kazoroo.tavernFarkle.game.presentation.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.datastore.core.DataStore
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import pl.kazoroo.tavernFarkle.core.data.local.UserDataRepository
+import pl.kazoroo.tavernFarkle.core.data.local.repository.UserDataRepository
 import pl.kazoroo.tavernFarkle.core.domain.ReadUserDataUseCase
 import pl.kazoroo.tavernFarkle.core.domain.SaveUserDataUseCase
 import pl.kazoroo.tavernFarkle.core.presentation.CoinsViewModel
 import pl.kazoroo.tavernFarkle.game.presentation.game.GameScreen
 import pl.kazoroo.tavernFarkle.game.presentation.mainmenu.MainMenuScreen
+import pl.kazoroo.tavernFarkle.shop.data.model.OwnedSpecialDice
+import pl.kazoroo.tavernFarkle.shop.data.repository.InventoryDataRepository
+import pl.kazoroo.tavernFarkle.shop.domain.usecase.BuySpecialDiceUseCase
 import pl.kazoroo.tavernFarkle.shop.presentation.inventory.InventoryScreen
+import pl.kazoroo.tavernFarkle.shop.presentation.inventory.InventoryViewModel
 import pl.kazoroo.tavernFarkle.shop.presentation.shop.ShopScreen
 
 @Composable
 fun Navigation(
-    userDataRepository: UserDataRepository
+    userDataRepository: UserDataRepository,
+    inventoryDataRepository: InventoryDataRepository,
+    protoDataStore: DataStore<List<OwnedSpecialDice>>
 ) {
     val navController = rememberNavController()
     val saveUserDataUseCase = SaveUserDataUseCase(userDataRepository)
@@ -24,6 +31,10 @@ fun Navigation(
     val coinsViewModel = CoinsViewModel(
         saveUserDataUseCase,
         readUserDataUseCase
+    )
+
+    val inventoryViewModel = InventoryViewModel(
+        dataStore = protoDataStore
     )
 
     NavHost(
@@ -51,8 +62,7 @@ fun Navigation(
         ) {
             ShopScreen(
                 coinsViewModel = coinsViewModel,
-                saveUserDataUseCase = saveUserDataUseCase,
-                readUserDataUseCase = readUserDataUseCase,
+                buySpecialDiceUseCase = BuySpecialDiceUseCase(inventoryDataRepository)
             )
         }
 
@@ -60,8 +70,7 @@ fun Navigation(
             route = Screen.InventoryScreen.route
         ) {
             InventoryScreen(
-                readUserDataUseCase = readUserDataUseCase,
-                saveUserDataUseCase = saveUserDataUseCase
+                inventoryViewModel = inventoryViewModel
             )
         }
     }

@@ -13,7 +13,6 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.LaunchedEffect
@@ -22,15 +21,18 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.core.animation.doOnEnd
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.datastore.core.DataStore
+import androidx.datastore.dataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
 import com.google.android.gms.ads.MobileAds
-import pl.kazoroo.tavernFarkle.core.data.local.UserDataRepository
+import pl.kazoroo.tavernFarkle.core.data.local.repository.UserDataRepository
 import pl.kazoroo.tavernFarkle.game.presentation.navigation.Navigation
 import pl.kazoroo.tavernFarkle.game.presentation.sound.SoundPlayer
 import pl.kazoroo.tavernFarkle.game.presentation.splashscreen.StartingScreenViewModel
 import pl.kazoroo.tavernFarkle.game.service.MusicService
+import pl.kazoroo.tavernFarkle.shop.data.OwnedSpecialDiceSerializer
 import pl.kazoroo.tavernFarkle.shop.domain.AdManager
+import pl.kazoroo.tavernFarkle.shop.domain.InventoryDataRepositoryImpl
 import pl.kazoroo.tavernFarkle.ui.theme.DicesTheme
 
 class MainActivity : ComponentActivity() {
@@ -44,8 +46,8 @@ class MainActivity : ComponentActivity() {
         }
     }
     private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "user_data")
+    private val Context.protoDataStore by dataStore("dice_inventory.json", OwnedSpecialDiceSerializer)
 
-    @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         showSplashScreen()
         super.onCreate(savedInstanceState)
@@ -61,6 +63,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             DicesTheme {
                 val userDataRepository = UserDataRepository(dataStore)
+                val inventoryDataRepository = InventoryDataRepositoryImpl(protoDataStore)
 
                 val context = LocalContext.current
                 LaunchedEffect(Unit) {
@@ -72,7 +75,11 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    Navigation(userDataRepository)
+                    Navigation(
+                        userDataRepository,
+                        inventoryDataRepository,
+                        protoDataStore
+                    )
                 }
             }
         }

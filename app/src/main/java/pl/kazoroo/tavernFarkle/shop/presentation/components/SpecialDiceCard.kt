@@ -23,12 +23,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import pl.kazoroo.tavernFarkle.R
-import pl.kazoroo.tavernFarkle.shop.domain.model.SpecialDice
-
+import pl.kazoroo.tavernFarkle.shop.data.model.SpecialDiceName
 
 @Composable
 fun SpecialDiceCard(
-    specialDice: SpecialDice,
+    name: SpecialDiceName,
+    image: Int,
+    chancesOfDrawingValue: List<Float>,
+    price: Int,
     isInventoryCard: Boolean = false,
     onClick: () -> Unit
 ) {
@@ -58,14 +60,14 @@ fun SpecialDiceCard(
                         )
                 ) {
                     Image(
-                        painter = painterResource(id = specialDice.image),
+                        painter = painterResource(id = image),
                         contentDescription = null,
                         modifier = Modifier.size(dimensionResource(R.dimen.special_dice_icon_size))
                     )
 
                     Column {
                         Text(
-                            text = specialDice.name,
+                            text = name.name,
                             fontWeight = FontWeight.Bold,
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -78,15 +80,15 @@ fun SpecialDiceCard(
                             horizontalArrangement = Arrangement.SpaceAround
                         ) {
                             Text(
-                                text = "⚀ - ${specialDice.chancesOfDrawingValue[0]}%\n" +
-                                        "⚁ - ${specialDice.chancesOfDrawingValue[1]}%\n" +
-                                        "⚂ - ${specialDice.chancesOfDrawingValue[2]}%"
+                                text = "⚀ - ${chancesOfDrawingValue[0]}%\n" +
+                                        "⚁ - ${chancesOfDrawingValue[1]}%\n" +
+                                        "⚂ - ${chancesOfDrawingValue[2]}%"
                             )
 
                             Text(
-                                text = "⚃ - ${specialDice.chancesOfDrawingValue[3]}%\n" +
-                                        "⚄ - ${specialDice.chancesOfDrawingValue[4]}%\n" +
-                                        "⚅ - ${specialDice.chancesOfDrawingValue[5]}%"
+                                text = "⚃ - ${chancesOfDrawingValue[3]}%\n" +
+                                        "⚄ - ${chancesOfDrawingValue[4]}%\n" +
+                                        "⚅ - ${chancesOfDrawingValue[5]}%"
                             )
                         }
                     }
@@ -111,7 +113,7 @@ fun SpecialDiceCard(
                         )
                     } else {
                         Text(
-                            text = stringResource(R.string.buy_for, specialDice.price),
+                            text = stringResource(R.string.buy_for, price),
                             textAlign = TextAlign.Center
                         )
                     }
