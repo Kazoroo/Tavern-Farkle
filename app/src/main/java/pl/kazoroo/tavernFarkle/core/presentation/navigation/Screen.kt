@@ -1,4 +1,4 @@
-package pl.kazoroo.tavernFarkle.game.presentation.navigation
+package pl.kazoroo.tavernFarkle.core.presentation.navigation
 
 sealed class Screen(val route: String) {
     data object MainScreen : Screen("main_screen")

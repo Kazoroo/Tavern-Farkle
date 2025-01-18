@@ -26,7 +26,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
 import com.google.android.gms.ads.MobileAds
 import pl.kazoroo.tavernFarkle.core.data.local.repository.UserDataRepository
-import pl.kazoroo.tavernFarkle.game.presentation.navigation.Navigation
+import pl.kazoroo.tavernFarkle.core.presentation.navigation.Navigation
 import pl.kazoroo.tavernFarkle.game.presentation.sound.SoundPlayer
 import pl.kazoroo.tavernFarkle.game.presentation.splashscreen.StartingScreenViewModel
 import pl.kazoroo.tavernFarkle.game.service.MusicService

@@ -1,8 +1,8 @@
 package pl.kazoroo.tavernFarkle.shop.domain.usecase
 
 import pl.kazoroo.tavernFarkle.shop.data.model.OwnedSpecialDice
-import pl.kazoroo.tavernFarkle.shop.data.model.SpecialDiceName
 import pl.kazoroo.tavernFarkle.shop.data.repository.InventoryDataRepository
+import pl.kazoroo.tavernFarkle.shop.domain.model.SpecialDiceName
 
 class BuySpecialDiceUseCase(private val inventoryDataRepository: InventoryDataRepository) {
     suspend operator fun invoke(name: SpecialDiceName) {

@@ -1,7 +1,7 @@
 package pl.kazoroo.tavernFarkle.shop.data.repository
 
 import pl.kazoroo.tavernFarkle.shop.data.model.OwnedSpecialDice
-import pl.kazoroo.tavernFarkle.shop.data.model.SpecialDiceName
+import pl.kazoroo.tavernFarkle.shop.domain.model.SpecialDiceName
 
 interface InventoryDataRepository {
     suspend fun addNewSpecialDice(dice: OwnedSpecialDice)

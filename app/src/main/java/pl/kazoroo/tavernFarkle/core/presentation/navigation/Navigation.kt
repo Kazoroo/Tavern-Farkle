@@ -1,4 +1,4 @@
-package pl.kazoroo.tavernFarkle.game.presentation.navigation
+package pl.kazoroo.tavernFarkle.core.presentation.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.datastore.core.DataStore

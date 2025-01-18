@@ -31,12 +31,12 @@ import androidx.navigation.NavController
 import pl.kazoroo.tavernFarkle.R
 import pl.kazoroo.tavernFarkle.core.presentation.CoinsViewModel
 import pl.kazoroo.tavernFarkle.core.presentation.components.CoinAmountIndicator
+import pl.kazoroo.tavernFarkle.core.presentation.navigation.Screen
 import pl.kazoroo.tavernFarkle.game.presentation.components.ButtonInfo
 import pl.kazoroo.tavernFarkle.game.presentation.components.DiceButton
 import pl.kazoroo.tavernFarkle.game.presentation.components.HowToPlayButton
 import pl.kazoroo.tavernFarkle.game.presentation.mainmenu.components.AppTitleText
 import pl.kazoroo.tavernFarkle.game.presentation.mainmenu.components.BettingDialog
-import pl.kazoroo.tavernFarkle.game.presentation.navigation.Screen
 import pl.kazoroo.tavernFarkle.game.presentation.sound.SoundPlayer
 import pl.kazoroo.tavernFarkle.game.presentation.sound.SoundType
 
