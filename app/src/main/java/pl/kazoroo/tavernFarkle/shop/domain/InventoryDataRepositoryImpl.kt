@@ -3,8 +3,8 @@ package pl.kazoroo.tavernFarkle.shop.domain
 import androidx.datastore.core.DataStore
 import kotlinx.coroutines.flow.first
 import pl.kazoroo.tavernFarkle.shop.data.model.OwnedSpecialDice
-import pl.kazoroo.tavernFarkle.shop.data.model.SpecialDiceName
 import pl.kazoroo.tavernFarkle.shop.data.repository.InventoryDataRepository
+import pl.kazoroo.tavernFarkle.shop.domain.model.SpecialDiceName
 
 class InventoryDataRepositoryImpl(private val protoDataStore: DataStore<List<OwnedSpecialDice>>) :
     InventoryDataRepository {

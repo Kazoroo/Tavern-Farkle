@@ -1,8 +1,8 @@
 package pl.kazoroo.tavernFarkle.core.data.local.repository
 
 import pl.kazoroo.tavernFarkle.R
-import pl.kazoroo.tavernFarkle.shop.data.model.SpecialDiceName
 import pl.kazoroo.tavernFarkle.shop.domain.model.SpecialDice
+import pl.kazoroo.tavernFarkle.shop.domain.model.SpecialDiceName
 
 object SpecialDiceList {
     val specialDiceList = listOf(

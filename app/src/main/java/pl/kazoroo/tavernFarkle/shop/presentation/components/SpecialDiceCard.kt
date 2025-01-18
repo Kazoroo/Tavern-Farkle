@@ -23,7 +23,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import pl.kazoroo.tavernFarkle.R
-import pl.kazoroo.tavernFarkle.shop.data.model.SpecialDiceName
+import pl.kazoroo.tavernFarkle.shop.domain.model.SpecialDiceName
 
 @Composable
 fun SpecialDiceCard(
@@ -67,7 +67,7 @@ fun SpecialDiceCard(
 
                     Column {
                         Text(
-                            text = name.name,
+                            text = name.displayName,
                             fontWeight = FontWeight.Bold,
                             modifier = Modifier
                                 .fillMaxWidth()

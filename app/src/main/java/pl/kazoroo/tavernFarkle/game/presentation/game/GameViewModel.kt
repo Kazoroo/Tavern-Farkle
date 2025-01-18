@@ -11,12 +11,12 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import pl.kazoroo.tavernFarkle.core.data.presentation.BettingActions
+import pl.kazoroo.tavernFarkle.core.presentation.navigation.Screen
 import pl.kazoroo.tavernFarkle.game.domain.model.DiceSetInfo
 import pl.kazoroo.tavernFarkle.game.domain.model.PointsState
 import pl.kazoroo.tavernFarkle.game.domain.usecase.CalculatePointsUseCase
 import pl.kazoroo.tavernFarkle.game.domain.usecase.CheckForSkuchaUseCase
 import pl.kazoroo.tavernFarkle.game.domain.usecase.DrawDiceUseCase
-import pl.kazoroo.tavernFarkle.game.presentation.navigation.Screen
 import pl.kazoroo.tavernFarkle.game.presentation.sound.SoundPlayer
 import pl.kazoroo.tavernFarkle.game.presentation.sound.SoundType
 
