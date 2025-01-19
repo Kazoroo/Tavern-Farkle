@@ -1,13 +1,13 @@
 package pl.kazoroo.tavernFarkle.shop.domain
 
 import androidx.datastore.core.DataStore
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import pl.kazoroo.tavernFarkle.shop.data.model.OwnedSpecialDice
 import pl.kazoroo.tavernFarkle.shop.data.repository.InventoryDataRepository
 import pl.kazoroo.tavernFarkle.shop.domain.model.SpecialDiceName
 
-class InventoryDataRepositoryImpl(private val protoDataStore: DataStore<List<OwnedSpecialDice>>) :
-    InventoryDataRepository {
+class InventoryDataRepositoryImpl(private val protoDataStore: DataStore<List<OwnedSpecialDice>>) : InventoryDataRepository {
     override suspend fun addNewSpecialDice(dice: OwnedSpecialDice) {
         protoDataStore.updateData { list ->
             list + dice
@@ -28,7 +28,11 @@ class InventoryDataRepositoryImpl(private val protoDataStore: DataStore<List<Own
         }
     }
 
-    override suspend fun getAllSpecialDice(): List<OwnedSpecialDice> {
-        return protoDataStore.data.first()
+    override suspend fun getAllSpecialDice(): Flow<List<OwnedSpecialDice>> {
+        return protoDataStore.data
+            .catch { exception ->
+                emit(listOf(OwnedSpecialDice()))
+                exception.printStackTrace()
+            }
     }
 }

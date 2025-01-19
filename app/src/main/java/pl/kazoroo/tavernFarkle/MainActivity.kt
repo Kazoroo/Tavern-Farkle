@@ -77,8 +77,7 @@ class MainActivity : ComponentActivity() {
                 ) {
                     Navigation(
                         userDataRepository,
-                        inventoryDataRepository,
-                        protoDataStore
+                        inventoryDataRepository
                     )
                 }
             }
