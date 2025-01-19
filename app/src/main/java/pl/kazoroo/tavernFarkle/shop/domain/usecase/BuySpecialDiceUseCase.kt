@@ -1,5 +1,6 @@
 package pl.kazoroo.tavernFarkle.shop.domain.usecase
 
+import kotlinx.coroutines.flow.first
 import pl.kazoroo.tavernFarkle.shop.data.model.OwnedSpecialDice
 import pl.kazoroo.tavernFarkle.shop.data.repository.InventoryDataRepository
 import pl.kazoroo.tavernFarkle.shop.domain.model.SpecialDice
@@ -15,7 +16,7 @@ class BuySpecialDiceUseCase(private val inventoryDataRepository: InventoryDataRe
         coinsAmount: Int,
         takeCoins: () -> Unit
     ): Result {
-        val allDice = inventoryDataRepository.getAllSpecialDice()
+        val allDice = inventoryDataRepository.getAllSpecialDice().first()
         val existingDice = allDice.find { it.name == specialDice.name }
 
         if(coinsAmount >= specialDice.price) {

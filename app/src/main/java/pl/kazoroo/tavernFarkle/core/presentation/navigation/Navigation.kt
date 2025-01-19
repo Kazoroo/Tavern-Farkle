@@ -1,7 +1,6 @@
 package pl.kazoroo.tavernFarkle.core.presentation.navigation
 
 import androidx.compose.runtime.Composable
-import androidx.datastore.core.DataStore
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -11,7 +10,6 @@ import pl.kazoroo.tavernFarkle.core.domain.SaveUserDataUseCase
 import pl.kazoroo.tavernFarkle.core.presentation.CoinsViewModel
 import pl.kazoroo.tavernFarkle.game.presentation.game.GameScreen
 import pl.kazoroo.tavernFarkle.game.presentation.mainmenu.MainMenuScreen
-import pl.kazoroo.tavernFarkle.shop.data.model.OwnedSpecialDice
 import pl.kazoroo.tavernFarkle.shop.data.repository.InventoryDataRepository
 import pl.kazoroo.tavernFarkle.shop.domain.usecase.BuySpecialDiceUseCase
 import pl.kazoroo.tavernFarkle.shop.presentation.inventory.InventoryScreen
@@ -21,8 +19,7 @@ import pl.kazoroo.tavernFarkle.shop.presentation.shop.ShopScreen
 @Composable
 fun Navigation(
     userDataRepository: UserDataRepository,
-    inventoryDataRepository: InventoryDataRepository,
-    protoDataStore: DataStore<List<OwnedSpecialDice>>
+    inventoryDataRepository: InventoryDataRepository
 ) {
     val navController = rememberNavController()
     val saveUserDataUseCase = SaveUserDataUseCase(userDataRepository)
@@ -34,7 +31,7 @@ fun Navigation(
     )
 
     val inventoryViewModel = InventoryViewModel(
-        dataStore = protoDataStore
+        inventoryDataRepository = inventoryDataRepository
     )
 
     NavHost(
