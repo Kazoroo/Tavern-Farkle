@@ -38,7 +38,7 @@ class BuySpecialDiceUseCase(private val inventoryDataRepository: InventoryDataRe
                 count = existingDice.count + 1,
                 isSelected = existingDice.isSelected + false
             )
-            inventoryDataRepository.addNewSpecialDice(updatedDice)
+            inventoryDataRepository.updateExistingSpecialDice(updatedDice)
         } else {
             val newDice = OwnedSpecialDice(
                 name = specialDice.name,

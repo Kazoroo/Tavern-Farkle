@@ -85,13 +85,14 @@ fun ShopScreen(
                         name = specialDiceList[index].name,
                         image = specialDiceList[index].image,
                         chancesOfDrawingValue = specialDiceList[index].chancesOfDrawingValue,
-                        price = specialDiceList[index].price
-                    ) {
-                        viewModel.buySpecialDice(
-                            specialDiceList[index],
-                            context = context
-                        )
-                    }
+                        price = specialDiceList[index].price,
+                        onClick = {
+                            viewModel.buySpecialDice(
+                                specialDiceList[index],
+                                context = context
+                            )
+                        }
+                    )
                 }
             }
         }

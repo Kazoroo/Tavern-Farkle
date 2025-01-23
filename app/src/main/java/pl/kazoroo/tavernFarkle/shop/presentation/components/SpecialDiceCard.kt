@@ -12,10 +12,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
@@ -32,6 +34,7 @@ fun SpecialDiceCard(
     chancesOfDrawingValue: List<Float>,
     price: Int,
     isInventoryCard: Boolean = false,
+    isSelected: Boolean = false,
     onClick: () -> Unit
 ) {
     Card(
@@ -103,12 +106,12 @@ fun SpecialDiceCard(
                             horizontal = dimensionResource(R.dimen.medium_padding),
                             vertical = dimensionResource(R.dimen.medium_padding)
                         )
-                        .fillMaxWidth()
+                        .fillMaxWidth(),
+                    colors = ButtonDefaults.buttonColors(containerColor = if(isSelected) Color.Green else Color.Unspecified)
                 ) {
                     if(isInventoryCard) {
-                        //TODO: another if(isSelected) and then different background color and text ,,Select" and ,,Selected"
                         Text(
-                            text = stringResource(R.string.select),
+                            text = if(isSelected) stringResource(R.string.selected_text) else stringResource(R.string.select),
                             textAlign = TextAlign.Center
                         )
                     } else {
