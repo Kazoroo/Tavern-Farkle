@@ -59,7 +59,7 @@ fun InventoryScreen(inventoryViewModel: InventoryViewModel) {
                 }
             } else {
                 ownedSpecialDiceList.forEach { item ->
-                    items(item.count) {
+                    items(item.count) { index ->
                         val specialDiceData: SpecialDice = specialDiceList.find { item.name == it.name }!!
 
                         SpecialDiceCard(
@@ -67,9 +67,13 @@ fun InventoryScreen(inventoryViewModel: InventoryViewModel) {
                             name = specialDiceData.name,
                             image = specialDiceData.image,
                             chancesOfDrawingValue = specialDiceData.chancesOfDrawingValue,
-                            price = specialDiceData.price
+                            price = specialDiceData.price,
+                            isSelected = item.isSelected[index]
                         ) {
-                            //TODO: Select a special dice
+                            inventoryViewModel.updateSelectedStatus(
+                                name = specialDiceData.name,
+                                index = index
+                            )
                         }
                     }
                 }

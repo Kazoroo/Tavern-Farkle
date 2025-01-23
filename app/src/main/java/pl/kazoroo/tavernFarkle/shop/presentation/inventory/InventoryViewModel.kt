@@ -14,7 +14,7 @@ class InventoryViewModel(
     private val inventoryDataRepository: InventoryDataRepository
 ): ViewModel() {
     private val _ownedSpecialDice = MutableStateFlow(listOf(OwnedSpecialDice()))
-    val ownedSpecialDice: StateFlow<List<OwnedSpecialDice>> get() = _ownedSpecialDice
+    val ownedSpecialDice: StateFlow<List<OwnedSpecialDice>> = _ownedSpecialDice
 
     init {
         viewModelScope.launch {
@@ -39,16 +39,12 @@ class InventoryViewModel(
             state.mapIndexed { i, item ->
                 if(item.name == name) {
                     item.copy(
-                        isSelected = item.isSelected.map {
-                            if(i == index) !it else it
-                        }
+                        isSelected = item.isSelected.toMutableList().also { it[index] = !it[index] }
                     )
                 } else {
                     item
                 }
             }
         }
-
-        println(_ownedSpecialDice.value.joinToString())
     }
 }
