@@ -14,6 +14,16 @@ class InventoryDataRepositoryImpl(private val protoDataStore: DataStore<List<Own
         }
     }
 
+    override suspend fun updateExistingSpecialDice(dice: OwnedSpecialDice) {
+        protoDataStore.updateData { list ->
+            list.map { item ->
+                if (item.name == dice.name) {
+                    dice
+                } else item
+            }
+        }
+    }
+
     override suspend fun updateSelectedStatus(name: SpecialDiceName, index: Int) {
         protoDataStore.updateData { list ->
             list.map { item ->

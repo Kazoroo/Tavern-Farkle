@@ -58,17 +58,19 @@ fun InventoryScreen(inventoryViewModel: InventoryViewModel) {
                     }
                 }
             } else {
-                items(ownedSpecialDiceList.size) { index ->
-                    val specialDiceData: SpecialDice = specialDiceList.find { it.name == ownedSpecialDiceList[index].name }!!
+                ownedSpecialDiceList.forEach { item ->
+                    items(item.count) {
+                        val specialDiceData: SpecialDice = specialDiceList.find { item.name == it.name }!!
 
-                    SpecialDiceCard(
-                        isInventoryCard = true,
-                        name = specialDiceData.name,
-                        image = specialDiceData.image,
-                        chancesOfDrawingValue = specialDiceData.chancesOfDrawingValue,
-                        price = specialDiceData.price
-                    ) {
-                        //TODO: Select a special dice
+                        SpecialDiceCard(
+                            isInventoryCard = true,
+                            name = specialDiceData.name,
+                            image = specialDiceData.image,
+                            chancesOfDrawingValue = specialDiceData.chancesOfDrawingValue,
+                            price = specialDiceData.price
+                        ) {
+                            //TODO: Select a special dice
+                        }
                     }
                 }
             }
