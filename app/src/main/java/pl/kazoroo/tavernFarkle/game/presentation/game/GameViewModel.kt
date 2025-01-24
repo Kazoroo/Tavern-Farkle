@@ -19,17 +19,23 @@ import pl.kazoroo.tavernFarkle.game.domain.usecase.CheckForSkuchaUseCase
 import pl.kazoroo.tavernFarkle.game.domain.usecase.DrawDiceUseCase
 import pl.kazoroo.tavernFarkle.game.presentation.sound.SoundPlayer
 import pl.kazoroo.tavernFarkle.game.presentation.sound.SoundType
+import pl.kazoroo.tavernFarkle.shop.data.model.OwnedSpecialDice
 
 class GameViewModel(
     private val drawDiceUseCase: DrawDiceUseCase = DrawDiceUseCase(),
     private val calculatePointsUseCase: CalculatePointsUseCase = CalculatePointsUseCase(),
     private val checkForSkuchaUseCase: CheckForSkuchaUseCase = CheckForSkuchaUseCase(),
-    private val bettingActions: BettingActions
+    private val bettingActions: BettingActions,
+    private val ownedSpecialDices: List<OwnedSpecialDice>
 ) : ViewModel() {
+    //TODO: Maybe we can pass ownedSpecialDices as normal value not a state because it won't change during game.
+
     private val winningPoints: Int = 4000
     private val _diceState = MutableStateFlow(
         DiceSetInfo(
-            diceList = drawDiceUseCase(),
+            diceList = drawDiceUseCase(
+                ownedSpecialDices = ownedSpecialDices
+            ),
             isDiceSelected = List(6) { false },
             isDiceVisible = List(6) { true }
         )
@@ -239,7 +245,7 @@ class GameViewModel(
         SoundPlayer.playSound(SoundType.DICE_ROLLING)
         _diceState.update { currentState ->
             currentState.copy(
-                diceList = drawDiceUseCase()
+                diceList = drawDiceUseCase(ownedSpecialDices)
             )
         }
         delay(500L)
@@ -285,7 +291,7 @@ class GameViewModel(
     private fun resetState() {
         _diceState.update { currentState ->
             currentState.copy(
-                diceList = drawDiceUseCase(),
+                diceList = drawDiceUseCase(ownedSpecialDices),
                 isDiceSelected = List(6) { false },
                 isDiceVisible = List(6) { true }
             )

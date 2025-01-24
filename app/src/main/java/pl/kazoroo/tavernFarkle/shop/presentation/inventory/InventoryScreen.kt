@@ -65,7 +65,7 @@ fun InventoryScreen(inventoryViewModel: InventoryViewModel) {
                         SpecialDiceCard(
                             isInventoryCard = true,
                             name = specialDiceData.name,
-                            image = specialDiceData.image,
+                            image = specialDiceData.image[0],
                             chancesOfDrawingValue = specialDiceData.chancesOfDrawingValue,
                             price = specialDiceData.price,
                             isSelected = item.isSelected[index]

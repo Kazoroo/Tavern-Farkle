@@ -39,16 +39,19 @@ import pl.kazoroo.tavernFarkle.game.presentation.game.components.ExitDialog
 import pl.kazoroo.tavernFarkle.game.presentation.game.components.GameButtons
 import pl.kazoroo.tavernFarkle.game.presentation.game.components.InteractiveDiceLayout
 import pl.kazoroo.tavernFarkle.game.presentation.game.components.PointsTable
+import pl.kazoroo.tavernFarkle.shop.presentation.inventory.InventoryViewModel
 import pl.kazoroo.tavernFarkle.ui.theme.DarkRed
 
 @Composable
 fun GameScreen(
     bettingActions: BettingActions,
-    navController: NavHostController
+    navController: NavHostController,
+    inventoryViewModel: InventoryViewModel
 ) {
     val viewModel =  remember {
         GameViewModel(
-            bettingActions = bettingActions
+            bettingActions = bettingActions,
+            ownedSpecialDices = inventoryViewModel.ownedSpecialDice.value
         )
     }
 

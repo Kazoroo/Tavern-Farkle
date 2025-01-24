@@ -51,7 +51,8 @@ fun Navigation(
         ) {
             GameScreen(
                 bettingActions = coinsViewModel,
-                navController = navController
+                navController = navController,
+                inventoryViewModel = inventoryViewModel
             )
         }
         composable(
