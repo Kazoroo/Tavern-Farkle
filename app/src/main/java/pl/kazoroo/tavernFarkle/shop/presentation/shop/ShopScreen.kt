@@ -83,7 +83,7 @@ fun ShopScreen(
                 items(specialDiceList.size) { index ->
                     SpecialDiceCard(
                         name = specialDiceList[index].name,
-                        image = specialDiceList[index].image,
+                        image = specialDiceList[index].image[0],
                         chancesOfDrawingValue = specialDiceList[index].chancesOfDrawingValue,
                         price = specialDiceList[index].price,
                         onClick = {
