@@ -28,8 +28,6 @@ class GameViewModel(
     private val bettingActions: BettingActions,
     private val ownedSpecialDices: List<OwnedSpecialDice>
 ) : ViewModel() {
-    //TODO: Maybe we can pass ownedSpecialDices as normal value not a state because it won't change during game.
-
     private val winningPoints: Int = 4000
     private val _diceState = MutableStateFlow(
         DiceSetInfo(
