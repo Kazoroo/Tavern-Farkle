@@ -16,7 +16,7 @@ class GameViewModelTest {
 
     @Before
     fun initiate() {
-        viewModel = GameViewModel(bettingActions = FakeBettingViewModel())
+        viewModel = GameViewModel(bettingActions = FakeBettingViewModel(), ownedSpecialDices = listOf())
     }
 
     @Test
