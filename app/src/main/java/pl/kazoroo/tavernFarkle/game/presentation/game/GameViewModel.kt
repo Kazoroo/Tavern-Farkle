@@ -12,6 +12,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import pl.kazoroo.tavernFarkle.core.data.presentation.BettingActions
 import pl.kazoroo.tavernFarkle.core.presentation.navigation.Screen
+import pl.kazoroo.tavernFarkle.game.domain.model.Dice
 import pl.kazoroo.tavernFarkle.game.domain.model.DiceSetInfo
 import pl.kazoroo.tavernFarkle.game.domain.model.PointsState
 import pl.kazoroo.tavernFarkle.game.domain.usecase.CalculatePointsUseCase
@@ -20,6 +21,7 @@ import pl.kazoroo.tavernFarkle.game.domain.usecase.DrawDiceUseCase
 import pl.kazoroo.tavernFarkle.game.presentation.sound.SoundPlayer
 import pl.kazoroo.tavernFarkle.game.presentation.sound.SoundType
 import pl.kazoroo.tavernFarkle.shop.data.model.OwnedSpecialDice
+import pl.kazoroo.tavernFarkle.shop.domain.model.SpecialDiceName
 
 class GameViewModel(
     private val drawDiceUseCase: DrawDiceUseCase = DrawDiceUseCase(),
@@ -73,6 +75,8 @@ class GameViewModel(
     private val _isDiceVisibleAfterGameEnd = MutableStateFlow(List(6) { false })
     val isDiceVisibleAfterGameEnd = _isDiceVisibleAfterGameEnd.asStateFlow()
 
+    private var usedSpecialDice = mutableListOf<Dice>()
+
     fun toggleDiceSelection(index: Int) {
         _diceState.update { currentState ->
             val updatedDiceSelected = currentState.isDiceSelected.toMutableList()
@@ -101,14 +105,26 @@ class GameViewModel(
      * Prepare the dice and points state for the next current player's throw.
      */
     fun prepareForNextThrow() {
-        viewModelScope.launch {
-            triggerDiceRowAnimation()
-        }
+        val isDiceVisible = getUpdatedDiceVisibility()
 
+        viewModelScope.launch {
+            if(isDiceVisible.all { !it }) {
+                triggerDiceRowAnimation(
+                    isDiceVisible = List(6) { true},
+                    usedSpecialDice = emptyList()
+                )
+            } else {
+                triggerDiceRowAnimation(
+                    isDiceVisible = isDiceVisible
+                )
+            }
+        }
+        //FIXME: usedSpecialDice: [ODD_DICE, ODD_DICE, ODD_DICE] -> roll again -> usedSpecialDice: [ALFONSES_DICE] |
+        // something breaks when adding/clearing usedSpecialDices
         _diceState.update { currentState ->
             currentState.copy(
                 isDiceSelected = List(6) { false },
-                isDiceVisible = getUpdatedDiceVisibility()
+                isDiceVisible = isDiceVisible
             )
         }
 
@@ -124,6 +140,9 @@ class GameViewModel(
 
     private fun getUpdatedDiceVisibility(): MutableList<Boolean> {
         val newIsDiceVisible: MutableList<Boolean> = diceState.value.isDiceVisible.toMutableList()
+        usedSpecialDice = diceState.value.diceList.filterIndexed { index, dice ->
+            dice.specialDiceName != null && diceState.value.isDiceSelected[index]
+        }.toMutableList()
 
         for (i in diceState.value.isDiceVisible.indices) {
             if (diceState.value.isDiceVisible[i] && diceState.value.isDiceSelected[i]) {
@@ -198,6 +217,7 @@ class GameViewModel(
 
     fun passTheRound(navController: NavHostController) {
         viewModelScope.launch {
+            usedSpecialDice.clear()
             val stateToUpdate = if(_isOpponentTurn.value) _opponentPointsState else _userPointsState
 
             stateToUpdate.update { currentState ->
@@ -219,7 +239,10 @@ class GameViewModel(
                 )
             }
 
-            triggerDiceRowAnimation()
+            triggerDiceRowAnimation(
+                isDiceVisible = List(6) { true },
+                usedSpecialDice = emptyList()
+            )
 
             _diceState.update { currentState ->
                 currentState.copy(
@@ -236,14 +259,21 @@ class GameViewModel(
         }
     }
 
-    private suspend fun triggerDiceRowAnimation() {
+    private suspend fun triggerDiceRowAnimation(
+        isDiceVisible: List<Boolean> = diceState.value.isDiceVisible,
+        usedSpecialDice: List<SpecialDiceName> = this.usedSpecialDice.map { it.specialDiceName!! } //Maybe this arguments can be removed since clearing usedSpecialDice works properly
+    ) {
         delay(300L) //Waiting for selected dice horizontal slide animation finish
         _isDiceAnimating.value = true
         delay(500L)
         SoundPlayer.playSound(SoundType.DICE_ROLLING)
         _diceState.update { currentState ->
             currentState.copy(
-                diceList = drawDiceUseCase(ownedSpecialDices)
+                diceList = drawDiceUseCase(
+                    ownedSpecialDices = ownedSpecialDices,
+                    usedSpecialDice = usedSpecialDice,
+                    isDiceVisible = isDiceVisible
+                )
             )
         }
         delay(500L)
@@ -289,7 +319,11 @@ class GameViewModel(
     private fun resetState() {
         _diceState.update { currentState ->
             currentState.copy(
-                diceList = drawDiceUseCase(ownedSpecialDices),
+                diceList = drawDiceUseCase(
+                    ownedSpecialDices = ownedSpecialDices,
+                    usedSpecialDice = usedSpecialDice.map { it.specialDiceName!! },
+                    isDiceVisible = diceState.value.isDiceVisible
+                ),
                 isDiceSelected = List(6) { false },
                 isDiceVisible = List(6) { true }
             )

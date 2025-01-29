@@ -10,12 +10,12 @@ class CheckForSkuchaUseCaseTest {
     fun `check for skucha when all dice are visible and there are available points`() {
         val result = CheckForSkuchaUseCase().invoke(
             diceList = listOf(
-                Dice(1, 0),
-                Dice(2, 0),
-                Dice(3, 0),
-                Dice(4, 0),
-                Dice(4, 0),
-                Dice(6, 0)
+                Dice(null,1, 0),
+                Dice(null,2, 0),
+                Dice(null,3, 0),
+                Dice(null,4, 0),
+                Dice(null,4, 0),
+                Dice(null,6, 0)
             ),
             isDiceVisible = listOf(
                 true,
@@ -34,12 +34,12 @@ class CheckForSkuchaUseCaseTest {
     fun `check for skucha when all dice are visible and there are no available points`() {
         val result = CheckForSkuchaUseCase().invoke(
             diceList = listOf(
-                Dice(6, 0),
-                Dice(2, 0),
-                Dice(3, 0),
-                Dice(4, 0),
-                Dice(4, 0),
-                Dice(6, 0)
+                Dice(null,6, 0),
+                Dice(null,2, 0),
+                Dice(null,3, 0),
+                Dice(null,4, 0),
+                Dice(null,4, 0),
+                Dice(null,6, 0)
             ),
             isDiceVisible = listOf(
                 true,
@@ -58,12 +58,12 @@ class CheckForSkuchaUseCaseTest {
     fun `check for skucha when three dice are visible and there are no available points`() {
         val result = CheckForSkuchaUseCase().invoke(
             diceList = listOf(
-                Dice(6, 0),
-                Dice(2, 0),
-                Dice(3, 0),
-                Dice(1, 0),
-                Dice(1, 0),
-                Dice(1, 0)
+                Dice(null,6, 0),
+                Dice(null,2, 0),
+                Dice(null,3, 0),
+                Dice(null,1, 0),
+                Dice(null,1, 0),
+                Dice(null,1, 0)
             ),
             isDiceVisible = listOf(
                 true,
