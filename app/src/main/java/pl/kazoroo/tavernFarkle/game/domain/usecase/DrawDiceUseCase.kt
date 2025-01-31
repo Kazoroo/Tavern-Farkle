@@ -1,5 +1,6 @@
 package pl.kazoroo.tavernFarkle.game.domain.usecase
 
+import android.util.Log
 import pl.kazoroo.tavernFarkle.R
 import pl.kazoroo.tavernFarkle.core.data.local.repository.SpecialDiceList
 import pl.kazoroo.tavernFarkle.game.domain.model.Dice
@@ -90,26 +91,36 @@ class DrawDiceUseCase {
 
         println("finalList before adding nonSpecials: ${finalList.joinToString {  "\n" + it.toString()}}")
         println("\n")
+/*        finalList before adding nonSpecials:
+        Dice(specialDiceName=ODD_DICE, value=6, image=2131165278),
+        Dice(specialDiceName=ODD_DICE, value=5, image=2131165277),
+        Dice(specialDiceName=null, value=0, image=2131165226),
+        Dice(specialDiceName=null, value=0, image=2131165226),
+        Dice(specialDiceName=null, value=0, image=2131165226),
+        Dice(specialDiceName=null, value=0, image=2131165226)*/
 
-
-        if (availableInGameSpecialDiceNames.count() < isDiceVisible.count { it }) {
+        Log.d("DiceListBuilder", "availableInGameSpecialDiceNames: $availableInGameSpecialDiceNames")
+        Log.d("DiceListBuilder","how much dice are visible: ${isDiceVisible.count { it }}")
+        /*if (availableInGameSpecialDiceNames.count() < isDiceVisible.count { it }) { // 2 < 5
             val remainingCount = 6 - availableInGameSpecialDiceNames.count()
             val unfilledPositions = finalList.mapIndexedNotNull { index, dice ->
                 if(dice.specialDiceName != null) index else null
             }
+            Log.d("DiceListBuilder", "remainingCount: $remainingCount") // 4
+            Log.d("DiceListBuilder","unfilledPositions: $unfilledPositions") // [0, 1]
 
             repeat(remainingCount) { index ->
                 val diceIndex = Random.nextInt(until = 6)
 
                 finalList.set(
-                    index = unfilledPositions[index],
+                    index = unfilledPositions[index], //IOOB 1 for 1
                     element = Dice(
                         value = diceIndex + 1,
                         image = diceDrawables[diceIndex]
                     )
                 )
             }
-        }
+        }*/
         println("finalList: ${finalList.joinToString {  "\n" + it.toString()}}")
         println("\n")
         return finalList
