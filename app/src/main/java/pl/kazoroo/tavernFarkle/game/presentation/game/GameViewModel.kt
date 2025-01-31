@@ -1,5 +1,6 @@
 package pl.kazoroo.tavernFarkle.game.presentation.game
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
@@ -75,14 +76,15 @@ class GameViewModel(
     private val _isDiceVisibleAfterGameEnd = MutableStateFlow(List(6) { false })
     val isDiceVisibleAfterGameEnd = _isDiceVisibleAfterGameEnd.asStateFlow()
 
-    private var usedSpecialDice = mutableListOf<Dice>()
+    private var usedSpecialDice: List<Dice> = listOf<Dice>()
 
     fun toggleDiceSelection(index: Int) {
         _diceState.update { currentState ->
-            val updatedDiceSelected = currentState.isDiceSelected.toMutableList()
-            updatedDiceSelected[index] = !updatedDiceSelected[index]
-
-            currentState.copy(isDiceSelected = updatedDiceSelected)
+            currentState.copy(
+                isDiceSelected = currentState.isDiceSelected.mapIndexed { i, selected ->
+                    if (i == index) !selected else selected
+                }
+            )
         }
 
         updateSelectedPointsState()
@@ -109,18 +111,19 @@ class GameViewModel(
 
         viewModelScope.launch {
             if(isDiceVisible.all { !it }) {
+                Log.d("CallFrom", "prepareForNextThrow() all dice invisible")
                 triggerDiceRowAnimation(
                     isDiceVisible = List(6) { true},
                     usedSpecialDice = emptyList()
                 )
             } else {
+                Log.d("CallFrom", "prepareForNextThrow() dice visible")
                 triggerDiceRowAnimation(
-                    isDiceVisible = isDiceVisible
+                    isDiceVisible = isDiceVisible,
+                    usedSpecialDice = usedSpecialDice.map { it.specialDiceName!! }
                 )
             }
         }
-        //FIXME: usedSpecialDice: [ODD_DICE, ODD_DICE, ODD_DICE] -> roll again -> usedSpecialDice: [ALFONSES_DICE] |
-        // something breaks when adding/clearing usedSpecialDices
         _diceState.update { currentState ->
             currentState.copy(
                 isDiceSelected = List(6) { false },
@@ -139,13 +142,20 @@ class GameViewModel(
     }
 
     private fun getUpdatedDiceVisibility(): MutableList<Boolean> {
-        val newIsDiceVisible: MutableList<Boolean> = diceState.value.isDiceVisible.toMutableList()
-        usedSpecialDice = diceState.value.diceList.filterIndexed { index, dice ->
-            dice.specialDiceName != null && diceState.value.isDiceSelected[index]
-        }.toMutableList()
+        val state = diceState.value
+        val newIsDiceVisible: MutableList<Boolean> = state.isDiceVisible.toMutableList()
+        Log.d("usedSpecialDice", "")
+        Log.d("usedSpecialDice", "usedSpecialDice before modifying: ${usedSpecialDice.joinToString { it.specialDiceName.toString() }}")
+        synchronized(usedSpecialDice) {
+            usedSpecialDice += state.diceList.filterIndexed { index, dice ->
+                dice.specialDiceName != null && state.isDiceSelected[index]
+            }
+        }
+        Log.d("usedSpecialDice", "usedSpecialDice after modifying: ${usedSpecialDice.joinToString { it.specialDiceName.toString() }}")
+        Log.d("usedSpecialDice", "")
 
-        for (i in diceState.value.isDiceVisible.indices) {
-            if (diceState.value.isDiceVisible[i] && diceState.value.isDiceSelected[i]) {
+        for (i in state.isDiceVisible.indices) {
+            if (state.isDiceVisible[i] && state.isDiceSelected[i]) {
                 newIsDiceVisible[i] = false
             }
         }
@@ -170,6 +180,8 @@ class GameViewModel(
 
     private fun startNewRoundIfAllDiceInvisible(navController: NavHostController): Boolean {
         return if (diceState.value.isDiceVisible.all { !it }) {
+            usedSpecialDice = emptyList()
+
             _diceState.update { currentState ->
                 currentState.copy(
                     isDiceSelected = List(6) { false },
@@ -199,6 +211,7 @@ class GameViewModel(
             )
         }
 
+        Log.d("CallFrom", "performSkuchaAction()")
         triggerDiceRowAnimation()
 
         _diceState.update { currentState ->
@@ -217,7 +230,7 @@ class GameViewModel(
 
     fun passTheRound(navController: NavHostController) {
         viewModelScope.launch {
-            usedSpecialDice.clear()
+            usedSpecialDice = emptyList()
             val stateToUpdate = if(_isOpponentTurn.value) _opponentPointsState else _userPointsState
 
             stateToUpdate.update { currentState ->
@@ -239,6 +252,7 @@ class GameViewModel(
                 )
             }
 
+            Log.d("CallFrom", "passTheRound()")
             triggerDiceRowAnimation(
                 isDiceVisible = List(6) { true },
                 usedSpecialDice = emptyList()
@@ -317,6 +331,7 @@ class GameViewModel(
      * Reset the value of diceState, opponentPointsState, userPointsState, isOpponentTurn and isDiceVisibleAfterGameEnd to their default values.
      */
     private fun resetState() {
+        Log.e("CallFrom", "resetState()")
         _diceState.update { currentState ->
             currentState.copy(
                 diceList = drawDiceUseCase(
@@ -350,8 +365,9 @@ class GameViewModel(
         _isOpponentTurn.value = true
 
         viewModelScope.launch(Dispatchers.Default) {
-            val minDiceCount = (2..4).random()
-            while(diceState.value.isDiceVisible.count { it } > minDiceCount) {
+            val playingUntilDiceLeft = (2..4).random()
+
+            while(diceState.value.isDiceVisible.count { it } > playingUntilDiceLeft) {
                 delay((1600L..2000L).random())
 
                 val indexesOfDiceGivingPoints = searchForDiceIndexGivingPoints()
@@ -367,15 +383,20 @@ class GameViewModel(
                     delay((1200L..1600L).random())
                 }
 
-                if(diceState.value.isDiceVisible.count { it } - diceState.value.isDiceSelected.count { it } > minDiceCount) {
+                if(diceState.value.isDiceVisible.count { it } - diceState.value.isDiceSelected.count { it } > playingUntilDiceLeft) {
                     prepareForNextThrow()
                 } else {
+                    usedSpecialDice = emptyList()
+                    println("usedSpecialDice after clearing at the end of opponent turn ${usedSpecialDice.joinToString { it.specialDiceName.toString() }}")
                     withContext(Dispatchers.Main) {
                         passTheRound(navController)
                     }
                     break
                 }
             }
+
+            usedSpecialDice = emptyList()
+            println("usedSpecialDice after clearing at the end of opponent turn thread ${usedSpecialDice.joinToString { it.specialDiceName.toString() }}")
         }
     }
 
