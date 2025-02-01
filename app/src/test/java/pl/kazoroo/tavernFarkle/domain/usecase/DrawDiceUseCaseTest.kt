@@ -43,4 +43,32 @@ class DrawDiceUseCaseTest {
         assert(secondThrowResult.count { it.specialDiceName == null } == 1)
         assert(secondThrowResult.find { it.specialDiceName == null }!!.value == 0)
     }
+
+    @Test
+    fun `4 specials and 2 regular dice`() {
+        val useCase = DrawDiceUseCase()
+        val fourSpecialDice = listOf(
+            OwnedSpecialDice(
+                name = SpecialDiceName.ODD_DICE,
+                count = 4,
+                isSelected = listOf(false, false, false, true)
+            ),
+            OwnedSpecialDice(
+                name = SpecialDiceName.ALFONSES_DICE,
+                count = 4,
+                isSelected = listOf(false, true, true, true)
+            )
+        )
+
+        val throwResult = useCase.invoke(
+            ownedSpecialDices = fourSpecialDice,
+            usedSpecialDice = emptyList(),
+            isDiceVisible = List(6) { true }
+        )
+
+        assert(throwResult.count { it.specialDiceName == SpecialDiceName.ODD_DICE } == 1)
+        assert(throwResult.count { it.specialDiceName == SpecialDiceName.ALFONSES_DICE } == 3)
+        assert(throwResult.count { it.specialDiceName == null } == 2)
+        assert(throwResult.count { it.value == 0 } == 0)
+    }
 }

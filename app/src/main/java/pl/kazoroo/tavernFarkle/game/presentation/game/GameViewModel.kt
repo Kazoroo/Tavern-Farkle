@@ -76,7 +76,7 @@ class GameViewModel(
     private val _isDiceVisibleAfterGameEnd = MutableStateFlow(List(6) { false })
     val isDiceVisibleAfterGameEnd = _isDiceVisibleAfterGameEnd.asStateFlow()
 
-    private var usedSpecialDice: List<Dice> = listOf<Dice>()
+    private var usedSpecialDice: List<Dice> = listOf()
 
     fun toggleDiceSelection(index: Int) {
         _diceState.update { currentState ->
@@ -197,6 +197,7 @@ class GameViewModel(
 
     private suspend fun performSkuchaActions(navController: NavHostController) {
         val stateToUpdate = if (_isOpponentTurn.value) _opponentPointsState else _userPointsState
+        usedSpecialDice = emptyList()
 
         delay(1000L)
         _skuchaState.value = true
@@ -211,7 +212,6 @@ class GameViewModel(
             )
         }
 
-        Log.d("CallFrom", "performSkuchaAction()")
         triggerDiceRowAnimation()
 
         _diceState.update { currentState ->
@@ -386,8 +386,6 @@ class GameViewModel(
                 if(diceState.value.isDiceVisible.count { it } - diceState.value.isDiceSelected.count { it } > playingUntilDiceLeft) {
                     prepareForNextThrow()
                 } else {
-                    usedSpecialDice = emptyList()
-                    println("usedSpecialDice after clearing at the end of opponent turn ${usedSpecialDice.joinToString { it.specialDiceName.toString() }}")
                     withContext(Dispatchers.Main) {
                         passTheRound(navController)
                     }
@@ -396,7 +394,6 @@ class GameViewModel(
             }
 
             usedSpecialDice = emptyList()
-            println("usedSpecialDice after clearing at the end of opponent turn thread ${usedSpecialDice.joinToString { it.specialDiceName.toString() }}")
         }
     }
 
