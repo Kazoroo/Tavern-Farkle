@@ -212,7 +212,7 @@ class GameViewModel(
             )
         }
 
-        triggerDiceRowAnimation()
+        triggerDiceRowAnimation(isDiceVisible = List(6) { true })
 
         _diceState.update { currentState ->
             currentState.copy(

@@ -58,21 +58,23 @@ class DrawDiceUseCase {
     /**
      * Constructs a list of 6 Dice, including special dice specified by name, and filling any remaining slots with regular dice.
      *
-     * @param availableInGameSpecialDiceNames A list of SpecialDiceName representing the special dice to be included.
+     * @param activeSpecialDice A list of SpecialDiceName representing the special dice to be included.
      * @return A list of 6 Dice objects, containing the specified special dice and regular dice if needed.
      */
     private fun constructRandomDiceListWithSpecials(
-        availableInGameSpecialDiceNames: List<SpecialDiceName>,
+        activeSpecialDice: List<SpecialDiceName>,
         isDiceVisible: List<Boolean>
     ): List<Dice> {
         val finalList: MutableList<Dice> = MutableList(6) { Dice(value = 0, image = diceDrawables[0]) }
 
-        availableInGameSpecialDiceNames.forEachIndexed { index, name  ->
+        activeSpecialDice.forEachIndexed { index, name  ->
             val specialDice = SpecialDiceList.specialDiceList.first { it.name == name }
             val value = getRandomWithProbability(specialDice.chancesOfDrawingValue)
             val visibleDiceIndex = isDiceVisible.mapIndexedNotNull { itemIndex, isVisible ->
                 if(isVisible) itemIndex else null
             }
+
+            println("visibleDiceIndex: $visibleDiceIndex")
 
             finalList.set(
                 index = visibleDiceIndex[index],
@@ -87,10 +89,10 @@ class DrawDiceUseCase {
         println("finalList before adding nonSpecials: ${finalList.joinToString {  "\n" + it.toString()}}")
         println("\n")
 
-        println("availableInGameSpecialDiceNames: $availableInGameSpecialDiceNames")
+        println("activeSpecialDice: $activeSpecialDice")
         println("how much dice are visible: ${isDiceVisible.count { it }}")
-        if (availableInGameSpecialDiceNames.count() < isDiceVisible.count { it }) {
-            val remainingCount = 6 - availableInGameSpecialDiceNames.count()
+        if (activeSpecialDice.count() < isDiceVisible.count { it }) {
+            val remainingCount = 6 - activeSpecialDice.count()
             val unfilledPositions = finalList.mapIndexedNotNull { index, dice ->
                 if(dice.specialDiceName == null) index else null
             }.shuffled()
