@@ -66,13 +66,13 @@ class DrawDiceUseCase {
         isDiceVisible: List<Boolean>
     ): List<Dice> {
         val finalList: MutableList<Dice> = MutableList(6) { Dice(value = 0, image = diceDrawables[0]) }
+        val visibleDiceIndex = isDiceVisible.mapIndexedNotNull { itemIndex, isVisible ->
+            if(isVisible) itemIndex else null
+        }.shuffled()
 
         activeSpecialDice.forEachIndexed { index, name  ->
             val specialDice = SpecialDiceList.specialDiceList.first { it.name == name }
             val value = getRandomWithProbability(specialDice.chancesOfDrawingValue)
-            val visibleDiceIndex = isDiceVisible.mapIndexedNotNull { itemIndex, isVisible ->
-                if(isVisible) itemIndex else null
-            }
 
             println("visibleDiceIndex: $visibleDiceIndex")
 
