@@ -17,6 +17,10 @@ class DrawDiceUseCase {
         R.drawable.dice_6
     )
 
+    private val opponentSpecialDiceList = List(Random.nextInt(until = 5)) {
+        SpecialDiceList.specialDiceList.random().name
+    }
+
     /**
      * Constructs a list of 6 dice objects, including special dice specified by name, and filling any remaining slots with regular dice.
      *
@@ -28,31 +32,33 @@ class DrawDiceUseCase {
      */
     operator fun invoke(
         ownedSpecialDices: List<OwnedSpecialDice>,
-        usedSpecialDice: List<SpecialDiceName> = listOf(),
-        isDiceVisible: List<Boolean> = List(6) { true }
-
+        usedSpecialDice: List<SpecialDiceName>,
+        isDiceVisible: List<Boolean>,
+        isOpponentTurn: Boolean
     ): List<Dice> {
-        println("ARGUMENTS: ")
-        println("ownedSpecialDices: ${ownedSpecialDices.joinToString { "\n\t" + it.toString()}}")
-        println("usedSpecialDice: $usedSpecialDice")
-        println("isDiceVisible: $isDiceVisible")
-        println("--ARGUMENTS END-----------")
-        println(" ")
-
-        val inGameSpecialDiceNames = ownedSpecialDices.flatMap { dice ->
-            dice.isSelected.mapIndexedNotNull { _, isSelected ->
-                if (isSelected) dice.name else null
+        if(isOpponentTurn) {
+            val notUsedSpecialDice = opponentSpecialDiceList.toMutableList().apply {
+                usedSpecialDice.forEach { used ->
+                    remove(used)
+                }
             }
-        }
 
-        val notUsedSpecialDice = inGameSpecialDiceNames.toMutableList().apply {
-            usedSpecialDice.forEach { used ->
-                remove(used)
+            return constructRandomDiceListWithSpecials(notUsedSpecialDice, isDiceVisible)
+        } else {
+            val inGameSpecialDiceNames = ownedSpecialDices.flatMap { dice ->
+                dice.isSelected.mapIndexedNotNull { _, isSelected ->
+                    if (isSelected) dice.name else null
+                }
             }
-        }
 
-        //TODO: handle opponents special dice -> draw random amount of random special dice type and use them for drawing opponents dice
-        return constructRandomDiceListWithSpecials(notUsedSpecialDice, isDiceVisible)
+            val notUsedSpecialDice = inGameSpecialDiceNames.toMutableList().apply {
+                usedSpecialDice.forEach { used ->
+                    remove(used)
+                }
+            }
+
+            return constructRandomDiceListWithSpecials(notUsedSpecialDice, isDiceVisible)
+        }
     }
 
     /**
@@ -74,8 +80,6 @@ class DrawDiceUseCase {
             val specialDice = SpecialDiceList.specialDiceList.first { it.name == name }
             val value = getRandomWithProbability(specialDice.chancesOfDrawingValue)
 
-            println("visibleDiceIndex: $visibleDiceIndex")
-
             finalList.set(
                 index = visibleDiceIndex[index],
                 element = Dice(
@@ -86,18 +90,11 @@ class DrawDiceUseCase {
             )
         }
 
-        println("finalList before adding nonSpecials: ${finalList.joinToString {  "\n" + it.toString()}}")
-        println("\n")
-
-        println("activeSpecialDice: $activeSpecialDice")
-        println("how much dice are visible: ${isDiceVisible.count { it }}")
         if (activeSpecialDice.count() < isDiceVisible.count { it }) {
             val remainingCount = 6 - activeSpecialDice.count()
             val unfilledPositions = finalList.mapIndexedNotNull { index, dice ->
                 if(dice.specialDiceName == null) index else null
             }.shuffled()
-            println("remainingCount: $remainingCount")
-            println("unfilledPositions: $unfilledPositions")
 
             repeat(remainingCount) { index ->
                 val diceIndex = Random.nextInt(until = 6)
@@ -111,8 +108,6 @@ class DrawDiceUseCase {
                 )
             }
         }
-        println("finalList: ${finalList.joinToString {  "\n" + it.toString()}}")
-        println("\n")
         return finalList
     }
 
