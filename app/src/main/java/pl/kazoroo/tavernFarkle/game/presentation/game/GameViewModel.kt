@@ -1,6 +1,5 @@
 package pl.kazoroo.tavernFarkle.game.presentation.game
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
@@ -35,7 +34,10 @@ class GameViewModel(
     private val _diceState = MutableStateFlow(
         DiceSetInfo(
             diceList = drawDiceUseCase(
-                ownedSpecialDices = ownedSpecialDices
+                ownedSpecialDices = ownedSpecialDices,
+                usedSpecialDice = emptyList(),
+                isDiceVisible = List(6) { true },
+                isOpponentTurn = false
             ),
             isDiceSelected = List(6) { false },
             isDiceVisible = List(6) { true }
@@ -76,7 +78,8 @@ class GameViewModel(
     private val _isDiceVisibleAfterGameEnd = MutableStateFlow(List(6) { false })
     val isDiceVisibleAfterGameEnd = _isDiceVisibleAfterGameEnd.asStateFlow()
 
-    private var usedSpecialDice: List<Dice> = listOf()
+    private var userUsedSpecialDice: List<Dice> = listOf()
+    private var opponentUsedSpecialDice: List<Dice> = listOf()
 
     fun toggleDiceSelection(index: Int) {
         _diceState.update { currentState ->
@@ -108,16 +111,15 @@ class GameViewModel(
      */
     fun prepareForNextThrow() {
         val isDiceVisible = getUpdatedDiceVisibility()
+        val usedSpecialDice = if(_isOpponentTurn.value) opponentUsedSpecialDice else userUsedSpecialDice
 
         viewModelScope.launch {
             if(isDiceVisible.all { !it }) {
-                Log.d("CallFrom", "prepareForNextThrow() all dice invisible")
                 triggerDiceRowAnimation(
-                    isDiceVisible = List(6) { true},
+                    isDiceVisible = List(6) { true },
                     usedSpecialDice = emptyList()
                 )
             } else {
-                Log.d("CallFrom", "prepareForNextThrow() dice visible")
                 triggerDiceRowAnimation(
                     isDiceVisible = isDiceVisible,
                     usedSpecialDice = usedSpecialDice.map { it.specialDiceName!! }
@@ -144,15 +146,20 @@ class GameViewModel(
     private fun getUpdatedDiceVisibility(): MutableList<Boolean> {
         val state = diceState.value
         val newIsDiceVisible: MutableList<Boolean> = state.isDiceVisible.toMutableList()
-        Log.d("usedSpecialDice", "")
-        Log.d("usedSpecialDice", "usedSpecialDice before modifying: ${usedSpecialDice.joinToString { it.specialDiceName.toString() }}")
-        synchronized(usedSpecialDice) {
-            usedSpecialDice += state.diceList.filterIndexed { index, dice ->
-                dice.specialDiceName != null && state.isDiceSelected[index]
+        val filteredDice = state.diceList.filterIndexed { index, dice ->
+            dice.specialDiceName != null && state.isDiceSelected[index]
+        }
+
+        if (_isOpponentTurn.value) {
+            synchronized(opponentUsedSpecialDice) {
+                opponentUsedSpecialDice += filteredDice
+            }
+        } else {
+            synchronized(userUsedSpecialDice) {
+                userUsedSpecialDice += filteredDice
             }
         }
-        Log.d("usedSpecialDice", "usedSpecialDice after modifying: ${usedSpecialDice.joinToString { it.specialDiceName.toString() }}")
-        Log.d("usedSpecialDice", "")
+
 
         for (i in state.isDiceVisible.indices) {
             if (state.isDiceVisible[i] && state.isDiceSelected[i]) {
@@ -180,7 +187,11 @@ class GameViewModel(
 
     private fun startNewRoundIfAllDiceInvisible(navController: NavHostController): Boolean {
         return if (diceState.value.isDiceVisible.all { !it }) {
-            usedSpecialDice = emptyList()
+            if (_isOpponentTurn.value) {
+                opponentUsedSpecialDice = emptyList()
+            } else {
+                userUsedSpecialDice = emptyList()
+            }
 
             _diceState.update { currentState ->
                 currentState.copy(
@@ -197,7 +208,11 @@ class GameViewModel(
 
     private suspend fun performSkuchaActions(navController: NavHostController) {
         val stateToUpdate = if (_isOpponentTurn.value) _opponentPointsState else _userPointsState
-        usedSpecialDice = emptyList()
+        if (_isOpponentTurn.value) {
+            opponentUsedSpecialDice = emptyList()
+        } else {
+            userUsedSpecialDice = emptyList()
+        }
 
         delay(1000L)
         _skuchaState.value = true
@@ -230,7 +245,11 @@ class GameViewModel(
 
     fun passTheRound(navController: NavHostController) {
         viewModelScope.launch {
-            usedSpecialDice = emptyList()
+            if (_isOpponentTurn.value) {
+                opponentUsedSpecialDice = emptyList()
+            } else {
+                userUsedSpecialDice = emptyList()
+            }
             val stateToUpdate = if(_isOpponentTurn.value) _opponentPointsState else _userPointsState
 
             stateToUpdate.update { currentState ->
@@ -252,10 +271,10 @@ class GameViewModel(
                 )
             }
 
-            Log.d("CallFrom", "passTheRound()")
             triggerDiceRowAnimation(
                 isDiceVisible = List(6) { true },
-                usedSpecialDice = emptyList()
+                usedSpecialDice = emptyList(),
+                isTurnPassed = true
             )
 
             _diceState.update { currentState ->
@@ -275,7 +294,8 @@ class GameViewModel(
 
     private suspend fun triggerDiceRowAnimation(
         isDiceVisible: List<Boolean> = diceState.value.isDiceVisible,
-        usedSpecialDice: List<SpecialDiceName> = this.usedSpecialDice.map { it.specialDiceName!! } //Maybe this arguments can be removed since clearing usedSpecialDice works properly
+        usedSpecialDice: List<SpecialDiceName> = this.userUsedSpecialDice.map { it.specialDiceName!! },
+        isTurnPassed: Boolean = false
     ) {
         delay(300L) //Waiting for selected dice horizontal slide animation finish
         _isDiceAnimating.value = true
@@ -286,7 +306,8 @@ class GameViewModel(
                 diceList = drawDiceUseCase(
                     ownedSpecialDices = ownedSpecialDices,
                     usedSpecialDice = usedSpecialDice,
-                    isDiceVisible = isDiceVisible
+                    isDiceVisible = isDiceVisible,
+                    isOpponentTurn = if(isTurnPassed) !isOpponentTurn.value else isOpponentTurn.value
                 )
             )
         }
@@ -331,13 +352,15 @@ class GameViewModel(
      * Reset the value of diceState, opponentPointsState, userPointsState, isOpponentTurn and isDiceVisibleAfterGameEnd to their default values.
      */
     private fun resetState() {
-        Log.e("CallFrom", "resetState()")
+        val usedSpecialDice = if (_isOpponentTurn.value) opponentUsedSpecialDice else userUsedSpecialDice
+
         _diceState.update { currentState ->
             currentState.copy(
                 diceList = drawDiceUseCase(
                     ownedSpecialDices = ownedSpecialDices,
                     usedSpecialDice = usedSpecialDice.map { it.specialDiceName!! },
-                    isDiceVisible = diceState.value.isDiceVisible
+                    isDiceVisible = diceState.value.isDiceVisible,
+                    isOpponentTurn = isOpponentTurn.value
                 ),
                 isDiceSelected = List(6) { false },
                 isDiceVisible = List(6) { true }
@@ -393,7 +416,7 @@ class GameViewModel(
                 }
             }
 
-            usedSpecialDice = emptyList()
+            opponentUsedSpecialDice = emptyList()
         }
     }
 
