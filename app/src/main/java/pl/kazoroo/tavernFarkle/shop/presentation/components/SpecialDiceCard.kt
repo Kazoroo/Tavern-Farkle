@@ -59,7 +59,6 @@ fun SpecialDiceCard(
                     modifier = Modifier
                         .padding(
                             top = dimensionResource(R.dimen.medium_padding),
-                            end = dimensionResource(R.dimen.medium_padding),
                         )
                 ) {
                     Image(
