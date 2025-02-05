@@ -14,7 +14,6 @@ class CoinsViewModel(
     private val readUserDataUseCase: ReadUserDataUseCase
 ) : ViewModel(), BettingActions {
     private val _betValue = MutableStateFlow("0")
-    val betValue = _betValue.asStateFlow()
 
     private val _coinsAmount = MutableStateFlow("0")
     val coinsAmount = _coinsAmount.asStateFlow()
@@ -57,7 +56,7 @@ class CoinsViewModel(
 
     override fun addBetCoinsToTotalCoinsAmount() {
         viewModelScope.launch {
-            _coinsAmount.value = (coinsAmount.value.toInt() + betValue.value.toInt() * 2).toString()
+            _coinsAmount.value = (coinsAmount.value.toInt() + _betValue.value.toInt() * 2).toString()
 
             saveUserDataUseCase.invoke(value = _coinsAmount.value)
             readCoinsAmount()
