@@ -20,14 +20,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.animation.doOnEnd
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import androidx.datastore.dataStore
 import com.google.android.gms.ads.MobileAds
 import pl.kazoroo.tavernFarkle.core.data.local.repository.UserDataRepository
 import pl.kazoroo.tavernFarkle.core.presentation.navigation.Navigation
 import pl.kazoroo.tavernFarkle.game.presentation.sound.SoundPlayer
 import pl.kazoroo.tavernFarkle.game.presentation.splashscreen.StartingScreenViewModel
 import pl.kazoroo.tavernFarkle.game.service.MusicService
-import pl.kazoroo.tavernFarkle.shop.data.OwnedSpecialDiceSerializer
 import pl.kazoroo.tavernFarkle.shop.domain.AdManager
 import pl.kazoroo.tavernFarkle.shop.domain.InventoryDataRepositoryImpl
 import pl.kazoroo.tavernFarkle.ui.theme.DicesTheme
@@ -42,7 +40,6 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
-    private val Context.protoDataStore by dataStore("dice_inventory.json", OwnedSpecialDiceSerializer)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         showSplashScreen()
@@ -60,7 +57,7 @@ class MainActivity : ComponentActivity() {
             DicesTheme {
                 val context = LocalContext.current
                 val userDataRepository = UserDataRepository.getInstance(context)
-                val inventoryDataRepository = InventoryDataRepositoryImpl(protoDataStore)
+                val inventoryDataRepository = InventoryDataRepositoryImpl.getInstance(context)
 
                 LaunchedEffect(Unit) {
                     val intent = Intent(context, MusicService::class.java)
