@@ -388,7 +388,7 @@ class GameViewModel(
         _isOpponentTurn.value = true
 
         viewModelScope.launch(Dispatchers.Default) {
-            val playingUntilDiceLeft = (2..4).random()
+            val playingUntilDiceLeft = (2..3).random()
 
             while(diceState.value.isDiceVisible.count { it } > playingUntilDiceLeft) {
                 delay((1600L..2000L).random())
