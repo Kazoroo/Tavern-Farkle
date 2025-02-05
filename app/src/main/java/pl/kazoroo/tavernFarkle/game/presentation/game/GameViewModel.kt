@@ -227,7 +227,10 @@ class GameViewModel(
             )
         }
 
-        triggerDiceRowAnimation(isDiceVisible = List(6) { true })
+        triggerDiceRowAnimation(
+            isDiceVisible = List(6) { true },
+            isOpponentTurn = !_isOpponentTurn.value
+        )
 
         _diceState.update { currentState ->
             currentState.copy(
@@ -295,7 +298,8 @@ class GameViewModel(
     private suspend fun triggerDiceRowAnimation(
         isDiceVisible: List<Boolean> = diceState.value.isDiceVisible,
         usedSpecialDice: List<SpecialDiceName> = this.userUsedSpecialDice.map { it.specialDiceName!! },
-        isTurnPassed: Boolean = false
+        isTurnPassed: Boolean = false,
+        isOpponentTurn: Boolean = _isOpponentTurn.value
     ) {
         delay(300L) //Waiting for selected dice horizontal slide animation finish
         _isDiceAnimating.value = true
@@ -307,7 +311,7 @@ class GameViewModel(
                     ownedSpecialDices = ownedSpecialDices,
                     usedSpecialDice = usedSpecialDice,
                     isDiceVisible = isDiceVisible,
-                    isOpponentTurn = if(isTurnPassed) !isOpponentTurn.value else isOpponentTurn.value
+                    isOpponentTurn = if(isTurnPassed) !isOpponentTurn else isOpponentTurn
                 )
             )
         }
