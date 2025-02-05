@@ -20,10 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.animation.doOnEnd
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import androidx.datastore.core.DataStore
 import androidx.datastore.dataStore
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.preferencesDataStore
 import com.google.android.gms.ads.MobileAds
 import pl.kazoroo.tavernFarkle.core.data.local.repository.UserDataRepository
 import pl.kazoroo.tavernFarkle.core.presentation.navigation.Navigation
@@ -45,7 +42,6 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
-    private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "user_data")
     private val Context.protoDataStore by dataStore("dice_inventory.json", OwnedSpecialDiceSerializer)
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -62,10 +58,10 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             DicesTheme {
-                val userDataRepository = UserDataRepository(dataStore)
+                val context = LocalContext.current
+                val userDataRepository = UserDataRepository.getInstance(context)
                 val inventoryDataRepository = InventoryDataRepositoryImpl(protoDataStore)
 
-                val context = LocalContext.current
                 LaunchedEffect(Unit) {
                     val intent = Intent(context, MusicService::class.java)
                     context.startService(intent)
