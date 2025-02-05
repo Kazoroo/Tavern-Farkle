@@ -34,7 +34,7 @@ object SoundPlayer {
                 val soundId = sounds.random()
                 val streamId = soundPool.play(soundId, 1f, 1f, 1, 0, 1f)
                 if (streamId != 0) {
-                    activeSounds.add(streamId)  // Dodanie aktywnego dźwięku do listy
+                    activeSounds.add(streamId)
                 }
             }
         }

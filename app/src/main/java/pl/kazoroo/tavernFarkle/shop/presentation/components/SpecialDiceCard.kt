@@ -90,7 +90,7 @@ fun SpecialDiceCard(
                             Text(
                                 text = "⚃ - ${chancesOfDrawingValue[3]}%\n" +
                                         "⚄ - ${chancesOfDrawingValue[4]}%\n" +
-                                        "⚅ - ${chancesOfDrawingValue[5]}%" //FIXME layout breaks on motorola G7
+                                        "⚅ - ${chancesOfDrawingValue[5]}%"
                             )
                         }
                     }

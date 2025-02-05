@@ -1,14 +1,12 @@
 package pl.kazoroo.tavernFarkle.core.domain
 
-import pl.kazoroo.tavernFarkle.core.data.local.UserDataKey
+import kotlinx.coroutines.flow.first
 import pl.kazoroo.tavernFarkle.core.data.local.repository.UserDataRepository
 
 class ReadUserDataUseCase(private val userDataRepository: UserDataRepository) {
-    suspend operator fun invoke(key: String = UserDataKey.COINS.name): String {
-        val value = userDataRepository.readValue(key)
+    suspend operator fun invoke(): String {
+        val coins = userDataRepository.userCoins.first()
 
-        return if(key == UserDataKey.COINS.name && value == null) {
-            "200"
-        } else value ?: "0"
+        return coins.ifEmpty { "200" }
     }
 }
