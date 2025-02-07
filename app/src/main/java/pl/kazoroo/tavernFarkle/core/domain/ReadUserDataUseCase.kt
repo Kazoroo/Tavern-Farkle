@@ -7,6 +7,6 @@ class ReadUserDataUseCase(private val userDataRepository: UserDataRepository) {
     suspend operator fun invoke(): String {
         val coins = userDataRepository.userCoins.first()
 
-        return coins.ifEmpty { "200" }
+        return coins ?: "200"
     }
 }

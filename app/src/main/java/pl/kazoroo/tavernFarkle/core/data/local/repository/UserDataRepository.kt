@@ -32,7 +32,7 @@ class UserDataRepository private constructor(private val dataStore: DataStore<Pr
         }
     }
 
-    val userCoins: Flow<String> = dataStore.data.map { preferences ->
-        preferences[USER_COINS_KEY] ?: "0"
+    val userCoins: Flow<String?> = dataStore.data.map { preferences ->
+        preferences[USER_COINS_KEY]
     }
 }
