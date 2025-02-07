@@ -1,10 +1,9 @@
 package pl.kazoroo.tavernFarkle.game.presentation.components
 
-import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.EaseInOutQuad
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -32,10 +31,10 @@ fun DiceButton(
     buttonInfo: ButtonInfo,
     modifier: Modifier = Modifier
 ) {
-    val imageTint by animateColorAsState(
-        targetValue = if (buttonInfo.enabled) Color(0x00FFFFFF) else Color(0xDD4A4A4A),
+    val alphaBackground by animateFloatAsState(
+        targetValue = if (buttonInfo.enabled) 1f else 0.4f,
         animationSpec = tween(durationMillis = 100, easing = EaseInOutQuad),
-        label = "Animate game buttons tint"
+        label = "Animate game buttons opacity"
     )
 
     Button(
@@ -56,14 +55,7 @@ fun DiceButton(
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .clip(RoundedCornerShape(dimensionResource(id = R.dimen.rounded_corner))),
-            )
-
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(
-                        color = imageTint
-                    )
+                alpha = alphaBackground
             )
 
             Text(
