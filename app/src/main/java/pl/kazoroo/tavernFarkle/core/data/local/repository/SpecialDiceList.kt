@@ -14,9 +14,15 @@ object SpecialDiceList {
         ),
         SpecialDice(
             name = SpecialDiceName.ALFONSES_DICE,
-            price = 400,
+            price = 450,
             image = listOf(R.drawable.alfonses_dice_1, R.drawable.alfonses_dice_2, R.drawable.alfonses_dice_3, R.drawable.alfonses_dice_4, R.drawable.alfonses_dice_5, R.drawable.alfonses_dice_6),
             chancesOfDrawingValue = listOf(38.5f, 7.7f, 7.7f, 7.7f, 15.4f, 23f),
+        ),
+        SpecialDice(
+            name = SpecialDiceName.SPIDERS_DICE,
+            price = 300,
+            image = listOf(R.drawable.spiders_dice_1, R.drawable.spiders_dice_2, R.drawable.spiders_dice_3, R.drawable.spiders_dice_4, R.drawable.spiders_dice_5, R.drawable.spiders_dice_6),
+            chancesOfDrawingValue = listOf(18.2f, 22.7f, 45.5f, 4.5f, 4.5f, 4.5f),
         ),
     )
 }
