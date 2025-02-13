@@ -69,7 +69,7 @@ fun SpecialDiceCard(
 
                     Column {
                         Text(
-                            text = name.displayName,
+                            text = stringResource(name.displayNameRes),
                             fontWeight = FontWeight.Bold,
                             modifier = Modifier
                                 .fillMaxWidth()

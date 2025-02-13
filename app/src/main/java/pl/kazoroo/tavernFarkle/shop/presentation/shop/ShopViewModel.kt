@@ -35,7 +35,7 @@ class ShopViewModel(
                     _toastMessage.emit(
                         context.getString(
                             R.string.successfully_purchased,
-                            specialDice.name.displayName
+                            context.getString(specialDice.name.displayNameRes)
                         )
                     )
                 }

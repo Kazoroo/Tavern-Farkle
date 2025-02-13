@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name" translatable="false">Tavern Farkle</string>
+    <string name="pass">Spasuj</string>
+    <string name="score_and_roll_again">Podlicz i rzuć ponownie</string>
+    <string name="total">Łącznie</string>
+    <string name="round">W rundzie</string>
+    <string name="you">Ty</string>
+    <string name="opponent">Przeciwnik</string>
+    <string name="play_with_computer">Zagraj z komputerem</string>
+    <string name="exit">Wyjdź</string>
+    <string name="selected_forDices">Zaznaczone</string>
+    <string name="how_to_play_long_tutorial">Twoim celem jest zdobycie 4000 punktów jako pierwszy. W twojej turze, rzucasz sześć kości, następnie zazaczasz te, które dadzą ci punkty. Każda kość o wartości 1 lub 5 daje 100 i 50 punktów odpowiednio. Kiedy zaznaczysz trzy kości tej samej wartości dostaniesz 100 punktów razy wartość kostki. Każda kolejna kość tej samej wartości daje dwukrotność trzech kości z rodzaju.\n \n⚀ - 100 punktów\n⚄ - 50 punktów\n⚃ ⚃ ⚃ - 400 punktów\n⚅ ⚅ ⚅ ⚅ - 1200 punktów\n⚅ ⚅ ⚅ ⚅ ⚅ - 1800 punktów\n Są również sekwencje.\n⚀ ⚁ ⚂ ⚃ ⚄ - 500 punktów\n⚁ ⚂ ⚃ ⚄ ⚅ - 750 punktów\n⚀ ⚁ ⚂ ⚃ ⚄ ⚅ - 1500 punktów\n \nW przypadku gdy nie masz żadnej kości dającej punkty, następuje skucha i tracisz swoją kolejkę oraz wszystkie zdobyte w jej trakcie punkty, także bądź ostrożny!</string>
+    <string name="betting">Obstawianie zakładu</string>
+    <string name="how_to_play">Jak grać?</string>
+    <string name="place_a_bet">"Postaw zakład: "</string>
+    <string name="play">Graj!</string>
+    <string name="please_enter_a_bet_amount">Proszę wpisać wysokość zakładu</string>
+    <string name="text_field_must_contain_only_numbers_0_9">Pole tekstowe może zawierać tylko liczby z zakresu 0–9</string>
+    <string name="you_can_t_bet_more_than_you_have">Nie możesz obstawić więcej niż masz!</string>
+    <string name="do_you_really_want_to_leave_a_match">Czy napewno chcesz opuścić mecz? Twój zakład nie zostanie zwrócony!</string>
+    <string name="leaving_a_match">Opuszczanie meczu</string>
+    <string name="shop">Sklep</string>
+    <string name="get_100_coins">Zdobądź +100 monet</string>
+    <string name="inventory">Ekwipunek</string>
+    <string name="buy_for">Zakup za %1$s</string>
+    <string name="select">Zaznacz</string>
+    <string name="your_inventory_is_empty_buy_some_special_dice_in_shop">Twój ekwipunek jest pusty, kup jakieś kości w sklepie!</string>
+    <string name="not_enough_coins">Brak wystarczającej liczby monet</string>
+    <string name="successfully_purchased">Pomyślnie zakupiono %1$s</string>
+    <string name="selected_text">Zaznaczono</string>
+    <string name="max_number_of_dice_selected">Maksymalna liczba zaznaczonych kości!</string>
+    <string name="odd_dice">Nieparzysta kość</string>
+    <string name="alfonse_s_dice">Kość Alfonsa</string>
+    <string name="spider_s_dice">Pajęcza kość</string>
+</resources>

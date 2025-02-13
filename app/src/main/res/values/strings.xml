@@ -9,7 +9,7 @@
     <string name="play_with_computer">Play with computer</string>
     <string name="exit">Exit</string>
     <string name="selected_forDices">Selected</string>
-    <string name="how_to_play_long_tutorial">Your goal is to reach 4000 points first. In your turn, you throw six dice, and then select these one, that gives points. Each 1 and 5 gives 100 and 50 points respectively. When you select three dice of the same type, you get 100 points times dice value. Each next dice of type gives twice as three of kind.\n \n⚀ - 100 points\n⚄ - 50 points\n⚃ ⚃ ⚃ - 400 points\n⚅ ⚅ ⚅ ⚅ - 1200 points\n⚅ ⚅ ⚅ ⚅ ⚅ - 1800 points\n Also, there are sequences.\n⚀ ⚁ ⚂ ⚃ ⚄ - 500 points\n⚁ ⚂ ⚃ ⚄ ⚅ - 750 points\n⚀ ⚁ ⚂ ⚃ ⚄ ⚅ - 1500 points\n \nWhen you don\'t have any dice that can give you points, skucha appears, you lose your turn and all the points earned in it, so be careful!</string>
+    <string name="how_to_play_long_tutorial">Your goal is to reach 4000 points first. In your turn, you throw six dice, and then select these one, that gives points. Each 1 and 5 gives 100 and 50 points respectively. When you select three dice of the same value, you get 100 points times dice value. Each next dice of type gives twice as three of kind.\n \n⚀ - 100 points\n⚄ - 50 points\n⚃ ⚃ ⚃ - 400 points\n⚅ ⚅ ⚅ ⚅ - 1200 points\n⚅ ⚅ ⚅ ⚅ ⚅ - 1800 points\n Also, there are sequences.\n⚀ ⚁ ⚂ ⚃ ⚄ - 500 points\n⚁ ⚂ ⚃ ⚄ ⚅ - 750 points\n⚀ ⚁ ⚂ ⚃ ⚄ ⚅ - 1500 points\n \nWhen you don\'t have any dice that can give you points, skucha appears, you lose your turn and all the points earned in it, so be careful!</string>
     <string name="betting">Betting</string>
     <string name="how_to_play">How to play?</string>
     <string name="place_a_bet">"Place a bet: "</string>
@@ -29,4 +29,7 @@
     <string name="successfully_purchased">Successfully purchased %1$s</string>
     <string name="selected_text">Selected</string>
     <string name="max_number_of_dice_selected">Max number of dice selected!</string>
+    <string name="odd_dice">Odd Dice</string>
+    <string name="alfonse_s_dice">Alfonse\'s Dice</string>
+    <string name="spider_s_dice">Spider\'s Dice</string>
 </resources>
