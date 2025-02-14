@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name" translatable="false">Tavern Farkle</string>
+    <string name="pass">Pasa</string>
+    <string name="score_and_roll_again">Cuenta y vuelve a lanzar</string>
+    <string name="total">Total</string>
+    <string name="round">En la ronda</string>
+    <string name="you">Tú</string>
+    <string name="opponent">Oponente</string>
+    <string name="play_with_computer">Juega contra la computadora</string>
+    <string name="exit">Salir</string>
+    <string name="selected_forDices">Seleccionados</string>
+    <string name="how_to_play_long_tutorial">Tu objetivo es ser el primero en alcanzar 4000 puntos. En tu turno, lanzas seis dados, luego seleccionas aquellos que te otorguen puntos. Cada dado con un valor de 1 o 5 otorga 100 y 50 puntos respectivamente. Cuando selecciones tres dados del mismo valor, obtendrás 100 puntos multiplicados por el valor del dado. Cada dado adicional del mismo valor duplica la puntuación de los tres dados iniciales.\n \n⚀ - 100 puntos\n⚄ - 50 puntos\n⚃ ⚃ ⚃ - 400 puntos\n⚅ ⚅ ⚅ ⚅ - 1200 puntos\n⚅ ⚅ ⚅ ⚅ ⚅ - 1800 puntos\n También existen secuencias.\n⚀ ⚁ ⚂ ⚃ ⚄ - 500 puntos\n⚁ ⚂ ⚃ ⚄ ⚅ - 750 puntos\n⚀ ⚁ ⚂ ⚃ ⚄ ⚅ - 1500 puntos\n \nEn caso de que no tengas ningún dado que otorgue puntos, se produce un fallo y pierdes tu turno y todos los puntos obtenidos durante el mismo, ¡así que ten cuidado!</string>
+    <string name="betting">Apostar</string>
+    <string name="how_to_play">¿Cómo jugar?</string>
+    <string name="place_a_bet">"Apuesta: "</string>
+    <string name="play">¡Juega!</string>
+    <string name="please_enter_a_bet_amount">Por favor, ingresa la cantidad de la apuesta</string>
+    <string name="text_field_must_contain_only_numbers_0_9">El campo de texto solo puede contener números del 0 al 9</string>
+    <string name="you_can_t_bet_more_than_you_have">¡No puedes apostar más de lo que tienes!</string>
+    <string name="do_you_really_want_to_leave_a_match">¿Realmente deseas abandonar la partida? ¡Tu apuesta no será reembolsada!</string>
+    <string name="leaving_a_match">Abandonando la partida</string>
+    <string name="shop">Tienda</string>
+    <string name="get_100_coins">Obtén +100 monedas</string>
+    <string name="inventory">Inventario</string>
+    <string name="buy_for">Compra por %1$s</string>
+    <string name="select">Selecciona</string>
+    <string name="your_inventory_is_empty_buy_some_special_dice_in_shop">Tu inventario está vacío, ¡compra algunos dados especiales en la tienda!</string>
+    <string name="not_enough_coins">No tienes suficientes monedas</string>
+    <string name="successfully_purchased">Has comprado %1$s con éxito</string>
+    <string name="selected_text">Seleccionado</string>
+    <string name="max_number_of_dice_selected">¡Número máximo de dados seleccionados!</string>
+    <string name="odd_dice">Dado impar</string>
+    <string name="alfonse_s_dice">Dado de Alfonso</string>
+    <string name="spider_s_dice">Dado de araña</string>
+</resources>

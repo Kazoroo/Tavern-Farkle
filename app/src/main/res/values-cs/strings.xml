@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name" translatable="false">Tavern Farkle</string>
+    <string name="pass">Pasovat</string>
+    <string name="score_and_roll_again">Sečti a házej znovu</string>
+    <string name="total">Celkem</string>
+    <string name="round">V kole</string>
+    <string name="you">Ty</string>
+    <string name="opponent">Protivník</string>
+    <string name="play_with_computer">Hraj proti počítači</string>
+    <string name="exit">Ukončit</string>
+    <string name="selected_forDices">Vybrané</string>
+    <string name="how_to_play_long_tutorial">Tvým cílem je jako první získat 4000 bodů. Ve svém kole hodíš šest kostek, poté vybereš ty, které ti přinesou body. Každá kostka s hodnotou 1 nebo 5 dává 100 a 50 bodů, resp. Když vybereš tři kostky se stejnou hodnotou, získáš 100 bodů krát hodnotu kostky. Každá další kostka se stejnou hodnotou zdvojnásobí body získané ze tří původních kostek.\n \n⚀ - 100 bodů\n⚄ - 50 bodů\n⚃ ⚃ ⚃ - 400 bodů\n⚅ ⚅ ⚅ ⚅ - 1200 bodů\n⚅ ⚅ ⚅ ⚅ ⚅ - 1800 bodů\n Jsou zde také posloupnosti.\n⚀ ⚁ ⚂ ⚃ ⚄ - 500 bodů\n⚁ ⚂ ⚃ ⚄ ⚅ - 750 bodů\n⚀ ⚁ ⚂ ⚃ ⚄ ⚅ - 1500 bodů\n \nV případě, že nemáš žádnou kostku, která by dávala body, dojde k tzv. farklu a ztratíš své kolo a všechny body, které jsi v něm získal, takže buď opatrný!</string>
+    <string name="betting">Sázení</string>
+    <string name="how_to_play">Jak hrát?</string>
+    <string name="place_a_bet">"Vsadit: "</string>
+    <string name="play">Hraj!</string>
+    <string name="please_enter_a_bet_amount">Zadej prosím výši sázky</string>
+    <string name="text_field_must_contain_only_numbers_0_9">Textové pole může obsahovat pouze číslice od 0 do 9</string>
+    <string name="you_can_t_bet_more_than_you_have">Nemůžeš vsadit víc, než máš!</string>
+    <string name="do_you_really_want_to_leave_a_match">Opravdu chceš opustit hru? Tvá sázka nebude vrácena!</string>
+    <string name="leaving_a_match">Opouštění hry</string>
+    <string name="shop">Obchod</string>
+    <string name="get_100_coins">Získej +100 mincí</string>
+    <string name="inventory">Inventář</string>
+    <string name="buy_for">Koupit za %1$s</string>
+    <string name="select">Vybrat</string>
+    <string name="your_inventory_is_empty_buy_some_special_dice_in_shop">Tvůj inventář je prázdný, kup si nějaké speciální kostky v obchodě!</string>
+    <string name="not_enough_coins">Nemáš dost mincí</string>
+    <string name="successfully_purchased">Úspěšně zakoupeno %1$s</string>
+    <string name="selected_text">Vybráno</string>
+    <string name="max_number_of_dice_selected">Maximální počet vybraných kostek!</string>
+    <string name="odd_dice">Lichá kostka</string>
+    <string name="alfonse_s_dice">Alfonsova kostka</string>
+    <string name="spider_s_dice">Pavoučí kostka</string>
+</resources>
