@@ -33,4 +33,5 @@
     <string name="odd_dice">Dado impar</string>
     <string name="alfonse_s_dice">Dado de Alfonso</string>
     <string name="spider_s_dice">Dado de araña</string>
+    <string name="royal_dice">Dado real</string>
 </resources>
