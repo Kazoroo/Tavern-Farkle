@@ -114,7 +114,8 @@ class GameViewModel(
         val usedSpecialDice = if(_isOpponentTurn.value) opponentUsedSpecialDice else userUsedSpecialDice
 
         viewModelScope.launch {
-            if(isDiceVisible.all { !it }) {
+            val allDiceInvisible = isDiceVisible.all { !it }
+            if(allDiceInvisible) {
                 triggerDiceRowAnimation(
                     isDiceVisible = List(6) { true },
                     usedSpecialDice = emptyList()
@@ -332,7 +333,8 @@ class GameViewModel(
 
         _isGameEnd.value = true
 
-        if(_opponentPointsState.value.totalPoints >= winningPoints) {
+        val isOpponentWin = _opponentPointsState.value.totalPoints >= winningPoints
+        if(isOpponentWin) {
             SoundPlayer.playSound(SoundType.FAILURE)
         } else {
             SoundPlayer.playSound(SoundType.WIN)
@@ -410,7 +412,9 @@ class GameViewModel(
                     delay((1200L..1600L).random())
                 }
 
-                if(diceState.value.isDiceVisible.count { it } - diceState.value.isDiceSelected.count { it } > playingUntilDiceLeft) {
+                val shouldOpponentKeepPlaying =
+                    diceState.value.isDiceVisible.count { it } - diceState.value.isDiceSelected.count { it } > playingUntilDiceLeft
+                if(shouldOpponentKeepPlaying) {
                     prepareForNextThrow()
                 } else {
                     withContext(Dispatchers.Main) {

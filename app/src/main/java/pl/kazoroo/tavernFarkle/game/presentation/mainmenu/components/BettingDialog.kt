@@ -40,6 +40,7 @@ fun BettingDialog(
     coinsViewModel: CoinsViewModel,
 ) {
     var betAmount by remember { mutableStateOf("0") }
+    val coinsAmount = coinsViewModel.coinsAmount.collectAsState().value.toInt()
 
     Dialog(
         onDismissRequest = onCloseClick
@@ -58,6 +59,7 @@ fun BettingDialog(
                 onCloseClick()
             }
 
+            val isBetAmountNumeric = betAmount.contains(regex = Regex("^[0-9]*\$"))
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
@@ -94,9 +96,9 @@ fun BettingDialog(
                             text =
                             if(betAmount.isEmpty())
                                 stringResource(R.string.please_enter_a_bet_amount)
-                            else if(!betAmount.contains(regex = Regex("^[0-9]*\$")))
+                            else if(!isBetAmountNumeric)
                                 stringResource(R.string.text_field_must_contain_only_numbers_0_9)
-                            else if(betAmount.toInt() > coinsViewModel.coinsAmount.collectAsState().value.toInt())
+                            else if(betAmount.toInt() > coinsAmount)
                                 stringResource(R.string.you_can_t_bet_more_than_you_have)
                             else "",
                             color = DarkRed
@@ -104,11 +106,7 @@ fun BettingDialog(
                     }
                 )
             }
-
-            val isButtonDisabledConditions =
-                betAmount.isEmpty() ||
-                !betAmount.contains(regex = Regex("^[0-9]*\$")) ||
-                betAmount.toInt() > coinsViewModel.coinsAmount.collectAsState().value.toInt()
+            val isBetAmountValid = betAmount.isNotEmpty() && isBetAmountNumeric && betAmount.toInt() <= coinsAmount
 
             Button(
                 onClick = {
@@ -121,7 +119,7 @@ fun BettingDialog(
                         bottom = dimensionResource(R.dimen.small_padding),
                         top = dimensionResource(R.dimen.medium_padding)
                     ),
-                enabled = !isButtonDisabledConditions
+                enabled = isBetAmountValid
             ) {
                 Text(
                     text = stringResource(R.string.play),

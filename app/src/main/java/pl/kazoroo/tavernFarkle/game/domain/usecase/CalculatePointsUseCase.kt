@@ -33,7 +33,8 @@ class CalculatePointsUseCase {
             }
         }
 
-        return if(nonScoringDice.isEmpty() || !includeNonScoringDice) points else 0
+        val isAvailablePoints = nonScoringDice.isEmpty() || !includeNonScoringDice
+        return if(isAvailablePoints) points else 0
     }
 
     private fun calculatePointsForSingleDiceValues(

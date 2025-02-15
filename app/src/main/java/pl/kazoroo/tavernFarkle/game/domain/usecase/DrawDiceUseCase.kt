@@ -90,7 +90,8 @@ class DrawDiceUseCase {
             )
         }
 
-        if (activeSpecialDice.count() < isDiceVisible.count { it }) {
+        val isSpaceForNormalDice = activeSpecialDice.count() < isDiceVisible.count { it }
+        if (isSpaceForNormalDice) {
             val remainingCount = 6 - activeSpecialDice.count()
             val unfilledPositions = finalList.mapIndexedNotNull { index, dice ->
                 if(dice.specialDiceName == null) index else null
