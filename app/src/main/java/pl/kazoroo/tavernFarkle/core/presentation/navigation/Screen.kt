@@ -5,6 +5,7 @@ sealed class Screen(val route: String) {
     data object GameScreen : Screen("game_screen")
     data object ShopScreen : Screen("shop_screen")
     data object InventoryScreen : Screen("inventory_screen")
+    data object SettingsScreen : Screen("settings_screen")
 
     /**
      * Creates a string route including arguments

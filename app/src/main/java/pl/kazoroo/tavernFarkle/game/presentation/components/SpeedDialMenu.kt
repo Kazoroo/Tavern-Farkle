@@ -15,14 +15,19 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.res.dimensionResource
+import androidx.navigation.NavController
 import de.charlex.compose.SpeedDialData
 import de.charlex.compose.SpeedDialFloatingActionButton
 import pl.kazoroo.tavernFarkle.R
+import pl.kazoroo.tavernFarkle.core.presentation.navigation.Screen
 import pl.kazoroo.tavernFarkle.game.presentation.mainmenu.components.HowToPlayDialog
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun SpeedDialMenu(modifier: Modifier) {
+fun SpeedDialMenu(
+    modifier: Modifier,
+    navController: NavController
+) {
     var isHelpDialogVisible by remember { mutableStateOf(false) }
 
     if(isHelpDialogVisible) {
@@ -41,7 +46,7 @@ fun SpeedDialMenu(modifier: Modifier) {
             SpeedDialData(
                 painter = rememberVectorPainter(Icons.Outlined.Settings),
                 label = "Settings",
-                onClick = { }
+                onClick = { navController.navigate(Screen.SettingsScreen.route)}
             )
         ),
         modifier = modifier

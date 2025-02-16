@@ -10,6 +10,7 @@ import pl.kazoroo.tavernFarkle.core.domain.SaveUserDataUseCase
 import pl.kazoroo.tavernFarkle.core.presentation.CoinsViewModel
 import pl.kazoroo.tavernFarkle.game.presentation.game.GameScreen
 import pl.kazoroo.tavernFarkle.game.presentation.mainmenu.MainMenuScreen
+import pl.kazoroo.tavernFarkle.settings.presentation.SettingsScreen
 import pl.kazoroo.tavernFarkle.shop.data.repository.InventoryDataRepository
 import pl.kazoroo.tavernFarkle.shop.domain.usecase.BuySpecialDiceUseCase
 import pl.kazoroo.tavernFarkle.shop.presentation.inventory.InventoryScreen
@@ -70,6 +71,12 @@ fun Navigation(
             InventoryScreen(
                 inventoryViewModel = inventoryViewModel
             )
+        }
+
+        composable(
+            route = Screen.SettingsScreen.route
+        ) {
+            SettingsScreen()
         }
     }
 }

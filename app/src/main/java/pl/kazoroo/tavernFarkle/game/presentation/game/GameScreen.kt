@@ -121,6 +121,7 @@ fun GameScreen(
                 )
                 SpeedDialMenu(
                     modifier = Modifier.align(Alignment.TopStart),
+                    navController = navController
                 )
             }
             InteractiveDiceLayout(
