@@ -36,7 +36,7 @@ import pl.kazoroo.tavernFarkle.core.presentation.components.CoinAmountIndicator
 import pl.kazoroo.tavernFarkle.core.presentation.navigation.Screen
 import pl.kazoroo.tavernFarkle.game.presentation.components.ButtonInfo
 import pl.kazoroo.tavernFarkle.game.presentation.components.DiceButton
-import pl.kazoroo.tavernFarkle.game.presentation.components.HowToPlayButton
+import pl.kazoroo.tavernFarkle.game.presentation.components.SpeedDialMenu
 import pl.kazoroo.tavernFarkle.game.presentation.mainmenu.components.AppTitleText
 import pl.kazoroo.tavernFarkle.game.presentation.mainmenu.components.BettingDialog
 import pl.kazoroo.tavernFarkle.game.presentation.sound.SoundPlayer
@@ -103,10 +103,8 @@ fun MainMenuScreen(navController: NavController, coinsViewModel: CoinsViewModel)
             modifier = Modifier.fillMaxSize()
         )
 
-        HowToPlayButton(
-            modifier = Modifier.align(Alignment.TopEnd),
-            tint = Color.White
-        )
+        SpeedDialMenu(modifier = Modifier.align(Alignment.TopEnd))
+
 
         CoinAmountIndicator(
             coinsAmount = coinsViewModel.coinsAmount.collectAsState().value,

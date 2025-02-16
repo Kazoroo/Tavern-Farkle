@@ -34,7 +34,7 @@ import pl.kazoroo.tavernFarkle.R
 import pl.kazoroo.tavernFarkle.core.data.presentation.BettingActions
 import pl.kazoroo.tavernFarkle.game.domain.model.TableData
 import pl.kazoroo.tavernFarkle.game.presentation.components.ButtonInfo
-import pl.kazoroo.tavernFarkle.game.presentation.components.HowToPlayButton
+import pl.kazoroo.tavernFarkle.game.presentation.components.SpeedDialMenu
 import pl.kazoroo.tavernFarkle.game.presentation.game.components.ExitDialog
 import pl.kazoroo.tavernFarkle.game.presentation.game.components.GameButtons
 import pl.kazoroo.tavernFarkle.game.presentation.game.components.InteractiveDiceLayout
@@ -119,9 +119,8 @@ fun GameScreen(
                     data = tableData,
                     isOpponentTurn = isOpponentTurn
                 )
-                HowToPlayButton(
+                SpeedDialMenu(
                     modifier = Modifier.align(Alignment.TopStart),
-                    tint = Color.Black
                 )
             }
             InteractiveDiceLayout(
