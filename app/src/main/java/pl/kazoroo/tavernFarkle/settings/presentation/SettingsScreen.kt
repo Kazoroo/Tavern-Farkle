@@ -53,7 +53,7 @@ fun SettingsScreen() {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "Sound: ",
+                    text = "Sound: ", //TODO add string resource and translations
                     modifier = Modifier.width(dimensionResource(R.dimen.dialog_text_field_width)),
                     color = Color.White
                 )
@@ -84,7 +84,7 @@ fun SettingsScreen() {
             }
         }
         val annotatedText = buildAnnotatedString {
-            val text = "The project is open source"
+            val text = "This game is open source"
             val start = text.indexOf("open source")
             val end = start + "open source".length
             append(text)
@@ -107,13 +107,10 @@ fun SettingsScreen() {
 
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.align(Alignment.BottomCenter)
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .systemBarsPadding()
         ) {
-            Text(
-                text = annotatedText,
-                color = Color.White
-            )
-
             val versionName = remember {
                 context.packageManager.getPackageInfo(context.packageName, 0).versionName
             }
@@ -121,7 +118,12 @@ fun SettingsScreen() {
             Text(
                 text = "$versionName",
                 modifier = Modifier.padding(dimensionResource(R.dimen.small_padding)),
-                color = Color.Gray
+                color = Color.White
+            )
+
+            Text(
+                text = annotatedText,
+                color = Color.White
             )
         }
     }

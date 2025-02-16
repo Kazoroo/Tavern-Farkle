@@ -21,7 +21,6 @@ fun CoinAmountIndicator(
     Row(
         modifier = modifier
             .padding(
-                top = dimensionResource(R.dimen.large_padding),
                 start = dimensionResource(R.dimen.small_padding)
             ),
         verticalAlignment = Alignment.CenterVertically

@@ -51,8 +51,8 @@ fun SpeedDialMenu(
         ),
         modifier = modifier
             .padding(
-                top = dimensionResource(R.dimen.large_padding),
-                end = dimensionResource(R.dimen.small_padding)
+                end = dimensionResource(R.dimen.small_padding),
+                top = dimensionResource(R.dimen.small_padding)
             )
             .rotate(180f),
         fabBackgroundColor = Color.White,

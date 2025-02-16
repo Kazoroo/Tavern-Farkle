@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -88,18 +89,19 @@ fun MainMenuScreen(navController: NavController, coinsViewModel: CoinsViewModel)
         )
     }
 
+    Image(
+        painter = painterResource(id = R.drawable.wooden_background_texture),
+        contentDescription = null,
+        contentScale = ContentScale.Crop,
+        modifier = Modifier.fillMaxSize()
+    )
+
     Box(
         modifier = Modifier
-            .fillMaxSize(),
+            .fillMaxSize()
+            .systemBarsPadding(),
         contentAlignment = Alignment.Center
     ) {
-        Image(
-            painter = painterResource(id = R.drawable.wooden_background_texture),
-            contentDescription = null,
-            contentScale = ContentScale.Crop,
-            modifier = Modifier.fillMaxSize()
-        )
-
         SpeedDialMenu(
             navController = navController,
             modifier = Modifier.align(Alignment.TopEnd)
@@ -115,7 +117,6 @@ fun MainMenuScreen(navController: NavController, coinsViewModel: CoinsViewModel)
             verticalArrangement = Arrangement.Top,
             modifier = Modifier
                 .testTag("Main menu screen")
-                .padding(top = dimensionResource(R.dimen.small_padding))
         ) {
             Image(
                 painter = painterResource(id = R.drawable.dice_1),

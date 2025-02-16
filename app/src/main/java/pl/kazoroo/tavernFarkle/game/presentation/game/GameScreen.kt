@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -119,11 +120,16 @@ fun GameScreen(
                     data = tableData,
                     isOpponentTurn = isOpponentTurn
                 )
+
                 SpeedDialMenu(
-                    modifier = Modifier.align(Alignment.TopStart),
+                    modifier = Modifier
+                        .align(Alignment.TopStart)
+                        .systemBarsPadding()
+                        .padding(start = dimensionResource(R.dimen.small_padding)),
                     navController = navController
-                )
+                ) //FIXME: when user goes to the settings and come back state is reseted
             }
+
             InteractiveDiceLayout(
                 diceState = viewModel.diceState.collectAsState().value,
                 diceOnClick = { index ->
