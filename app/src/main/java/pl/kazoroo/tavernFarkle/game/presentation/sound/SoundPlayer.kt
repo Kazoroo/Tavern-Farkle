@@ -9,6 +9,7 @@ object SoundPlayer {
     private lateinit var soundMap: Map<SoundType, List<Int>>
     private var isAppOnFocus = true
     private val activeSounds = mutableListOf<Int>()
+    private var isSoundEnabled = true
 
     fun setAppOnFocusState(isOn: Boolean) {
         isAppOnFocus = isOn
@@ -29,7 +30,7 @@ object SoundPlayer {
     }
 
     fun playSound(type: SoundType) {
-        if(isAppOnFocus) {
+        if(isAppOnFocus && isSoundEnabled) {
             soundMap[type]?.let { sounds ->
                 val soundId = sounds.random()
                 val streamId = soundPool.play(soundId, 1f, 1f, 1, 0, 1f)
@@ -38,6 +39,11 @@ object SoundPlayer {
                 }
             }
         }
+    }
+
+    fun setIsStateEnabled(state: Boolean) {
+        isSoundEnabled = state
+        println("isSoundEnabled called - $isSoundEnabled")
     }
 
     fun pauseAllSounds() {
