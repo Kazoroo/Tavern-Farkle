@@ -126,8 +126,9 @@ fun GameScreen(
                         .align(Alignment.TopStart)
                         .systemBarsPadding()
                         .padding(start = dimensionResource(R.dimen.small_padding)),
-                    navController = navController
-                ) //FIXME: when user goes to the settings and come back state is reseted
+                    navController = navController,
+                    restricted = true
+                )
             }
 
             InteractiveDiceLayout(

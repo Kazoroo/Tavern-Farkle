@@ -26,9 +26,28 @@ import pl.kazoroo.tavernFarkle.game.presentation.mainmenu.components.HowToPlayDi
 @Composable
 fun SpeedDialMenu(
     modifier: Modifier,
-    navController: NavController
+    navController: NavController,
+    restricted: Boolean = false
 ) {
     var isHelpDialogVisible by remember { mutableStateOf(false) }
+    val speedDialData = buildList {
+        add(
+            SpeedDialData(
+                painterResource = R.drawable.help_outline_24,
+                label = "Help",
+                onClick = { isHelpDialogVisible = !isHelpDialogVisible }
+            )
+        )
+        if (!restricted) {
+            add(
+                SpeedDialData(
+                    painter = rememberVectorPainter(Icons.Outlined.Settings),
+                    label = "Settings",
+                    onClick = { navController.navigate(Screen.SettingsScreen.route) }
+                )
+            )
+        }
+    }
 
     if(isHelpDialogVisible) {
         HowToPlayDialog(
@@ -37,18 +56,7 @@ fun SpeedDialMenu(
     }
 
     SpeedDialFloatingActionButton(
-        speedDialData = listOf(
-            SpeedDialData(
-                painterResource = R.drawable.help_outline_24,
-                label = "Help",
-                onClick = { isHelpDialogVisible = !isHelpDialogVisible }
-            ),
-            SpeedDialData(
-                painter = rememberVectorPainter(Icons.Outlined.Settings),
-                label = "Settings",
-                onClick = { navController.navigate(Screen.SettingsScreen.route)}
-            )
-        ),
+        speedDialData = speedDialData,
         modifier = modifier
             .padding(
                 end = dimensionResource(R.dimen.small_padding),
