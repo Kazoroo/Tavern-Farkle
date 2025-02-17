@@ -34,4 +34,8 @@
     <string name="alfonse_s_dice">Alfonso\'nun zarı</string>
     <string name="spider_s_dice">Örümcek zarı</string>
     <string name="royal_dice">Kraliyet zarı</string>
+    <string name="this_game_is_open_source">Bu oyun açık kaynaklı</string>
+    <string name="open_source">açık kaynaklı</string>
+    <string name="music">Müzik: </string>
+    <string name="sound">Ses: </string>
 </resources>

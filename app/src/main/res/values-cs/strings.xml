@@ -34,4 +34,8 @@
     <string name="alfonse_s_dice">Alfonsova kostka</string>
     <string name="spider_s_dice">Pavoučí kostka</string>
     <string name="royal_dice">Královská kostka</string>
+    <string name="this_game_is_open_source">Tato hra je open-source</string>
+    <string name="open_source">open-source</string>
+    <string name="music">Hudba: </string>
+    <string name="sound">Zvuk: </string>
 </resources>

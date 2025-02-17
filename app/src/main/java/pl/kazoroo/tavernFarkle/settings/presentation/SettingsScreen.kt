@@ -20,6 +20,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -53,7 +54,7 @@ fun SettingsScreen() {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "Sound: ", //TODO add string resource and translations
+                    text = stringResource(R.string.sound),
                     modifier = Modifier.width(dimensionResource(R.dimen.dialog_text_field_width)),
                     color = Color.White
                 )
@@ -70,7 +71,7 @@ fun SettingsScreen() {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "Music: ",
+                    text = stringResource(R.string.music),
                     modifier = Modifier.width(dimensionResource(R.dimen.dialog_text_field_width)),
                     color = Color.White
                 )
@@ -84,9 +85,9 @@ fun SettingsScreen() {
             }
         }
         val annotatedText = buildAnnotatedString {
-            val text = "This game is open source"
-            val start = text.indexOf("open source")
-            val end = start + "open source".length
+            val text = stringResource(R.string.this_game_is_open_source)
+            val start = text.indexOf(stringResource(R.string.open_source))
+            val end = start + stringResource(R.string.open_source).length
             append(text)
 
             addStyle(

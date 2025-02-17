@@ -34,4 +34,8 @@
     <string name="alfonse_s_dice">Dado de Alfonso</string>
     <string name="spider_s_dice">Dado de araña</string>
     <string name="royal_dice">Dado real</string>
+    <string name="this_game_is_open_source">Este juego es de código abierto</string>
+    <string name="open_source">de código abierto</string>
+    <string name="music">Música: </string>
+    <string name="sound">Sonido: </string>
 </resources>

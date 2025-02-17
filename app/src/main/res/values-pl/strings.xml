@@ -34,4 +34,8 @@
     <string name="alfonse_s_dice">Kość Alfonsa</string>
     <string name="spider_s_dice">Pajęcza kość</string>
     <string name="royal_dice">Królewska kość</string>
+    <string name="this_game_is_open_source">Ta gra jest otwartoźródłowa</string>
+    <string name="open_source">otwartoźródłowa</string>
+    <string name="music">Muzyka: </string>
+    <string name="sound">Dźwięk: </string>
 </resources>
