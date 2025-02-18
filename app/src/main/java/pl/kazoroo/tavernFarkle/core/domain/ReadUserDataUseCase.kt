@@ -1,13 +1,15 @@
 package pl.kazoroo.tavernFarkle.core.domain
 
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.runBlocking
 import pl.kazoroo.tavernFarkle.core.data.local.UserDataKey
 import pl.kazoroo.tavernFarkle.core.data.local.repository.UserDataRepository
 import kotlin.reflect.cast
 
 @Suppress("UNCHECKED_CAST")
 class ReadUserDataUseCase(private val userDataRepository: UserDataRepository) {
-    suspend operator fun <T : Any> invoke(key: UserDataKey): T {
+    operator fun <T : Any> invoke(key: UserDataKey): T = runBlocking(Dispatchers.IO) {
         val flow = when (key.type) {
             String::class -> userDataRepository.getStringFlow(key)
             Boolean::class -> userDataRepository.getBooleanFlow(key)
@@ -16,7 +18,7 @@ class ReadUserDataUseCase(private val userDataRepository: UserDataRepository) {
 
         val value: Any = flow.first() ?: getDefaultValue(key)
 
-        return key.type.cast(value) as T
+        key.type.cast(value) as T
     }
 
     private fun <T : Any> getDefaultValue(key: UserDataKey): T {

@@ -32,8 +32,8 @@ fun SettingsScreen(
     viewModel: SettingsViewModel
 ) {
     val context = LocalContext.current
-    val isSoundEnabled = remember { mutableStateOf(true) }
-    val isMusicEnabled = remember { mutableStateOf(true) }
+    val isSoundEnabled = remember { mutableStateOf(viewModel.getIsSoundEnabledState()) }
+    val isMusicEnabled = remember { mutableStateOf(viewModel.getIsMusicEnabledState()) }
 
     Box(
         modifier = Modifier

@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import pl.kazoroo.tavernFarkle.core.data.local.UserDataKey
 import pl.kazoroo.tavernFarkle.core.data.local.repository.UserDataRepository
+import pl.kazoroo.tavernFarkle.core.domain.ReadUserDataUseCase
 import pl.kazoroo.tavernFarkle.core.domain.SaveUserDataUseCase
 import pl.kazoroo.tavernFarkle.game.presentation.sound.SoundPlayer
 import pl.kazoroo.tavernFarkle.game.service.MusicService
@@ -15,21 +16,22 @@ class SettingsViewModel(
 ): ViewModel() {
     private var musicService: WeakReference<MusicService>? = null
     private val saveUserDataUseCase = SaveUserDataUseCase(userDataRepository)
+    private val readUserDataUseCase = ReadUserDataUseCase(userDataRepository)
 
     fun initializeMusicService(service: MusicService) {
         this.musicService = WeakReference(service)
     }
 
-    fun setIsSoundEnabledState(isEnabled: Boolean) {
+    fun setIsSoundEnabledState(isSoundEnabled: Boolean) {
         viewModelScope.launch {
-            SoundPlayer.setIsStateEnabled(isEnabled)
-            saveUserDataUseCase.invoke(isEnabled, UserDataKey.IS_SOUND_ENABLED)
+            SoundPlayer.setIsStateEnabled(isSoundEnabled)
+            saveUserDataUseCase.invoke(isSoundEnabled, UserDataKey.IS_SOUND_ENABLED)
         }
     }
 
-    fun togglePlayback(shouldMusicPlay: Boolean) {
+    fun togglePlayback(isMusicEnabled: Boolean) {
         viewModelScope.launch {
-            if (shouldMusicPlay) {
+            if (isMusicEnabled) {
                 musicService?.get()?.resumeMusic()
                 saveUserDataUseCase.invoke(true, UserDataKey.IS_MUSIC_ENABLED)
             } else {
@@ -37,5 +39,13 @@ class SettingsViewModel(
                 saveUserDataUseCase.invoke(false, UserDataKey.IS_MUSIC_ENABLED)
             }
         }
+    }
+
+    fun getIsSoundEnabledState(): Boolean {
+        return readUserDataUseCase.invoke(UserDataKey.IS_SOUND_ENABLED)
+    }
+
+    fun getIsMusicEnabledState(): Boolean {
+        return readUserDataUseCase.invoke(UserDataKey.IS_MUSIC_ENABLED)
     }
 }
