@@ -47,16 +47,18 @@ class MainActivity : ComponentActivity() {
     }
     private lateinit var settingsViewModel: SettingsViewModel
     private var serviceBound = false
-
+    private var musicService: MusicService? = null
     private val serviceConnection = object : ServiceConnection {
         override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
             val binder = service as MusicService.LocalBinder
-            settingsViewModel.setMusicService(binder.getService())
+            musicService = binder.getService()
+            settingsViewModel.setMusicService(musicService!!)
             serviceBound = true
         }
 
         override fun onServiceDisconnected(name: ComponentName?) {
             serviceBound = false
+            musicService = null
         }
     }
 
@@ -115,15 +117,14 @@ class MainActivity : ComponentActivity() {
 
     override fun onPause() {
         super.onPause()
-        stopService(Intent(this, MusicService::class.java))
+        musicService?.pauseMusic()
         SoundPlayer.pauseAllSounds()
         SoundPlayer.setAppOnFocusState(false)
     }
 
     override fun onResume() {
         super.onResume()
-        val intent = Intent(this, MusicService::class.java)
-        startService(intent)
+        musicService?.resumeMusic()
         SoundPlayer.resumeAllSounds()
         SoundPlayer.setAppOnFocusState(true)
     }
