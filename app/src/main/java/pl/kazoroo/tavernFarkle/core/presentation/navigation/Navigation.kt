@@ -11,6 +11,7 @@ import pl.kazoroo.tavernFarkle.core.presentation.CoinsViewModel
 import pl.kazoroo.tavernFarkle.game.presentation.game.GameScreen
 import pl.kazoroo.tavernFarkle.game.presentation.mainmenu.MainMenuScreen
 import pl.kazoroo.tavernFarkle.settings.presentation.SettingsScreen
+import pl.kazoroo.tavernFarkle.settings.presentation.SettingsViewModel
 import pl.kazoroo.tavernFarkle.shop.data.repository.InventoryDataRepository
 import pl.kazoroo.tavernFarkle.shop.domain.usecase.BuySpecialDiceUseCase
 import pl.kazoroo.tavernFarkle.shop.presentation.inventory.InventoryScreen
@@ -20,7 +21,8 @@ import pl.kazoroo.tavernFarkle.shop.presentation.shop.ShopScreen
 @Composable
 fun Navigation(
     userDataRepository: UserDataRepository,
-    inventoryDataRepository: InventoryDataRepository
+    inventoryDataRepository: InventoryDataRepository,
+    settingsViewModel: SettingsViewModel
 ) {
     val navController = rememberNavController()
     val saveUserDataUseCase = SaveUserDataUseCase(userDataRepository)
@@ -76,7 +78,7 @@ fun Navigation(
         composable(
             route = Screen.SettingsScreen.route
         ) {
-            SettingsScreen()
+            SettingsScreen(settingsViewModel)
         }
     }
 }

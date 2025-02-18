@@ -25,12 +25,11 @@ import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextDecoration
-import androidx.lifecycle.viewmodel.compose.viewModel
 import pl.kazoroo.tavernFarkle.R
 
 @Composable
 fun SettingsScreen(
-    viewModel: SettingsViewModel = viewModel()
+    viewModel: SettingsViewModel
 ) {
     val context = LocalContext.current
     val isSoundEnabled = remember { mutableStateOf(true) }
@@ -83,6 +82,7 @@ fun SettingsScreen(
                     checked = isMusicEnabled.value,
                     onCheckedChange = { checked ->
                         isMusicEnabled.value = checked
+                        viewModel.togglePlayback(checked)
                     }
                 )
             }

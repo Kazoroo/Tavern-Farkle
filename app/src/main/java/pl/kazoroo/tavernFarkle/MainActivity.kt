@@ -2,10 +2,13 @@ package pl.kazoroo.tavernFarkle
 
 import android.animation.ObjectAnimator
 import android.content.BroadcastReceiver
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.ServiceConnection
 import android.os.Bundle
+import android.os.IBinder
 import android.os.PowerManager
 import android.view.View
 import android.view.animation.OvershootInterpolator
@@ -20,12 +23,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.animation.doOnEnd
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.lifecycle.ViewModelProvider
 import com.google.android.gms.ads.MobileAds
 import pl.kazoroo.tavernFarkle.core.data.local.repository.UserDataRepository
 import pl.kazoroo.tavernFarkle.core.presentation.navigation.Navigation
 import pl.kazoroo.tavernFarkle.game.presentation.sound.SoundPlayer
 import pl.kazoroo.tavernFarkle.game.presentation.splashscreen.StartingScreenViewModel
 import pl.kazoroo.tavernFarkle.game.service.MusicService
+import pl.kazoroo.tavernFarkle.settings.presentation.SettingsViewModel
 import pl.kazoroo.tavernFarkle.shop.domain.AdManager
 import pl.kazoroo.tavernFarkle.shop.domain.InventoryDataRepositoryImpl
 import pl.kazoroo.tavernFarkle.ui.theme.DicesTheme
@@ -40,6 +45,20 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+    private lateinit var settingsViewModel: SettingsViewModel
+    private var serviceBound = false
+
+    private val serviceConnection = object : ServiceConnection {
+        override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
+            val binder = service as MusicService.LocalBinder
+            settingsViewModel.setMusicService(binder.getService())
+            serviceBound = true
+        }
+
+        override fun onServiceDisconnected(name: ComponentName?) {
+            serviceBound = false
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         showSplashScreen()
@@ -52,6 +71,13 @@ class MainActivity : ComponentActivity() {
         SoundPlayer.setAppOnFocusState(powerManager.isInteractive)
         registerReceiver(screenStateReceiver, IntentFilter(Intent.ACTION_SCREEN_ON))
         registerReceiver(screenStateReceiver, IntentFilter(Intent.ACTION_SCREEN_OFF))
+
+        settingsViewModel = ViewModelProvider(this).get(SettingsViewModel::class.java)
+
+        Intent(this, MusicService::class.java).also {
+            startService(it)
+            bindService(it, serviceConnection, Context.BIND_AUTO_CREATE)
+        }
 
         setContent {
             DicesTheme {
@@ -70,7 +96,8 @@ class MainActivity : ComponentActivity() {
                 ) {
                     Navigation(
                         userDataRepository,
-                        inventoryDataRepository
+                        inventoryDataRepository,
+                        settingsViewModel
                     )
                 }
             }
@@ -81,6 +108,9 @@ class MainActivity : ComponentActivity() {
         super.onDestroy()
         unregisterReceiver(screenStateReceiver)
         SoundPlayer.release()
+        if (serviceBound) {
+            unbindService(serviceConnection)
+        }
     }
 
     override fun onPause() {
