@@ -23,6 +23,7 @@ class ReadUserDataUseCase(private val userDataRepository: UserDataRepository) {
         return when (key) {
             UserDataKey.COINS -> "200" as T
             UserDataKey.IS_SOUND_ENABLED -> true as T
+            UserDataKey.IS_MUSIC_ENABLED -> true as T
         }
     }
 }

@@ -28,10 +28,14 @@ class SettingsViewModel(
     }
 
     fun togglePlayback(shouldMusicPlay: Boolean) {
-        if (shouldMusicPlay) {
-            musicService?.get()?.resumeMusic()
-        } else {
-            musicService?.get()?.pauseMusic()
+        viewModelScope.launch {
+            if (shouldMusicPlay) {
+                musicService?.get()?.resumeMusic()
+                saveUserDataUseCase.invoke(true, UserDataKey.IS_MUSIC_ENABLED)
+            } else {
+                musicService?.get()?.pauseMusic()
+                saveUserDataUseCase.invoke(false, UserDataKey.IS_MUSIC_ENABLED)
+            }
         }
     }
 }
