@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import pl.kazoroo.tavernFarkle.core.data.local.UserDataKey
 import pl.kazoroo.tavernFarkle.core.data.presentation.BettingActions
 import pl.kazoroo.tavernFarkle.core.domain.ReadUserDataUseCase
 import pl.kazoroo.tavernFarkle.core.domain.SaveUserDataUseCase
@@ -29,7 +30,10 @@ class CoinsViewModel(
             val coins = readCoinsAmount()
             val newCoinBalance = (coins.toInt() + rewardAmount.toInt()).toString()
 
-            saveUserDataUseCase.invoke(value = newCoinBalance)
+            saveUserDataUseCase.invoke(
+                value = newCoinBalance,
+                key = UserDataKey.COINS
+            )
             readCoinsAmount()
             _coinsAmount.value = newCoinBalance
         }
@@ -41,13 +45,16 @@ class CoinsViewModel(
         viewModelScope.launch {
             val coins = readCoinsAmount()
             val newCoinBalance = (coins.toInt() - value.toInt()).toString()
-            saveUserDataUseCase.invoke(value = newCoinBalance)
+            saveUserDataUseCase.invoke(
+                value = newCoinBalance,
+                key = UserDataKey.COINS
+            )
             readCoinsAmount()
         }
     }
 
     private suspend fun readCoinsAmount(): String {
-        val coins = readUserDataUseCase.invoke()
+        val coins = readUserDataUseCase.invoke<String>(UserDataKey.COINS)
 
         _coinsAmount.value = coins
 
@@ -58,7 +65,10 @@ class CoinsViewModel(
         viewModelScope.launch {
             _coinsAmount.value = (coinsAmount.value.toInt() + _betValue.value.toInt() * 2).toString()
 
-            saveUserDataUseCase.invoke(value = _coinsAmount.value)
+            saveUserDataUseCase.invoke(
+                value = _coinsAmount.value,
+                key = UserDataKey.COINS
+            )
             readCoinsAmount()
         }
     }
@@ -67,7 +77,10 @@ class CoinsViewModel(
         viewModelScope.launch {
             val newCoinBalance = (coinsAmount.value.toInt() - amount).toString()
 
-            saveUserDataUseCase.invoke(value = newCoinBalance)
+            saveUserDataUseCase.invoke(
+                value = newCoinBalance,
+                key = UserDataKey.COINS
+            )
 
             readCoinsAmount()
         }

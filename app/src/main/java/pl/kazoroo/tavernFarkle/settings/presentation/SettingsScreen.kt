@@ -64,7 +64,7 @@ fun SettingsScreen(
                     checked = isSoundEnabled.value,
                     onCheckedChange = { checked ->
                         isSoundEnabled.value = checked
-                        viewModel.setSoundEnabled(isSoundEnabled.value)
+                        viewModel.setIsSoundEnabledState(isSoundEnabled.value)
                     }
                 )
             }

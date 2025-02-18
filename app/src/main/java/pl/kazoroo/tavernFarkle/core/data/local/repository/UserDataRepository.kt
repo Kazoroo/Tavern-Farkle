@@ -3,6 +3,7 @@ package pl.kazoroo.tavernFarkle.core.data.local.repository
 import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+    import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
@@ -22,17 +23,29 @@ class UserDataRepository private constructor(private val dataStore: DataStore<Pr
                 instance ?: UserDataRepository(context.dataStore).also { instance = it }
             }
         }
-
-        private val USER_COINS_KEY = stringPreferencesKey(UserDataKey.COINS.name)
     }
 
-    suspend fun saveNewValue(value: String) {
-        dataStore.edit { userData ->
-            userData[USER_COINS_KEY] = value
+    suspend fun <T : Any> saveValue(value: T, key: UserDataKey) {
+        when (val type = key.type) {
+            String::class -> saveString(value as String, key)
+            Boolean::class -> saveBoolean(value as Boolean, key)
+            else -> throw IllegalArgumentException("Unsupported type: ${type.simpleName}")
         }
     }
 
-    val userCoins: Flow<String?> = dataStore.data.map { preferences ->
-        preferences[USER_COINS_KEY]
+    private suspend fun saveString(value: String, key: UserDataKey) {
+        dataStore.edit { it[stringPreferencesKey(key.name)] = value }
+    }
+
+    private suspend fun saveBoolean(value: Boolean, key: UserDataKey) {
+        dataStore.edit { it[booleanPreferencesKey(key.name)] = value }
+    }
+
+    fun getStringFlow(key: UserDataKey): Flow<String?> {
+        return dataStore.data.map { it[stringPreferencesKey(key.name)] }
+    }
+
+    fun getBooleanFlow(key: UserDataKey): Flow<Boolean?> {
+        return dataStore.data.map { it[booleanPreferencesKey(key.name)] }
     }
 }

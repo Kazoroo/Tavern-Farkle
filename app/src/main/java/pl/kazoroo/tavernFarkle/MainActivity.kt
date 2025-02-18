@@ -20,7 +20,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.core.animation.doOnEnd
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.ViewModelProvider
@@ -31,6 +30,7 @@ import pl.kazoroo.tavernFarkle.game.presentation.sound.SoundPlayer
 import pl.kazoroo.tavernFarkle.game.presentation.splashscreen.StartingScreenViewModel
 import pl.kazoroo.tavernFarkle.game.service.MusicService
 import pl.kazoroo.tavernFarkle.settings.presentation.SettingsViewModel
+import pl.kazoroo.tavernFarkle.settings.presentation.SettingsViewModelFactory
 import pl.kazoroo.tavernFarkle.shop.domain.AdManager
 import pl.kazoroo.tavernFarkle.shop.domain.InventoryDataRepositoryImpl
 import pl.kazoroo.tavernFarkle.ui.theme.DicesTheme
@@ -52,7 +52,7 @@ class MainActivity : ComponentActivity() {
         override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
             val binder = service as MusicService.LocalBinder
             musicService = binder.getService()
-            settingsViewModel.setMusicService(musicService!!)
+            settingsViewModel.initializeMusicService(musicService!!)
             serviceBound = true
         }
 
@@ -74,7 +74,14 @@ class MainActivity : ComponentActivity() {
         registerReceiver(screenStateReceiver, IntentFilter(Intent.ACTION_SCREEN_ON))
         registerReceiver(screenStateReceiver, IntentFilter(Intent.ACTION_SCREEN_OFF))
 
-        settingsViewModel = ViewModelProvider(this).get(SettingsViewModel::class.java)
+        val context: Context = this
+        val userDataRepository = UserDataRepository.getInstance(context)
+        val inventoryDataRepository = InventoryDataRepositoryImpl.getInstance(context)
+
+        settingsViewModel = ViewModelProvider(
+            this,
+            SettingsViewModelFactory(userDataRepository)
+        ).get(SettingsViewModel::class.java)
 
         Intent(this, MusicService::class.java).also {
             startService(it)
@@ -83,10 +90,6 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             DicesTheme {
-                val context = LocalContext.current
-                val userDataRepository = UserDataRepository.getInstance(context)
-                val inventoryDataRepository = InventoryDataRepositoryImpl.getInstance(context)
-
                 LaunchedEffect(Unit) {
                     val intent = Intent(context, MusicService::class.java)
                     context.startService(intent)

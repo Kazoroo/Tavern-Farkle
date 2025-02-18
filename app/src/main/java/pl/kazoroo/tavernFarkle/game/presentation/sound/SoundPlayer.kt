@@ -43,7 +43,6 @@ object SoundPlayer {
 
     fun setIsStateEnabled(state: Boolean) {
         isSoundEnabled = state
-        println("isSoundEnabled called - $isSoundEnabled")
     }
 
     fun pauseAllSounds() {
