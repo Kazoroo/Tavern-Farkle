@@ -25,7 +25,7 @@ fun ExitDialog(
                     horizontal = dimensionResource(R.dimen.medium_padding)
                 )
             ) {
-                Text(text = "Yes")
+                Text(text = stringResource(R.string.yes))
             }
         },
         dismissButton = {
@@ -35,7 +35,7 @@ fun ExitDialog(
                     horizontal = dimensionResource(R.dimen.medium_padding)
                 )
             ) {
-                Text(text = "No")
+                Text(text = stringResource(R.string.no))
             }
         },
         text = {

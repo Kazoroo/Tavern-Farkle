@@ -38,4 +38,6 @@
     <string name="open_source">açık kaynaklı</string>
     <string name="music">Müzik: </string>
     <string name="sound">Ses: </string>
+    <string name="yes">Evet</string>
+    <string name="no">Hayır</string>
 </resources>

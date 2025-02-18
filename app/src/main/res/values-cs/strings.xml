@@ -38,4 +38,6 @@
     <string name="open_source">open-source</string>
     <string name="music">Hudba: </string>
     <string name="sound">Zvuk: </string>
+    <string name="yes">Ano</string>
+    <string name="no">Ne</string>
 </resources>

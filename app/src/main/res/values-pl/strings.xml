@@ -38,4 +38,6 @@
     <string name="open_source">otwartoźródłowa</string>
     <string name="music">Muzyka: </string>
     <string name="sound">Dźwięk: </string>
+    <string name="yes">Tsk</string>
+    <string name="no">Nie</string>
 </resources>

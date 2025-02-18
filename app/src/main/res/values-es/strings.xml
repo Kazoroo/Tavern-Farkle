@@ -38,4 +38,6 @@
     <string name="open_source">de código abierto</string>
     <string name="music">Música: </string>
     <string name="sound">Sonido: </string>
+    <string name="yes">Sí</string>
+    <string name="no">No</string>
 </resources>
