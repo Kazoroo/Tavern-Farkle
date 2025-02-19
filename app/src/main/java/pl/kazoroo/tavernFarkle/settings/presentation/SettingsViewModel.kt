@@ -1,5 +1,7 @@
 package pl.kazoroo.tavernFarkle.settings.presentation
 
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
@@ -18,8 +20,14 @@ class SettingsViewModel(
     private val saveUserDataUseCase = SaveUserDataUseCase(userDataRepository)
     private val readUserDataUseCase = ReadUserDataUseCase(userDataRepository)
 
+    private val _isSoundEnabled = mutableStateOf(true)
+    val isSoundEnabled: State<Boolean> = _isSoundEnabled
+
     init {
-        SoundPlayer.setIsEnabledFlag(loadSoundPreference())
+        val soundPreference = loadSoundPreference()
+        SoundPlayer.setIsEnabledFlag(soundPreference)
+
+        _isSoundEnabled.value = soundPreference
     }
 
     fun initializeMusicService(service: MusicService) {
@@ -30,6 +38,7 @@ class SettingsViewModel(
         viewModelScope.launch {
             SoundPlayer.setIsEnabledFlag(isSoundEnabled)
             saveUserDataUseCase.invoke(isSoundEnabled, UserDataKey.IS_SOUND_ENABLED)
+            _isSoundEnabled.value = isSoundEnabled
         }
     }
 
@@ -45,7 +54,7 @@ class SettingsViewModel(
         }
     }
 
-    fun loadSoundPreference(): Boolean {
+    private fun loadSoundPreference(): Boolean {
         return readUserDataUseCase.invoke(UserDataKey.IS_SOUND_ENABLED)
     }
 

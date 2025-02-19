@@ -94,7 +94,7 @@ class MainActivity : ComponentActivity() {
             DicesTheme {
                 LaunchedEffect(Unit) {
                     val intent = Intent(context, MusicService::class.java).apply {
-                        putExtra("MUSIC_ENABLED", settingsViewModel.loadMusicPreference())
+                        putExtra("MUSIC_ENABLED", isMusicEnabled)
                     }
                     context.startService(intent)
                 }
