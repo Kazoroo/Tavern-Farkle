@@ -11,14 +11,10 @@ class MusicService : Service() {
     private lateinit var mediaPlayer: MediaPlayer
     private val musicFiles = listOf(R.raw.tavern, R.raw.kempps, R.raw.arabish, R.raw.sonnical, R.raw.inki, R.raw.cowboy)
     private var isPaused = false
+    private var musicEnabled = true
 
     inner class LocalBinder : Binder() {
         fun getService(): MusicService = this@MusicService
-    }
-
-    override fun onCreate() {
-        super.onCreate()
-        playRandomSong()
     }
 
     private fun playRandomSong() {
@@ -45,21 +41,34 @@ class MusicService : Service() {
     }
 
     fun resumeMusic() {
-        if (::mediaPlayer.isInitialized && isPaused) {
+        if (!::mediaPlayer.isInitialized) {
+            playRandomSong()
+        } else if (isPaused) {
             mediaPlayer.start()
             isPaused = false
         }
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        if (!isPaused) {
-            mediaPlayer.start()
+        intent?.let {
+            musicEnabled = it.getBooleanExtra("MUSIC_ENABLED", true)
+        }
+        if (musicEnabled) {
+            if (!::mediaPlayer.isInitialized || !mediaPlayer.isPlaying) {
+                playRandomSong()
+            }
+        } else {
+            if (::mediaPlayer.isInitialized && mediaPlayer.isPlaying) {
+                pauseMusic()
+            }
         }
         return START_STICKY
     }
 
     override fun onDestroy() {
-        mediaPlayer.release()
+        if (::mediaPlayer.isInitialized) {
+            mediaPlayer.release()
+        }
         super.onDestroy()
     }
 

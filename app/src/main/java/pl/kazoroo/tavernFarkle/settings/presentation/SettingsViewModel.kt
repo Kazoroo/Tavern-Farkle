@@ -49,7 +49,7 @@ class SettingsViewModel(
         return readUserDataUseCase.invoke(UserDataKey.IS_SOUND_ENABLED)
     }
 
-    fun getIsMusicEnabledState(): Boolean {
+    fun loadMusicPreference(): Boolean {
         return readUserDataUseCase.invoke(UserDataKey.IS_MUSIC_ENABLED)
     }
 }

@@ -83,15 +83,19 @@ class MainActivity : ComponentActivity() {
             SettingsViewModelFactory(userDataRepository)
         ).get(SettingsViewModel::class.java)
 
-        Intent(this, MusicService::class.java).also {
-            startService(it)
-            bindService(it, serviceConnection, Context.BIND_AUTO_CREATE)
+        val isMusicEnabled = settingsViewModel.loadMusicPreference()
+        val musicServiceIntent = Intent(this, MusicService::class.java).apply {
+            putExtra("MUSIC_ENABLED", isMusicEnabled)
         }
+        startService(musicServiceIntent)
+        bindService(musicServiceIntent, serviceConnection, Context.BIND_AUTO_CREATE)
 
         setContent {
             DicesTheme {
                 LaunchedEffect(Unit) {
-                    val intent = Intent(context, MusicService::class.java)
+                    val intent = Intent(context, MusicService::class.java).apply {
+                        putExtra("MUSIC_ENABLED", settingsViewModel.loadMusicPreference())
+                    }
                     context.startService(intent)
                 }
 
@@ -127,7 +131,9 @@ class MainActivity : ComponentActivity() {
 
     override fun onResume() {
         super.onResume()
-        musicService?.resumeMusic()
+        if (settingsViewModel.loadMusicPreference()) {
+            musicService?.resumeMusic()
+        }
         SoundPlayer.resumeAllSounds()
         SoundPlayer.setAppOnFocusState(true)
     }
