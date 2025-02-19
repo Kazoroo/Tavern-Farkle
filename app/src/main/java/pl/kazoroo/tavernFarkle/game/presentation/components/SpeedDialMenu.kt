@@ -21,6 +21,8 @@ import de.charlex.compose.SpeedDialFloatingActionButton
 import pl.kazoroo.tavernFarkle.R
 import pl.kazoroo.tavernFarkle.core.presentation.navigation.Screen
 import pl.kazoroo.tavernFarkle.game.presentation.mainmenu.components.HowToPlayDialog
+import pl.kazoroo.tavernFarkle.game.presentation.sound.SoundPlayer
+import pl.kazoroo.tavernFarkle.game.presentation.sound.SoundType
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -43,7 +45,10 @@ fun SpeedDialMenu(
                 SpeedDialData(
                     painter = rememberVectorPainter(Icons.Outlined.Settings),
                     label = "Settings",
-                    onClick = { navController.navigate(Screen.SettingsScreen.route) }
+                    onClick = {
+                        navController.navigate(Screen.SettingsScreen.route)
+                        SoundPlayer.playSound(SoundType.CLICK)
+                    }
                 )
             )
         }

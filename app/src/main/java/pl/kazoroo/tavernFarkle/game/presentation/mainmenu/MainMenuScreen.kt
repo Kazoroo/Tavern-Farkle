@@ -65,6 +65,7 @@ fun MainMenuScreen(navController: NavController, coinsViewModel: CoinsViewModel)
                 .testTag("Shop")
         ) {
             navController.navigate(Screen.ShopScreen.route)
+            SoundPlayer.playSound(SoundType.CLICK)
         },
 
         ButtonInfo(
@@ -73,6 +74,7 @@ fun MainMenuScreen(navController: NavController, coinsViewModel: CoinsViewModel)
                 .testTag("Inventory")
         ) {
             navController.navigate(Screen.InventoryScreen.route)
+            SoundPlayer.playSound(SoundType.CLICK)
         }
     )
 
