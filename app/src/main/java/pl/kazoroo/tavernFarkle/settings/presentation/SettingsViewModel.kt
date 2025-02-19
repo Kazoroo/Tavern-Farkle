@@ -18,13 +18,17 @@ class SettingsViewModel(
     private val saveUserDataUseCase = SaveUserDataUseCase(userDataRepository)
     private val readUserDataUseCase = ReadUserDataUseCase(userDataRepository)
 
+    init {
+        SoundPlayer.setIsEnabledFlag(loadSoundPreference())
+    }
+
     fun initializeMusicService(service: MusicService) {
         this.musicService = WeakReference(service)
     }
 
-    fun setIsSoundEnabledState(isSoundEnabled: Boolean) {
+    fun setSoundState(isSoundEnabled: Boolean) {
         viewModelScope.launch {
-            SoundPlayer.setIsStateEnabled(isSoundEnabled)
+            SoundPlayer.setIsEnabledFlag(isSoundEnabled)
             saveUserDataUseCase.invoke(isSoundEnabled, UserDataKey.IS_SOUND_ENABLED)
         }
     }
@@ -41,7 +45,7 @@ class SettingsViewModel(
         }
     }
 
-    fun getIsSoundEnabledState(): Boolean {
+    fun loadSoundPreference(): Boolean {
         return readUserDataUseCase.invoke(UserDataKey.IS_SOUND_ENABLED)
     }
 

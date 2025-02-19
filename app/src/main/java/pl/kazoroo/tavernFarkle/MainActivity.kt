@@ -68,7 +68,7 @@ class MainActivity : ComponentActivity() {
         MobileAds.initialize(this)
         AdManager.loadRewardedAd(context = this)
 
-        SoundPlayer.initialize(context = this)
+        SoundPlayer.initialize(context = applicationContext)
         powerManager = getSystemService(Context.POWER_SERVICE) as PowerManager
         SoundPlayer.setAppOnFocusState(powerManager.isInteractive)
         registerReceiver(screenStateReceiver, IntentFilter(Intent.ACTION_SCREEN_ON))
