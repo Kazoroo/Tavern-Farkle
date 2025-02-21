@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name" translatable="false">Tavern Farkle</string>
+    <string name="pass">Praleisk</string>
+    <string name="score_and_roll_again">Suskačiuok ir mesk dar kartą</string>
+    <string name="total">Iš viso</string>
+    <string name="round">Rundoje</string>
+    <string name="you">Tu</string>
+    <string name="opponent">Varžovas</string>
+    <string name="play_with_computer">Žaisk su kompiuteriu</string>
+    <string name="exit">Išeik</string>
+    <string name="selected_forDices">Pažymėtos</string>
+    <string name="how_to_play_long_tutorial">Tavo tikslas – pirmas surinkti 4000 taškų. Savo ėjime mesi šešis kauliukus, po to pažymi tuos, kurie duos tau taškų. Kiekvienas kauliukas, rodantis 1 arba 5, duoda 100 ir 50 taškų atitinkamai. Pažymėjus tris tos pačios vertės kauliukus, gausi 100 taškų, padaugintų iš kauliuko vertės. Kiekvienas papildomas tos pačios vertės kauliukas suteikia dvigubą tų trijų kauliukų vertę.\n \n⚀ - 100 taškų\n⚄ - 50 taškų\n⚃ ⚃ ⚃ - 400 taškų\n⚅ ⚅ ⚅ ⚅ - 1200 taškų\n⚅ ⚅ ⚅ ⚅ ⚅ - 1800 taškų\n Taip pat yra sekos.\n⚀ ⚁ ⚂ ⚃ ⚄ - 500 taškų\n⚁ ⚂ ⚃ ⚄ ⚅ - 750 taškų\n⚀ ⚁ ⚂ ⚃ ⚄ ⚅ - 1500 taškų\n \nJei neturi jokio kauliuko, suteikiančio taškų, įvyksta pralaimėjimas ir prarandi savo ėjimą bei visus tuo metu surinktus taškus, todėl būk atsargus!</string>
+    <string name="betting">Lažybų statymas</string>
+    <string name="how_to_play">Kaip žaisti?</string>
+    <string name="place_a_bet">"Statyk lažybą: "</string>
+    <string name="play">Žaisk!</string>
+    <string name="please_enter_a_bet_amount">Prašome įvesti lažybos sumą</string>
+    <string name="text_field_must_contain_only_numbers_0_9">Tekstų laukas gali turėti tik skaičius nuo 0 iki 9</string>
+    <string name="you_can_t_bet_more_than_you_have">Negali statyti daugiau, nei turi!</string>
+    <string name="do_you_really_want_to_leave_a_match">Ar tikrai nori išeiti iš mačo? Tavo lažybos suma nebus grąžinta!</string>
+    <string name="leaving_a_match">Mačo palikimas</string>
+    <string name="shop">Parduotuvė</string>
+    <string name="get_100_coins">Gauk +100 monetų</string>
+    <string name="inventory">Inventorius</string>
+    <string name="buy_for">Pirkti už %1$s</string>
+    <string name="select">Pažymėk</string>
+    <string name="your_inventory_is_empty_buy_some_special_dice_in_shop">Tavo inventorius tuščias, pirk keletą specialių kauliukų parduotuvėje!</string>
+    <string name="not_enough_coins">Nepakanka monetų</string>
+    <string name="successfully_purchased">Sėkmingai įsigyta %1$s</string>
+    <string name="selected_text">Pažymėta</string>
+    <string name="max_number_of_dice_selected">Pasiektas didžiausias pažymėtų kauliukų skaičius!</string>
+    <string name="odd_dice">Neįprastas kauliukas</string>
+    <string name="alfonse_s_dice">Alfonso kauliukas</string>
+    <string name="spider_s_dice">Vorų kauliukas</string>
+    <string name="royal_dice">Karališkas kauliukas</string>
+    <string name="this_game_is_open_source">Šis žaidimas yra atviro kodo</string>
+    <string name="open_source">atviro kodo</string>
+    <string name="music">Muzika: </string>
+    <string name="sound">Garsas: </string>
+    <string name="yes">Taip</string>
+    <string name="no">Ne</string>
+</resources>
