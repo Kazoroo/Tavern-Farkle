@@ -26,7 +26,7 @@ object SpecialDiceList {
         ),
         SpecialDice(
             name = SpecialDiceName.ROYAL_DICE,
-            price = 3,
+            price = 350,
             image = listOf(R.drawable.royal_dice_1, R.drawable.royal_dice_2, R.drawable.royal_dice_3, R.drawable.royal_dice_4, R.drawable.royal_dice_5, R.drawable.royal_dice_6),
             chancesOfDrawingValue = listOf(25f, 12.5f, 12.5f, 12.5f, 18.8f,	18.8f),
         ),
