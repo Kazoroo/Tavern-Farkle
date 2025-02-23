@@ -14,6 +14,7 @@ import android.view.View
 import android.view.animation.OvershootInterpolator
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
@@ -64,6 +65,7 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         showSplashScreen()
+        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         MobileAds.initialize(this)
         AdManager.loadRewardedAd(context = this)
