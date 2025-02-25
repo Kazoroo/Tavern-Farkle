@@ -54,7 +54,7 @@ fun BettingDialog(
                 )
         ) {
             DialogHeader(
-                headerText = stringResource(R.string.betting)
+                headerText = stringResource(R.string.determining_the_amount)
             ) {
                 onCloseClick()
             }
@@ -66,7 +66,7 @@ fun BettingDialog(
                     .fillMaxWidth()
             ) {
                 Text(
-                    text = stringResource(R.string.place_a_bet),
+                    text = stringResource(R.string.enter_the_amount),
                     modifier = Modifier
                         .padding(start = dimensionResource(R.dimen.small_padding))
                 )
@@ -95,11 +95,11 @@ fun BettingDialog(
                         Text(
                             text =
                             if(betAmount.isEmpty())
-                                stringResource(R.string.please_enter_a_bet_amount)
+                                stringResource(R.string.text_field_cannot_be_empty)
                             else if(!isBetAmountNumeric)
                                 stringResource(R.string.text_field_must_contain_only_numbers_0_9)
                             else if(betAmount.toInt() > coinsAmount)
-                                stringResource(R.string.you_can_t_bet_more_than_you_have)
+                                stringResource(R.string.you_can_t_take_more_than_you_have)
                             else "",
                             color = DarkRed
                         )
