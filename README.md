@@ -1,11 +1,25 @@
 # Tavern Farkle
-This is a mobile game on Android which is inspired by the mini-game from a PC game called Kingdome Come: Deliverance.
-It consists of rolling 6 dice, and choosing the ones, that will give you the most points.
-When on the board there aren't any pair of dices that will give any points, then it is skucha, which ends the your round.
-The player who gets 4000 points wins.
+This is an Android game which is inspired by the mini-game from a <a href="https://store.steampowered.com/app/379430/Kingdom_Come_Deliverance/">Kingdome Come: Deliverance</a>.
+It consists of rolling 6 dice, and choosing the ones, that will give you the most points. The game has shop where user can spend coins on special dice, with special effects. Everything is complemented by atmospheric music and sounds.
 
-Jetpack Compose and Kotlin are used. Work in progress
+<img alt="Tavern Farkle icon" height="80" src="app/src/main/ic_launcher-playstore.png" />
 
-Feel free to commit to this project!
+Technologies used:
+<ul>
+<li>Kotlin</li>
+<li>Jetpack Compose</li>
+<li>Preferences Datastore</li>
+<li>Proto Datastore</li>
+<li>AdMob</li>
+<li>MediaPlayer</li>
+<li>SoundPool</li>
+</ul>
 
-<img src="app/dice_showcase_03102024.gif" alt="App showcase gif" width="40%">
+Feel free to contribute!
+
+
+<a href="https://play.google.com/store/apps/details?id=pl.kazoroo.tavernFarkle">
+    <img alt="Get it on Google Play" height="80"
+        src="docs/google-badge.png" /></a>
+
+<img src="docs/dice_showcase_03102024.gif" alt="App showcase gif" width="40%">
