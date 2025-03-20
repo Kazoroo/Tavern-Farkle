@@ -1,7 +1,6 @@
 package pl.kazoroo.tavernFarkle.game.presentation.components
 
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.MaterialTheme
@@ -11,21 +10,17 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
-import de.charlex.compose.SpeedDialData
-import de.charlex.compose.SpeedDialFloatingActionButton
 import pl.kazoroo.tavernFarkle.R
 import pl.kazoroo.tavernFarkle.core.presentation.navigation.Screen
 import pl.kazoroo.tavernFarkle.game.presentation.mainmenu.components.HowToPlayDialog
 import pl.kazoroo.tavernFarkle.game.presentation.sound.SoundPlayer
 import pl.kazoroo.tavernFarkle.game.presentation.sound.SoundType
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun SpeedDialMenu(
     modifier: Modifier,
@@ -61,16 +56,16 @@ fun SpeedDialMenu(
         )
     }
 
-    SpeedDialFloatingActionButton(
+    SpeedDial(
         speedDialData = speedDialData,
         modifier = modifier
             .padding(
                 end = dimensionResource(R.dimen.small_padding),
                 top = dimensionResource(R.dimen.small_padding)
-            )
-            .rotate(180f),
+            ),
         fabBackgroundColor = Color.White,
         speedDialBackgroundColor = MaterialTheme.colorScheme.primary,
-        speedDialContentColor = Color.White
+        speedDialContentColor = Color.White,
+        showLabels = true
     )
 }

@@ -104,11 +104,6 @@ fun MainMenuScreen(navController: NavController, coinsViewModel: CoinsViewModel)
             .systemBarsPadding(),
         contentAlignment = Alignment.Center
     ) {
-        SpeedDialMenu(
-            navController = navController,
-            modifier = Modifier.align(Alignment.TopEnd)
-        )
-
         CoinAmountIndicator(
             coinsAmount = coinsViewModel.coinsAmount.collectAsState().value,
             modifier = Modifier.align(Alignment.TopStart)
@@ -151,5 +146,10 @@ fun MainMenuScreen(navController: NavController, coinsViewModel: CoinsViewModel)
                     .testTag("Exit button")
             )
         }
+
+        SpeedDialMenu(
+            navController = navController,
+            modifier = Modifier.align(Alignment.TopEnd)
+        )
     }
 }
