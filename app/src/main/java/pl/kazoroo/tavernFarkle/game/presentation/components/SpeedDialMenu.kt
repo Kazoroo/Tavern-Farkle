@@ -15,6 +15,7 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import de.charlex.compose.SpeedDialData
 import de.charlex.compose.SpeedDialFloatingActionButton
@@ -36,7 +37,7 @@ fun SpeedDialMenu(
         add(
             SpeedDialData(
                 painterResource = R.drawable.help_outline_24,
-                label = "Help",
+                label = stringResource(R.string.tutorial),
                 onClick = { isHelpDialogVisible = !isHelpDialogVisible }
             )
         )
@@ -44,7 +45,7 @@ fun SpeedDialMenu(
             add(
                 SpeedDialData(
                     painter = rememberVectorPainter(Icons.Outlined.Settings),
-                    label = "Settings",
+                    label = stringResource(R.string.settings),
                     onClick = {
                         navController.navigate(Screen.SettingsScreen.route)
                         SoundPlayer.playSound(SoundType.CLICK)

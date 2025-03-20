@@ -10,7 +10,7 @@
     <string name="play_with_computer">Juega contra la computadora</string>
     <string name="exit">Salir</string>
     <string name="selected_forDices">Seleccionados</string>
-    <string name="how_to_play_long_tutorial">Tu objetivo es ser el primero en alcanzar 4000 puntos. En tu turno, lanzas seis dados, luego seleccionas aquellos que te otorguen puntos. Cada dado con un valor de 1 o 5 otorga 100 y 50 puntos respectivamente. Cuando selecciones tres dados del mismo valor, obtendrás 100 puntos multiplicados por el valor del dado. Cada dado adicional del mismo valor duplica la puntuación de los tres dados iniciales.\n \n⚀ - 100 puntos\n⚄ - 50 puntos\n⚃ ⚃ ⚃ - 400 puntos\n⚅ ⚅ ⚅ ⚅ - 1200 puntos\n⚅ ⚅ ⚅ ⚅ ⚅ - 1800 puntos\n También existen secuencias.\n⚀ ⚁ ⚂ ⚃ ⚄ - 500 puntos\n⚁ ⚂ ⚃ ⚄ ⚅ - 750 puntos\n⚀ ⚁ ⚂ ⚃ ⚄ ⚅ - 1500 puntos\n \nEn caso de que no tengas ningún dado que otorgue puntos, se produce un fallo y pierdes tu turno y todos los puntos obtenidos durante el mismo, ¡así que ten cuidado!</string>
+    <string name="how_to_play_long_tutorial">Tu objetivo es ser el primero en alcanzar 4000 puntos. En tu turno, lanzas seis dados, luego seleccionas aquellos que te otorguen puntos. Cada dado con un valor de 1 o 5 otorga 100 y 50 puntos respectivamente. Cuando selecciones tres dados del mismo valor, obtendrás 100 puntos multiplicados por el valor del dado. Cada dado adicional del mismo valor duplica la puntuación de los tres dados iniciales.\n \n⚀ - 100 puntos\n⚄ - 50 puntos\n⚃ ⚃ ⚃ - 400 puntos\n⚀ ⚀ ⚀ - 1000 puntos\n⚅ ⚅ ⚅ ⚅ - 1200 puntos\n⚅ ⚅ ⚅ ⚅ ⚅ - 1800 puntos\n También existen secuencias.\n⚀ ⚁ ⚂ ⚃ ⚄ - 500 puntos\n⚁ ⚂ ⚃ ⚄ ⚅ - 750 puntos\n⚀ ⚁ ⚂ ⚃ ⚄ ⚅ - 1500 puntos\n \nEn caso de que no tengas ningún dado que otorgue puntos, se produce un fallo y pierdes tu turno y todos los puntos obtenidos durante el mismo, ¡así que ten cuidado!</string>
     <string name="determining_the_amount">Determinando la cantidad</string>
     <string name="how_to_play">¿Cómo jugar?</string>
     <string name="enter_the_amount">"Introduce la cantidad: "</string>
@@ -40,4 +40,6 @@
     <string name="sound">Sonido: </string>
     <string name="yes">Sí</string>
     <string name="no">No</string>
+    <string name="settings">Configuración</string>
+    <string name="tutorial">Tutorial</string>
 </resources>

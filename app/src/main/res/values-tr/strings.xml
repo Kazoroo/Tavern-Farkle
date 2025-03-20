@@ -10,7 +10,7 @@
     <string name="play_with_computer">Bilgisayara karşı oyna</string>
     <string name="exit">Çık</string>
     <string name="selected_forDices">Seçili</string>
-    <string name="how_to_play_long_tutorial">Amacın, ilk olarak 4000 puan toplamaktır. Sıranda, altı zar atarsın, sonra puan kazandıracak zarları seçersin. Her zar, değeri 1 veya 5 ise sırasıyla 100 ve 50 puan verir. Aynı değerden üç zar seçersen, zarın değeriyle çarpılmış 100 puan alırsın. Aynı değerden her ek zar, üç zarın puanının iki katını verir.\n \n⚀ - 100 puan\n⚄ - 50 puan\n⚃ ⚃ ⚃ - 400 puan\n⚅ ⚅ ⚅ ⚅ - 1200 puan\n⚅ ⚅ ⚅ ⚅ ⚅ - 1800 puan\n Ayrıca diziler de vardır.\n⚀ ⚁ ⚂ ⚃ ⚄ - 500 puan\n⚁ ⚂ ⚃ ⚄ ⚅ - 750 puan\n⚀ ⚁ ⚂ ⚃ ⚄ ⚅ - 1500 puan\n \nEğer puan getiren hiçbir zarın yoksa, farkle olur ve sıranı ile o sırada kazandığın tüm puanları kaybedersin, bu yüzden dikkatli ol!</string>
+    <string name="how_to_play_long_tutorial">Amacın, ilk olarak 4000 puan toplamaktır. Sıranda, altı zar atarsın, sonra puan kazandıracak zarları seçersin. Her zar, değeri 1 veya 5 ise sırasıyla 100 ve 50 puan verir. Aynı değerden üç zar seçersen, zarın değeriyle çarpılmış 100 puan alırsın. Aynı değerden her ek zar, üç zarın puanının iki katını verir.\n \n⚀ - 100 puan\n⚄ - 50 puan\n⚃ ⚃ ⚃ - 400 puan\n⚀ ⚀ ⚀ - 1000 puan\n⚅ ⚅ ⚅ ⚅ - 1200 puan\n⚅ ⚅ ⚅ ⚅ ⚅ - 1800 puan\n Ayrıca diziler de vardır.\n⚀ ⚁ ⚂ ⚃ ⚄ - 500 puan\n⚁ ⚂ ⚃ ⚄ ⚅ - 750 puan\n⚀ ⚁ ⚂ ⚃ ⚄ ⚅ - 1500 puan\n \nEğer puan getiren hiçbir zarın yoksa, farkle olur ve sıranı ile o sırada kazandığın tüm puanları kaybedersin, bu yüzden dikkatli ol!</string>
     <string name="determining_the_amount">Miktar belirleniyor</string>
     <string name="how_to_play">Nasıl oynanır?</string>
     <string name="enter_the_amount">Miktarı girin: </string>
@@ -40,4 +40,6 @@
     <string name="sound">Ses: </string>
     <string name="yes">Evet</string>
     <string name="no">Hayır</string>
+    <string name="settings">Ayarlar</string>
+    <string name="tutorial">Kılavuz</string>
 </resources>
