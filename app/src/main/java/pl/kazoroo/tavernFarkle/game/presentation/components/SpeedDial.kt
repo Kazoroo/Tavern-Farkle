@@ -40,6 +40,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastForEachIndexed
 
+open class SpeedDialData(
+    val label: String,
+    val painter: Painter? = null,
+    @DrawableRes
+    val painterResource: Int? = null,
+    val onClick: () -> Unit
+)
+
 @Composable
 fun <T : SpeedDialData> SpeedDial(
     modifier: Modifier = Modifier,
@@ -59,33 +67,26 @@ fun <T : SpeedDialData> SpeedDial(
     val speedDialAlpha = mutableListOf<State<Float>>()
     val speedDialScale = mutableListOf<State<Float>>()
 
+    @Composable
+    fun speedDialAnimationConfig(index: Int): State<Float> = transition.animateFloat(
+        label = "multiSelectionAlpha",
+        transitionSpec = {
+            tween(
+                delayMillis = index * animationDelayPerSelection,
+                durationMillis = animationDuration
+            )
+        }
+    ) {
+        if (it) 1f else 0f
+    }
+
     speedDialData.fastForEachIndexed { index, _ ->
         speedDialAlpha.add(
-            transition.animateFloat(
-                label = "multiSelectionAlpha",
-                transitionSpec = {
-                    tween(
-                        delayMillis = index * animationDelayPerSelection,
-                        durationMillis = animationDuration
-                    )
-                }
-            ) {
-                if (it) 1f else 0f
-            }
+            speedDialAnimationConfig(index)
         )
 
         speedDialScale.add(
-            transition.animateFloat(
-                label = "multiSelectionScale",
-                transitionSpec = {
-                    tween(
-                        delayMillis = index * animationDelayPerSelection,
-                        durationMillis = animationDuration
-                    )
-                }
-            ) {
-                if (it) 1f else 0f
-            }
+            speedDialAnimationConfig(index)
         )
     }
 
@@ -186,19 +187,7 @@ fun <T : SpeedDialData> SpeedDial(
                             containerColor = speedDialBackgroundColor,
                             contentColor = speedDialContentColor
                         ) {
-                            if (data.painter != null) {
-                                Icon(
-                                    painter = data.painter,
-                                    tint = speedDialContentColor,
-                                    contentDescription = null
-                                )
-                            } else if (data.painterResource != null) {
-                                Icon(
-                                    painter = painterResource(id = data.painterResource),
-                                    tint = speedDialContentColor,
-                                    contentDescription = null
-                                )
-                            }
+                            FloatingActionButtonIcon(data, speedDialContentColor)
                         }
                     }
                 }
@@ -230,10 +219,19 @@ fun <T : SpeedDialData> SpeedDial(
     }
 }
 
-open class SpeedDialData(
-    val label: String,
-    val painter: Painter? = null,
-    @DrawableRes
-    val painterResource: Int? = null,
-    val onClick: () -> Unit
-)
+@Composable
+private fun <T : SpeedDialData> FloatingActionButtonIcon(data: T, speedDialContentColor: Color) {
+    if (data.painter != null) {
+        Icon(
+            painter = data.painter,
+            tint = speedDialContentColor,
+            contentDescription = null
+        )
+    } else if (data.painterResource != null) {
+        Icon(
+            painter = painterResource(id = data.painterResource),
+            tint = speedDialContentColor,
+            contentDescription = null
+        )
+    }
+}
