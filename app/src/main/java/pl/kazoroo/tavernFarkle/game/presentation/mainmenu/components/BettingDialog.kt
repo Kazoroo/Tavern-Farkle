@@ -73,7 +73,13 @@ fun BettingDialog(
 
                 TextField(
                     value = betAmount,
-                    onValueChange = { betAmount = it },
+                    onValueChange = { newText ->
+                        val filtered = newText.filter { it.isDigit() }
+
+                        if (filtered.length <= Int.MAX_VALUE.toString().length) {
+                            betAmount = filtered
+                        }
+                    },
                     singleLine = true,
                     modifier = Modifier
                         .fillMaxWidth()

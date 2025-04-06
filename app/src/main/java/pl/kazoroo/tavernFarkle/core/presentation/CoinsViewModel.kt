@@ -53,7 +53,7 @@ class CoinsViewModel(
         }
     }
 
-    private suspend fun readCoinsAmount(): String {
+    private fun readCoinsAmount(): String {
         val coins = readUserDataUseCase.invoke<String>(UserDataKey.COINS)
 
         _coinsAmount.value = coins
