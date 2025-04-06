@@ -3,12 +3,11 @@ package pl.kazoroo.tavernFarkle.game.presentation.mainmenu.components
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
@@ -28,6 +27,7 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import pl.kazoroo.tavernFarkle.R
 import pl.kazoroo.tavernFarkle.core.presentation.CoinsViewModel
@@ -47,7 +47,7 @@ fun BettingDialog(
     ) {
         Column(
             modifier = Modifier
-                .wrapContentHeight()
+                .height(300.dp)
                 .background(
                     color = Color.White,
                     shape = RoundedCornerShape(dimensionResource(R.dimen.medium_padding))
@@ -55,20 +55,20 @@ fun BettingDialog(
         ) {
             DialogHeader(
                 headerText = stringResource(R.string.determining_the_amount)
-            ) {
-                onCloseClick()
-            }
+            )
 
             val isBetAmountNumeric = betAmount.contains(regex = Regex("^[0-9]*\$"))
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
+            Column(
                 modifier = Modifier
                     .fillMaxWidth()
             ) {
                 Text(
                     text = stringResource(R.string.enter_the_amount),
                     modifier = Modifier
-                        .padding(start = dimensionResource(R.dimen.small_padding))
+                        .padding(
+                            start = dimensionResource(R.dimen.large_padding),
+                            top = dimensionResource(R.dimen.small_padding)
+                        )
                 )
 
                 TextField(
@@ -76,7 +76,8 @@ fun BettingDialog(
                     onValueChange = { betAmount = it },
                     singleLine = true,
                     modifier = Modifier
-                        .width(dimensionResource(R.dimen.dialog_text_field_width)),
+                        .fillMaxWidth()
+                        .padding(horizontal = dimensionResource(R.dimen.large_padding)),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     trailingIcon = {
                         Image(
@@ -107,6 +108,8 @@ fun BettingDialog(
                 )
             }
             val isBetAmountValid = betAmount.isNotEmpty() && isBetAmountNumeric && betAmount.toInt() <= coinsAmount
+
+            Spacer(modifier = Modifier.weight(1f))
 
             Button(
                 onClick = {

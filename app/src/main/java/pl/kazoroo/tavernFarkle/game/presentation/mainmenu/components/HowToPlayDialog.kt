@@ -30,9 +30,7 @@ fun HowToPlayDialog(
             item {
                 DialogHeader(
                     headerText = stringResource(R.string.how_to_play)
-                ) {
-                    onCloseClick()
-                }
+                )
             }
 
             item {
