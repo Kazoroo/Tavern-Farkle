@@ -26,6 +26,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import pl.kazoroo.tavernFarkle.R
 import pl.kazoroo.tavernFarkle.shop.domain.model.SpecialDiceName
+import pl.kazoroo.tavernFarkle.ui.theme.DarkGreen
 
 @Composable
 fun SpecialDiceCard(
@@ -35,6 +36,7 @@ fun SpecialDiceCard(
     price: Int,
     isInventoryCard: Boolean = false,
     isSelected: Boolean = false,
+    coinsAmount: Int = 0,
     onClick: () -> Unit
 ) {
     Card(
@@ -106,19 +108,19 @@ fun SpecialDiceCard(
                             vertical = dimensionResource(R.dimen.medium_padding)
                         )
                         .fillMaxWidth(),
-                    colors = ButtonDefaults.buttonColors(containerColor = if(isSelected) Color.Green else Color.Unspecified)
+                    colors = ButtonDefaults.buttonColors(containerColor =
+                        if(isSelected || price <= coinsAmount) DarkGreen else Color.Red
+                    )
                 ) {
-                    if(isInventoryCard) {
-                        Text(
-                            text = if(isSelected) stringResource(R.string.selected_text) else stringResource(R.string.select),
-                            textAlign = TextAlign.Center
-                        )
-                    } else {
-                        Text(
-                            text = stringResource(R.string.buy_for, price),
-                            textAlign = TextAlign.Center
-                        )
-                    }
+                    Text(
+                        text = if(isInventoryCard) {
+                            if(isSelected) stringResource(R.string.selected_text) else stringResource(R.string.select)
+                        } else {
+                            stringResource(R.string.buy_for, price)
+                        },
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.padding(vertical = dimensionResource(R.dimen.small_padding))
+                    )
 
                     if(!isInventoryCard) {
                         Image(

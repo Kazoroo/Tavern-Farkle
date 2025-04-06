@@ -53,6 +53,7 @@ fun ShopScreen(
         }
     }
     val context = LocalContext.current
+    val coinsAmount = coinsViewModel.coinsAmount.collectAsState().value
 
     LaunchedEffect(viewModel.toastMessage) {
         viewModel.toastMessage.collectLatest { message ->
@@ -74,7 +75,7 @@ fun ShopScreen(
                 .systemBarsPadding()
         ) {
             CoinAmountIndicator(
-                coinsAmount = coinsViewModel.coinsAmount.collectAsState().value,
+                coinsAmount = coinsAmount,
                 modifier = Modifier.align(Alignment.Start)
             )
 
@@ -94,7 +95,8 @@ fun ShopScreen(
                                 specialDiceList[index],
                                 context = context
                             )
-                        }
+                        },
+                        coinsAmount = coinsAmount.toInt()
                     )
                 }
             }
@@ -122,12 +124,7 @@ private fun RewardedVideoSection(
         ),
         modifier = Modifier
             .height(dimensionResource(R.dimen.game_button_height))
-            .padding(
-                start = dimensionResource(id = R.dimen.small_padding),
-                bottom = dimensionResource(id = R.dimen.medium_padding),
-                end = dimensionResource(id = R.dimen.small_padding),
-                top = dimensionResource(id = R.dimen.medium_padding)
-            )
+            .padding(dimensionResource(id = R.dimen.medium_padding))
     )
 
     Divider(
