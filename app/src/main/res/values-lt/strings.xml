@@ -42,4 +42,5 @@
     <string name="no">Ne</string>
     <string name="settings">Nustatymai</string>
     <string name="tutorial">Vadovas</string>
+    <string name="select_dice_you_want_to_use_in_the_game">Pasirink kauliukus, kuriuos nori naudoti žaidime</string>
 </resources>

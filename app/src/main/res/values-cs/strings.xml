@@ -42,4 +42,5 @@
     <string name="no">Ne</string>
     <string name="settings">Nastavení</string>
     <string name="tutorial">Návod</string>
+    <string name="select_dice_you_want_to_use_in_the_game">Vyber kostky, které chceš použít ve hře</string>
 </resources>

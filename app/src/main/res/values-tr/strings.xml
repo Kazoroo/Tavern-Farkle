@@ -42,4 +42,5 @@
     <string name="no">Hayır</string>
     <string name="settings">Ayarlar</string>
     <string name="tutorial">Kılavuz</string>
+    <string name="select_dice_you_want_to_use_in_the_game">Oyunda kullanmak istediğin zarları seç</string>
 </resources>
