@@ -1,7 +1,6 @@
 package pl.kazoroo.tavernFarkle.game.presentation.game
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,16 +22,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.dimensionResource
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavHostController
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import pl.kazoroo.tavernFarkle.R
 import pl.kazoroo.tavernFarkle.core.data.presentation.BettingActions
+import pl.kazoroo.tavernFarkle.core.presentation.components.BackgroundImage
 import pl.kazoroo.tavernFarkle.game.domain.model.TableData
 import pl.kazoroo.tavernFarkle.game.presentation.components.ButtonInfo
 import pl.kazoroo.tavernFarkle.game.presentation.components.SpeedDialMenu
@@ -105,12 +103,7 @@ fun GameScreen(
             .fillMaxSize()
             .testTag("Game screen")
     ) {
-        Image(
-            painter = painterResource(id = R.drawable.wooden_background_texture),
-            contentDescription = null,
-            contentScale = ContentScale.Crop,
-            modifier = Modifier.fillMaxSize()
-        )
+        BackgroundImage()
 
         Column(
             modifier = Modifier.fillMaxSize()

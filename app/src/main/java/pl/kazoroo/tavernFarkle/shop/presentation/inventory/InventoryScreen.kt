@@ -25,8 +25,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.flow.collectLatest
 import pl.kazoroo.tavernFarkle.R
 import pl.kazoroo.tavernFarkle.core.data.local.repository.SpecialDiceList.specialDiceList
+import pl.kazoroo.tavernFarkle.core.presentation.components.BackgroundImage
 import pl.kazoroo.tavernFarkle.shop.domain.model.SpecialDice
 import pl.kazoroo.tavernFarkle.shop.presentation.components.SpecialDiceCard
 
@@ -54,12 +55,7 @@ fun InventoryScreen(inventoryViewModel: InventoryViewModel) {
             .fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
-        Image(
-            painter = painterResource(id = R.drawable.wooden_background_texture),
-            contentDescription = null,
-            contentScale = ContentScale.Crop,
-            modifier = Modifier.fillMaxSize()
-        )
+        BackgroundImage()
 
         LazyColumn(
             modifier = Modifier
@@ -76,7 +72,7 @@ fun InventoryScreen(inventoryViewModel: InventoryViewModel) {
                             text = stringResource(R.string.your_inventory_is_empty_buy_some_special_dice_in_shop),
                             color = Color.White,
                             modifier = Modifier
-                                .width((LocalConfiguration.current.screenWidthDp / 2).dp)
+                                .width((LocalWindowInfo.current.containerSize / 2).width.dp)
                                 .align(Alignment.Center),
                             textAlign = TextAlign.Center
                         )

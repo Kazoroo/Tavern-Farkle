@@ -20,8 +20,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
@@ -30,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import pl.kazoroo.tavernFarkle.R
 import pl.kazoroo.tavernFarkle.core.presentation.CoinsViewModel
+import pl.kazoroo.tavernFarkle.core.presentation.components.BackgroundImage
 import pl.kazoroo.tavernFarkle.core.presentation.components.CoinAmountIndicator
 import pl.kazoroo.tavernFarkle.core.presentation.navigation.Screen
 import pl.kazoroo.tavernFarkle.game.presentation.components.ButtonInfo
@@ -47,7 +47,7 @@ fun MainMenuScreen(navController: NavController, coinsViewModel: CoinsViewModel)
         .padding(bottom = dimensionResource(R.dimen.medium_padding))
         .height(dimensionResource(R.dimen.menu_button_height))
         .width(dimensionResource(R.dimen.menu_button_width))
-    val screenWidth = LocalConfiguration.current.screenWidthDp.dp
+    val screenWidth = (LocalWindowInfo.current.containerSize / 2).width.dp
     val imageSize = (screenWidth / 1.6f)
     var isBettingDialogVisible by remember { mutableStateOf(false) }
     val buttons = listOf(
@@ -91,12 +91,7 @@ fun MainMenuScreen(navController: NavController, coinsViewModel: CoinsViewModel)
         )
     }
 
-    Image(
-        painter = painterResource(id = R.drawable.wooden_background_texture),
-        contentDescription = null,
-        contentScale = ContentScale.Crop,
-        modifier = Modifier.fillMaxSize()
-    )
+    BackgroundImage()
 
     Box(
         modifier = Modifier
