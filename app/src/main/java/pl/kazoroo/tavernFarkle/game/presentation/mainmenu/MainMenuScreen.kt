@@ -20,7 +20,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalWindowInfo
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
@@ -47,8 +47,7 @@ fun MainMenuScreen(navController: NavController, coinsViewModel: CoinsViewModel)
         .padding(bottom = dimensionResource(R.dimen.medium_padding))
         .height(dimensionResource(R.dimen.menu_button_height))
         .width(dimensionResource(R.dimen.menu_button_width))
-    val screenWidth = (LocalWindowInfo.current.containerSize / 2).width.dp
-    val imageSize = (screenWidth / 1.6f)
+    val imageSize = (LocalConfiguration.current.screenWidthDp / 2).dp
     var isBettingDialogVisible by remember { mutableStateOf(false) }
     val buttons = listOf(
         ButtonInfo(

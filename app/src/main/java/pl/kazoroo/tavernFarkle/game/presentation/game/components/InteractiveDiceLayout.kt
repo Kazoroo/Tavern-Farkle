@@ -1,5 +1,7 @@
 package pl.kazoroo.tavernFarkle.game.presentation.game.components
 
+import android.graphics.BlurMaskFilter
+import android.os.Build
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.EaseInOutCubic
 import androidx.compose.animation.core.animateDpAsState
@@ -11,6 +13,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -26,8 +29,12 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Paint
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
+import androidx.compose.ui.graphics.nativeCanvas
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.dimensionResource
@@ -53,8 +60,8 @@ fun InteractiveDiceLayout(
         verticalArrangement = Arrangement.Bottom,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        val screenWidth = LocalConfiguration.current.screenWidthDp.dp
-        val imageSize = (screenWidth / 3) - 10.dp
+        val screenWidth = LocalConfiguration.current.screenWidthDp
+        val imageSize = (screenWidth.dp / 3) - 10.dp
         val localDensity = LocalDensity.current
 
         for (row in 0..1) {
@@ -88,29 +95,71 @@ fun InteractiveDiceLayout(
                                 }
                             )
                         ) {
-                            Image(
-                                painter = painterResource(id = diceState.diceList[index].image),
-                                contentDescription = "Dice $index",
-                                modifier = Modifier
-                                    .padding(2.dp)
-                                    .size(imageSize)
-                                    .animatedCircularBorder(
-                                        isSelected = diceState.isDiceSelected[index]
-                                    )
-                                    .clickable(
-                                        indication = null,
-                                        interactionSource = remember { MutableInteractionSource() },
-                                        enabled = isDiceClickable
-                                    ) {
-                                        diceOnClick(index)
-                                    }
-                                    .offset { offsetLambda() }
-                            )
+                            DiceImageWithShadow(imageSize, diceState, index, isDiceClickable, diceOnClick, offsetLambda)
                         }
                     }
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun DiceImageWithShadow(
+    imageSize: Dp,
+    diceState: DiceSetInfo,
+    index: Int,
+    isDiceClickable: Boolean,
+    diceOnClick: (Int) -> Unit,
+    offsetLambda: () -> IntOffset
+) {
+    CustomDiceShadow(shadowSize = imageSize)
+
+    Image(
+        painter = painterResource(id = diceState.diceList[index].image),
+        contentDescription = "Dice $index",
+        modifier = Modifier
+            .padding(2.dp)
+            .size(imageSize)
+            .animatedCircularBorder(
+                isSelected = diceState.isDiceSelected[index]
+            )
+            .clickable(
+                indication = null,
+                interactionSource = remember { MutableInteractionSource() },
+                enabled = isDiceClickable
+            ) {
+                diceOnClick(index)
+            }
+            .offset { offsetLambda() }
+    )
+}
+
+@Composable
+private fun CustomDiceShadow(shadowSize: Dp) {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) { //Shadow works only on API 29+
+        Box(
+            modifier = Modifier
+                .size(shadowSize)
+                .drawBehind {
+                    val blurRadius = 25f
+
+                    val paint = Paint().asFrameworkPaint().apply {
+                        color = Color(0x32000000).toArgb()
+                        maskFilter = BlurMaskFilter(blurRadius, BlurMaskFilter.Blur.NORMAL)
+                    }
+
+                    drawIntoCanvas {
+                        it.nativeCanvas.drawOval(
+                            50f,
+                            160f,
+                            size.width - 40,
+                            size.height + 40f,
+                            paint
+                        )
+                    }
+                }
+        )
     }
 }
 
