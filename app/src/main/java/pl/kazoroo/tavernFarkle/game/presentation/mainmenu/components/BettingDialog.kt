@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -58,6 +59,7 @@ fun BettingDialog(
             )
 
             val isBetAmountNumeric = betAmount.contains(regex = Regex("^[0-9]*\$"))
+
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -66,8 +68,7 @@ fun BettingDialog(
                     text = stringResource(R.string.enter_the_amount),
                     modifier = Modifier
                         .padding(
-                            start = dimensionResource(R.dimen.large_padding),
-                            top = dimensionResource(R.dimen.small_padding)
+                            start = dimensionResource(R.dimen.large_padding)
                         )
                 )
 
@@ -101,13 +102,13 @@ fun BettingDialog(
                     supportingText = {
                         Text(
                             text =
-                            if(betAmount.isEmpty())
-                                stringResource(R.string.text_field_cannot_be_empty)
-                            else if(!isBetAmountNumeric)
-                                stringResource(R.string.text_field_must_contain_only_numbers_0_9)
-                            else if(betAmount.toInt() > coinsAmount)
-                                stringResource(R.string.you_can_t_take_more_than_you_have)
-                            else "",
+                                if(betAmount.isEmpty())
+                                    stringResource(R.string.text_field_cannot_be_empty)
+                                else if(!isBetAmountNumeric)
+                                    stringResource(R.string.text_field_must_contain_only_numbers_0_9)
+                                else if(betAmount.toInt() > coinsAmount)
+                                    stringResource(R.string.you_can_t_take_more_than_you_have)
+                                else "",
                             color = DarkRed
                         )
                     }
@@ -125,10 +126,11 @@ fun BettingDialog(
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
                     .padding(
-                        bottom = dimensionResource(R.dimen.small_padding),
+                        bottom = dimensionResource(R.dimen.medium_padding),
                         top = dimensionResource(R.dimen.medium_padding)
                     ),
-                enabled = isBetAmountValid
+                enabled = isBetAmountValid,
+                elevation = ButtonDefaults.buttonElevation(5.dp)
             ) {
                 Text(
                     text = stringResource(R.string.play),

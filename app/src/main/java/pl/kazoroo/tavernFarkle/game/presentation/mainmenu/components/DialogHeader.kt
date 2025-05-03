@@ -21,8 +21,8 @@ fun DialogHeader(
         modifier = Modifier
             .fillMaxWidth()
             .padding(
-                top = dimensionResource(id = R.dimen.small_padding),
-                bottom = dimensionResource(id = R.dimen.small_padding)
+                top = dimensionResource(id = R.dimen.medium_padding),
+                bottom = dimensionResource(id = R.dimen.medium_padding)
             )
     )
 }
