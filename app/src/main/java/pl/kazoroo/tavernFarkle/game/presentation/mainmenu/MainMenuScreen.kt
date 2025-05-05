@@ -1,5 +1,6 @@
 package pl.kazoroo.tavernFarkle.game.presentation.mainmenu
 
+import android.annotation.SuppressLint
 import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -50,8 +51,13 @@ import pl.kazoroo.tavernFarkle.game.presentation.mainmenu.components.BettingDial
 import pl.kazoroo.tavernFarkle.game.presentation.sound.SoundPlayer
 import pl.kazoroo.tavernFarkle.game.presentation.sound.SoundType
 
+@SuppressLint("ConfigurationScreenWidthHeight")
 @Composable
-fun MainMenuScreen(navController: NavController, coinsViewModel: CoinsViewModel) {
+fun MainMenuScreen(
+    navController: NavController,
+    coinsViewModel: CoinsViewModel,
+    mainMenuViewModel: MainMenuViewModel
+) {
     val activity = LocalActivity.current
     val buttonsModifier: Modifier = Modifier
         .padding(bottom = dimensionResource(R.dimen.medium_padding))
@@ -157,15 +163,19 @@ fun MainMenuScreen(navController: NavController, coinsViewModel: CoinsViewModel)
         )
     }
 
-    val isFirstLaunch = false
-
-    if(isFirstLaunch) {
-        OnboardingOverlay()
+    if(mainMenuViewModel.isFirstLaunch.value) {
+        OnboardingOverlay(
+            onboardingStage = mainMenuViewModel.onboardingStage.value,
+            onClick = { mainMenuViewModel.nextOnboardingStage() }
+        )
     }
 }
 
 @Composable
-fun OnboardingOverlay() {
+fun OnboardingOverlay(
+    onboardingStage: Int,
+    onClick: () -> Unit
+) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -173,76 +183,82 @@ fun OnboardingOverlay() {
             .systemBarsPadding(),
         contentAlignment = Alignment.TopEnd
     ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.padding(top = 40.dp, end = 30.dp)
-        ) {
-            Image(
-                painter = painterResource(R.drawable.swirling_arrow_white),
-                contentDescription = null,
-                modifier = Modifier
-                    .size(120.dp),
-            )
+        if(onboardingStage == 0) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.padding(top = 40.dp, end = 30.dp)
+            ) {
+                Image(
+                    painter = painterResource(R.drawable.swirling_arrow_white),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(120.dp),
+                )
 
-            Text(
-                text = "Here you can read the rules",
-                modifier = Modifier
-                    .padding(dimensionResource(R.dimen.large_padding))
-                    .width(150.dp)
-                    .offset(y = (-50).dp),
-                color = Color.White,
-                fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.Center
-            )
+                Text(
+                    text = "Here you can read the rules",
+                    modifier = Modifier
+                        .padding(dimensionResource(R.dimen.large_padding))
+                        .width(150.dp)
+                        .offset(y = (-50).dp),
+                    color = Color.White,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center
+                )
+            }
         }
 
-        Row(
-            modifier = Modifier.padding(top = 350.dp, end = 20.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
-        ) {
-            Text(
-                text = "In shop you buy special dice, that gives you advantage",
-                modifier = Modifier
-                    .width(230.dp),
-                color = Color.White,
-                fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.Center
-            )
+        if(onboardingStage == 1) {
+            Row(
+                modifier = Modifier.padding(top = 350.dp, end = 20.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Text(
+                    text = "In shop you buy special dice, that gives you advantage",
+                    modifier = Modifier
+                        .width(230.dp),
+                    color = Color.White,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center
+                )
 
-            Image(
-                painter = painterResource(R.drawable.top_to_bottom_arrow_white),
-                contentDescription = null,
-                modifier = Modifier
-                    .size(70.dp),
-            )
+                Image(
+                    painter = painterResource(R.drawable.top_to_bottom_arrow_white),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(70.dp),
+                )
+            }
         }
 
-        Row(
-            modifier = Modifier.padding(top = 550.dp, end = 60.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
-        ) {
-            Image(
-                painter = painterResource(R.drawable.bottom_to_top_arrow_arrow),
-                contentDescription = null,
-                modifier = Modifier
-                    .size(70.dp)
-                    .padding(end = 10.dp),
-            )
+        if(onboardingStage == 2) {
+            Row(
+                modifier = Modifier.padding(top = 550.dp, end = 60.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Image(
+                    painter = painterResource(R.drawable.bottom_to_top_arrow_arrow),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(70.dp)
+                        .padding(end = 10.dp),
+                )
 
-            Text(
-                text = "In inventory you select dice you want to use in game",
-                modifier = Modifier
-                    .width(230.dp),
-                color = Color.White,
-                fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.Center
-            )
+                Text(
+                    text = "In inventory you select dice you want to use in game",
+                    modifier = Modifier
+                        .width(230.dp),
+                    color = Color.White,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center
+                )
+            }
         }
 
         Button(
-            onClick = {},
+            onClick = onClick,
             modifier = Modifier
                 .align(Alignment.BottomCenter)
                 .padding(dimensionResource(R.dimen.large_padding))
