@@ -1,6 +1,5 @@
 package pl.kazoroo.tavernFarkle.game.presentation.components
 
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.MaterialTheme
@@ -12,7 +11,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
-import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import pl.kazoroo.tavernFarkle.R
@@ -58,11 +56,7 @@ fun SpeedDialMenu(
 
     SpeedDial(
         speedDialData = speedDialData,
-        modifier = modifier
-            .padding(
-                end = dimensionResource(R.dimen.small_padding),
-                top = dimensionResource(R.dimen.small_padding)
-            ),
+        modifier = modifier,
         fabBackgroundColor = Color.White,
         speedDialBackgroundColor = MaterialTheme.colorScheme.primary,
         speedDialContentColor = Color.White,

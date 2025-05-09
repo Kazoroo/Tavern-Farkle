@@ -1,26 +1,18 @@
 package pl.kazoroo.tavernFarkle.game.presentation.mainmenu
 
 import android.annotation.SuppressLint
-import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -28,70 +20,67 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.svenjacobs.reveal.Reveal
+import com.svenjacobs.reveal.RevealCanvas
+import com.svenjacobs.reveal.RevealCanvasState
+import com.svenjacobs.reveal.RevealState
+import com.svenjacobs.reveal.rememberRevealCanvasState
+import com.svenjacobs.reveal.rememberRevealState
+import kotlinx.coroutines.delay
 import pl.kazoroo.tavernFarkle.R
 import pl.kazoroo.tavernFarkle.core.presentation.CoinsViewModel
 import pl.kazoroo.tavernFarkle.core.presentation.components.BackgroundImage
 import pl.kazoroo.tavernFarkle.core.presentation.components.CoinAmountIndicator
 import pl.kazoroo.tavernFarkle.core.presentation.navigation.Screen
-import pl.kazoroo.tavernFarkle.game.presentation.components.ButtonInfo
-import pl.kazoroo.tavernFarkle.game.presentation.components.DiceButton
 import pl.kazoroo.tavernFarkle.game.presentation.components.SpeedDialMenu
 import pl.kazoroo.tavernFarkle.game.presentation.mainmenu.components.AppTitleText
 import pl.kazoroo.tavernFarkle.game.presentation.mainmenu.components.BettingDialog
+import pl.kazoroo.tavernFarkle.game.presentation.mainmenu.components.MenuNavigationButtons
+import pl.kazoroo.tavernFarkle.game.presentation.mainmenu.components.RevealOverlayContent
 import pl.kazoroo.tavernFarkle.game.presentation.sound.SoundPlayer
 import pl.kazoroo.tavernFarkle.game.presentation.sound.SoundType
 
-@SuppressLint("ConfigurationScreenWidthHeight")
 @Composable
 fun MainMenuScreen(
     navController: NavController,
     coinsViewModel: CoinsViewModel,
     mainMenuViewModel: MainMenuViewModel
 ) {
-    val activity = LocalActivity.current
-    val buttonsModifier: Modifier = Modifier
-        .padding(bottom = dimensionResource(R.dimen.medium_padding))
-        .height(dimensionResource(R.dimen.menu_button_height))
-        .width(dimensionResource(R.dimen.menu_button_width))
-    val imageSize = (LocalConfiguration.current.screenWidthDp / 2).dp
     var isBettingDialogVisible by remember { mutableStateOf(false) }
-    val buttons = listOf(
-        ButtonInfo(
-            text = stringResource(R.string.play_with_computer),
-            modifier = buttonsModifier
-                .testTag("Play with AI button")
-        ) {
-            isBettingDialogVisible = true
-        },
+    val revealCanvasState = rememberRevealCanvasState()
+    val revealState = rememberRevealState()
 
-        ButtonInfo(
-            text = stringResource(R.string.shop),
-            modifier = buttonsModifier
-                .testTag("Shop")
-        ) {
-            navController.navigate(Screen.ShopScreen.route)
-            SoundPlayer.playSound(SoundType.CLICK)
-        },
-
-        ButtonInfo(
-            text = stringResource(R.string.inventory),
-            modifier = buttonsModifier
-                .testTag("Inventory")
-        ) {
-            navController.navigate(Screen.InventoryScreen.route)
-            SoundPlayer.playSound(SoundType.CLICK)
+    LaunchedEffect(mainMenuViewModel.onboardingStage.value) {
+        when(mainMenuViewModel.onboardingStage.value) {
+            0 -> {
+                delay(1500L)
+                revealState.reveal(RevealableKeys.SpeedDialMenu)
+            }
+            1 -> revealState.reveal(RevealableKeys.ShopButton)
+            2 -> revealState.reveal(RevealableKeys.InventoryButton)
+            3 -> revealState.hide()
         }
-    )
+    }
+
+    RevealCanvas(
+        modifier = Modifier.fillMaxSize(),
+        revealCanvasState = revealCanvasState,
+    ) {
+        MainMenuContent(
+            coinsViewModel = coinsViewModel,
+            navController = navController,
+            revealCanvasState = revealCanvasState,
+            playWithComputerOnClick = { isBettingDialogVisible = true },
+            revealState = revealState,
+            onboardingOnClick = { mainMenuViewModel.nextOnboardingStage() }
+        )
+    }
 
     if(isBettingDialogVisible) {
         BettingDialog(
@@ -105,168 +94,71 @@ fun MainMenuScreen(
             coinsViewModel = coinsViewModel
         )
     }
+}
+
+@SuppressLint("ConfigurationScreenWidthHeight")
+@Composable
+private fun MainMenuContent(
+    coinsViewModel: CoinsViewModel,
+    navController: NavController,
+    revealCanvasState: RevealCanvasState,
+    playWithComputerOnClick: () -> Unit,
+    revealState: RevealState,
+    onboardingOnClick: (Any) -> Unit
+) {
+    val imageSize = (LocalConfiguration.current.screenWidthDp / 2).dp
 
     BackgroundImage()
 
-    Box(
+    Reveal(
+        revealCanvasState = revealCanvasState,
+        revealState = revealState,
+        onRevealableClick = onboardingOnClick,
+        onOverlayClick = onboardingOnClick,
+        overlayContent = { key -> RevealOverlayContent(key) },
         modifier = Modifier
             .fillMaxSize()
-            .systemBarsPadding(),
-        contentAlignment = Alignment.Center
     ) {
-        CoinAmountIndicator(
-            coinsAmount = coinsViewModel.coinsAmount.collectAsState().value,
-            modifier = Modifier.align(Alignment.TopStart)
-        )
-
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Top,
+        Box(
             modifier = Modifier
-                .testTag("Main menu screen")
+                .fillMaxSize()
+                .systemBarsPadding(),
+            contentAlignment = Alignment.Center
         ) {
-            Image(
-                painter = painterResource(id = R.drawable.dice_1),
-                contentDescription = "Dice",
-                modifier = Modifier.size(imageSize)
+            CoinAmountIndicator(
+                coinsAmount = coinsViewModel.coinsAmount.collectAsState().value,
+                modifier = Modifier.align(Alignment.TopStart)
             )
 
-            AppTitleText()
-
-            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.large_padding)))
-
-            buttons.forEach { buttonInfo ->
-                DiceButton(
-                    buttonInfo = buttonInfo,
-                    modifier = buttonsModifier
-                )
-            }
-
-            Spacer(modifier = Modifier.weight(0.9f))
-
-            DiceButton(
-                buttonInfo = ButtonInfo(
-                    text = stringResource(R.string.exit),
-                    onClick = {
-                        activity?.finish()
-                        SoundPlayer.playSound(SoundType.CLICK)
-                    }
-                ),
-                modifier = buttonsModifier
-                    .testTag("Exit button")
-            )
-        }
-
-        SpeedDialMenu(
-            navController = navController,
-            modifier = Modifier.align(Alignment.TopEnd)
-        )
-    }
-
-    if(mainMenuViewModel.isFirstLaunch.value) {
-        OnboardingOverlay(
-            onboardingStage = mainMenuViewModel.onboardingStage.value,
-            onClick = { mainMenuViewModel.nextOnboardingStage() }
-        )
-    }
-}
-
-@Composable
-fun OnboardingOverlay(
-    onboardingStage: Int,
-    onClick: () -> Unit
-) {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color(0xD5232121))
-            .systemBarsPadding(),
-        contentAlignment = Alignment.TopEnd
-    ) {
-        if(onboardingStage == 0) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.padding(top = 40.dp, end = 30.dp)
+                verticalArrangement = Arrangement.Top,
+                modifier = Modifier
+                    .testTag("Main menu screen")
             ) {
                 Image(
-                    painter = painterResource(R.drawable.swirling_arrow_white),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .size(120.dp),
+                    painter = painterResource(id = R.drawable.dice_1),
+                    contentDescription = "Dice",
+                    modifier = Modifier.size(imageSize)
                 )
 
-                Text(
-                    text = "Here you can read the rules",
-                    modifier = Modifier
-                        .padding(dimensionResource(R.dimen.large_padding))
-                        .width(150.dp)
-                        .offset(y = (-50).dp),
-                    color = Color.White,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center
+                AppTitleText()
+
+                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.large_padding)))
+
+                MenuNavigationButtons(
+                    playWithComputerOnClick = playWithComputerOnClick,
+                    navController = navController
                 )
             }
-        }
 
-        if(onboardingStage == 1) {
-            Row(
-                modifier = Modifier.padding(top = 350.dp, end = 20.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center
-            ) {
-                Text(
-                    text = "In shop you buy special dice, that gives you advantage",
-                    modifier = Modifier
-                        .width(230.dp),
-                    color = Color.White,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center
-                )
-
-                Image(
-                    painter = painterResource(R.drawable.top_to_bottom_arrow_white),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .size(70.dp),
-                )
-            }
-        }
-
-        if(onboardingStage == 2) {
-            Row(
-                modifier = Modifier.padding(top = 550.dp, end = 60.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center
-            ) {
-                Image(
-                    painter = painterResource(R.drawable.bottom_to_top_arrow_arrow),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .size(70.dp)
-                        .padding(end = 10.dp),
-                )
-
-                Text(
-                    text = "In inventory you select dice you want to use in game",
-                    modifier = Modifier
-                        .width(230.dp),
-                    color = Color.White,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center
-                )
-            }
-        }
-
-        Button(
-            onClick = onClick,
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .padding(dimensionResource(R.dimen.large_padding))
-                .width(200.dp),
-            contentPadding = PaddingValues(15.dp),
-            shape = RoundedCornerShape(dimensionResource(R.dimen.rounded_corner))
-        ) {
-            Text("Continue")
+            SpeedDialMenu(
+                navController = navController,
+                modifier = Modifier
+                    .revealable(key = RevealableKeys.SpeedDialMenu)
+                    .align(Alignment.TopEnd)
+                    .padding(end = dimensionResource(R.dimen.small_padding))
+            )
         }
     }
 }

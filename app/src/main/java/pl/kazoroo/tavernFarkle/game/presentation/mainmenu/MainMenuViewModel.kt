@@ -14,9 +14,5 @@ class MainMenuViewModel(): ViewModel() {
 
     fun nextOnboardingStage() {
         _onboardingStage.intValue++
-
-        if(_onboardingStage.intValue == 3) {
-            _isFirstLaunch.value = false
-        }
     }
 }

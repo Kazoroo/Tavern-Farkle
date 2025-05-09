@@ -16,6 +16,6 @@ fun BackgroundImage() {
         painter = painterResource(id = R.drawable.wooden_background_texture),
         contentDescription = null,
         contentScale = ContentScale.Crop,
-        modifier = Modifier.fillMaxSize().blur(3.dp)
+        modifier = Modifier.fillMaxSize().blur(4.dp)
     )
 }
