@@ -23,20 +23,29 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.core.animation.doOnEnd
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.android.gms.ads.MobileAds
-import pl.kazoroo.tavernFarkle.core.data.local.repository.UserDataRepository
+import pl.kazoroo.tavernFarkle.core.presentation.CoinsViewModel
 import pl.kazoroo.tavernFarkle.core.presentation.navigation.Navigation
+import pl.kazoroo.tavernFarkle.di.DependencyContainer
+import pl.kazoroo.tavernFarkle.di.TavernFarkleApp
+import pl.kazoroo.tavernFarkle.game.presentation.mainmenu.MainMenuViewModel
 import pl.kazoroo.tavernFarkle.game.presentation.sound.SoundPlayer
 import pl.kazoroo.tavernFarkle.game.presentation.splashscreen.StartingScreenViewModel
 import pl.kazoroo.tavernFarkle.game.service.MusicService
 import pl.kazoroo.tavernFarkle.settings.presentation.SettingsViewModel
-import pl.kazoroo.tavernFarkle.settings.presentation.SettingsViewModelFactory
 import pl.kazoroo.tavernFarkle.shop.domain.AdManager
-import pl.kazoroo.tavernFarkle.shop.domain.InventoryDataRepositoryImpl
+import pl.kazoroo.tavernFarkle.shop.presentation.inventory.InventoryViewModel
 import pl.kazoroo.tavernFarkle.ui.theme.DicesTheme
 
 class MainActivity : ComponentActivity() {
+    private val dependencyContainer: DependencyContainer
+        get() = (application as TavernFarkleApp).dependencyContainer
+
+    private val settingsViewModel by viewModels<SettingsViewModel>(
+        factoryProducer = { dependencyContainer.settingsViewModelFactory }
+    )
+
     private lateinit var powerManager: PowerManager
     private val screenStateReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
@@ -46,7 +55,6 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
-    private lateinit var settingsViewModel: SettingsViewModel
     private var serviceBound = false
     private var musicService: MusicService? = null
     private val serviceConnection = object : ServiceConnection {
@@ -71,34 +79,35 @@ class MainActivity : ComponentActivity() {
         AdManager.loadRewardedAd(context = this)
 
         SoundPlayer.initialize(context = applicationContext)
-        powerManager = getSystemService(Context.POWER_SERVICE) as PowerManager
+        powerManager = getSystemService(POWER_SERVICE) as PowerManager
         SoundPlayer.setAppOnFocusState(powerManager.isInteractive)
         registerReceiver(screenStateReceiver, IntentFilter(Intent.ACTION_SCREEN_ON))
         registerReceiver(screenStateReceiver, IntentFilter(Intent.ACTION_SCREEN_OFF))
-
-        val context: Context = this
-        val userDataRepository = UserDataRepository.getInstance(context)
-        val inventoryDataRepository = InventoryDataRepositoryImpl.getInstance(context)
-
-        settingsViewModel = ViewModelProvider(
-            this,
-            SettingsViewModelFactory(userDataRepository)
-        ).get(SettingsViewModel::class.java)
 
         val isMusicEnabled = settingsViewModel.loadMusicPreference()
         val musicServiceIntent = Intent(this, MusicService::class.java).apply {
             putExtra("MUSIC_ENABLED", isMusicEnabled)
         }
         startService(musicServiceIntent)
-        bindService(musicServiceIntent, serviceConnection, Context.BIND_AUTO_CREATE)
+        bindService(musicServiceIntent, serviceConnection, BIND_AUTO_CREATE)
 
         setContent {
+            val mainMenuViewModel = viewModel<MainMenuViewModel>(
+                factory = dependencyContainer.mainMenuViewModelFactory
+            )
+            val coinsMenuViewModel = viewModel<CoinsViewModel>(
+                factory = dependencyContainer.coinsViewModelFactory
+            )
+            val inventoryViewModel = viewModel<InventoryViewModel>(
+                factory = dependencyContainer.inventoryViewModelFactory
+            )
+
             DicesTheme {
                 LaunchedEffect(Unit) {
-                    val intent = Intent(context, MusicService::class.java).apply {
+                    val intent = Intent(this@MainActivity, MusicService::class.java).apply {
                         putExtra("MUSIC_ENABLED", isMusicEnabled)
                     }
-                    context.startService(intent)
+                    this@MainActivity.startService(intent)
                 }
 
                 Surface(
@@ -106,9 +115,11 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     Navigation(
-                        userDataRepository,
-                        inventoryDataRepository,
-                        settingsViewModel
+                        mainMenuViewModel = mainMenuViewModel,
+                        coinsViewModel = coinsMenuViewModel,
+                        inventoryViewModel = inventoryViewModel,
+                        settingsViewModel = settingsViewModel,
+                        dependencyContainer = dependencyContainer
                     )
                 }
             }
