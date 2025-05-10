@@ -1,18 +1,34 @@
 package pl.kazoroo.tavernFarkle.game.presentation.mainmenu
 
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
+import pl.kazoroo.tavernFarkle.core.data.local.UserDataKey
+import pl.kazoroo.tavernFarkle.core.domain.ReadUserDataUseCase
+import pl.kazoroo.tavernFarkle.core.domain.SaveUserDataUseCase
 
-class MainMenuViewModel(): ViewModel() {
-    private val _onboardingStage = mutableIntStateOf(0)
-    val onboardingStage: State<Int> = _onboardingStage
+class MainMenuViewModel(
+    private val saveUserDataUseCase: SaveUserDataUseCase,
+    readUserDataUseCase: ReadUserDataUseCase
+): ViewModel() {
+    private val _onboardingStage = MutableStateFlow(RevealableKeys.SpeedDialMenu.ordinal)
+    val onboardingStage: StateFlow<Int> = _onboardingStage.asStateFlow()
 
-    private val _isFirstLaunch = mutableStateOf<Boolean>(true)
-    val isFirstLaunch: State<Boolean> = _isFirstLaunch
+    private val _isFirstLaunch = MutableStateFlow<Boolean>(readUserDataUseCase(UserDataKey.IS_FIRST_LAUNCH))
+    val isFirstLaunch: StateFlow<Boolean> = _isFirstLaunch.asStateFlow()
 
     fun nextOnboardingStage() {
-        _onboardingStage.intValue++
+        _onboardingStage.value++
+    }
+
+    fun finishOnboarding() {
+        _isFirstLaunch.value = false
+
+        viewModelScope.launch {
+            saveUserDataUseCase(false, UserDataKey.IS_FIRST_LAUNCH)
+        }
     }
 }

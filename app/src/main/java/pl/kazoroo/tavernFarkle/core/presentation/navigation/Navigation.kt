@@ -48,7 +48,10 @@ fun Navigation(
             MainMenuScreen(
                 navController = navController,
                 coinsViewModel = coinsViewModel,
-                mainMenuViewModel = MainMenuViewModel()
+                mainMenuViewModel = MainMenuViewModel(
+                    readUserDataUseCase = readUserDataUseCase,
+                    saveUserDataUseCase = saveUserDataUseCase
+                )
             )
         }
         composable(

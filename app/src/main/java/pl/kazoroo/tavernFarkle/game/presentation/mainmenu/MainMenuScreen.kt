@@ -46,6 +46,8 @@ import pl.kazoroo.tavernFarkle.game.presentation.mainmenu.components.RevealOverl
 import pl.kazoroo.tavernFarkle.game.presentation.sound.SoundPlayer
 import pl.kazoroo.tavernFarkle.game.presentation.sound.SoundType
 
+private const val ONBOARDING_INITIAL_DELAY_MS = 1500L
+
 @Composable
 fun MainMenuScreen(
     navController: NavController,
@@ -55,16 +57,23 @@ fun MainMenuScreen(
     var isBettingDialogVisible by remember { mutableStateOf(false) }
     val revealCanvasState = rememberRevealCanvasState()
     val revealState = rememberRevealState()
+    val isFirstLaunch = mainMenuViewModel.isFirstLaunch.collectAsState().value
+    val onboardingStage = mainMenuViewModel.onboardingStage.collectAsState().value
 
-    LaunchedEffect(mainMenuViewModel.onboardingStage.value) {
-        when(mainMenuViewModel.onboardingStage.value) {
-            0 -> {
-                delay(1500L)
-                revealState.reveal(RevealableKeys.SpeedDialMenu)
+    LaunchedEffect(key1 = onboardingStage) {
+        if(isFirstLaunch) {
+            when(onboardingStage) {
+                RevealableKeys.SpeedDialMenu.ordinal -> {
+                    delay(ONBOARDING_INITIAL_DELAY_MS)
+                    revealState.reveal(RevealableKeys.SpeedDialMenu)
+                }
+                RevealableKeys.ShopButton.ordinal -> revealState.reveal(RevealableKeys.ShopButton)
+                RevealableKeys.InventoryButton.ordinal -> revealState.reveal(RevealableKeys.InventoryButton)
+                RevealableKeys.Hide.ordinal -> {
+                    revealState.hide()
+                    mainMenuViewModel.finishOnboarding()
+                }
             }
-            1 -> revealState.reveal(RevealableKeys.ShopButton)
-            2 -> revealState.reveal(RevealableKeys.InventoryButton)
-            3 -> revealState.hide()
         }
     }
 

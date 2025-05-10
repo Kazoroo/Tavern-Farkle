@@ -26,6 +26,7 @@ class ReadUserDataUseCase(private val userDataRepository: UserDataRepository) {
             UserDataKey.COINS -> "200" as T
             UserDataKey.IS_SOUND_ENABLED -> true as T
             UserDataKey.IS_MUSIC_ENABLED -> true as T
+            UserDataKey.IS_FIRST_LAUNCH -> true as T
         }
     }
 }
