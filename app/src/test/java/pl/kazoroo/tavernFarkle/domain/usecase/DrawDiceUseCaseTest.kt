@@ -19,6 +19,34 @@ class DrawDiceUseCaseTest {
         )
     )
 
+    @Test
+    fun `there are more active special dice than visible dice`() {
+        val useCase = DrawDiceUseCase()
+
+        val ownedSpecialDice = listOf(
+            OwnedSpecialDice(
+                name = SpecialDiceName.ROYAL_DICE,
+                count = 4,
+                isSelected = listOf(false, false, true, false)
+            ),
+            OwnedSpecialDice(
+                name = SpecialDiceName.SPIDERS_DICE,
+                count = 5,
+                isSelected = listOf(true, true, false, true, true)
+            )
+        )
+        val usedSpecialDice = listOf(
+            SpecialDiceName.SPIDERS_DICE,
+        )
+        val isDiceVisible = listOf(false, false, false, false, false, true)
+
+        useCase.invoke(
+            ownedSpecialDice,
+            usedSpecialDice,
+            isDiceVisible,
+            false
+        )
+    }
 
     @Test
     fun `simulate 2 throws of dice`() {
@@ -104,12 +132,6 @@ class DrawDiceUseCaseTest {
             isDiceVisible = List(6) { true },
             isOpponentTurn = true
         )
-        println("USER THROW: ")
-        println(throwResult.joinToString { "\n" + it.specialDiceName.toString() + " value " + it.value })
-        println("-------")
-        println("OPPONENT THROW: ")
-        println(opponentThrowResult.joinToString { "\n" + it.specialDiceName.toString() + " value " + it.value })
-
         val specialDiceName = opponentThrowResult.find { it.specialDiceName != null }?.specialDiceName
         val usedSpecialDice = if (specialDiceName != null) listOf(specialDiceName) else emptyList()
 
@@ -119,11 +141,6 @@ class DrawDiceUseCaseTest {
             isDiceVisible = List(2) { false } + List(4) { true },
             isOpponentTurn = true
         )
-
-        println("-------")
-        println("OPPONENT THROW: ")
-        println("usedSpecialDice: $usedSpecialDice")
-        println(secondOpponentThrowResult.joinToString { "\n" + it.specialDiceName.toString() + " value " + it.value })
 
         assert(throwResult.count { it.specialDiceName != null } != opponentThrowResult.count { it.specialDiceName != null })
         assert(secondOpponentThrowResult.count { it.specialDiceName != null }  == opponentThrowResult.count { it.specialDiceName != null } - 1)
