@@ -99,6 +99,8 @@ class MainActivity : ComponentActivity() {
             )
 
             DicesTheme {
+                enableEdgeToEdge()
+                
                 LaunchedEffect(Unit) {
                     val intent = Intent(this@MainActivity, MusicService::class.java).apply {
                         putExtra("MUSIC_ENABLED", isMusicEnabled)
