@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -168,22 +169,38 @@ fun GameScreen(
         }
 
         @Composable
-        fun gameResultAndSkuchaDialog(text: String, textColor: Color) {
+        fun gameResultAndSkuchaDialog(text: String, extraText: String?, textColor: Color) {
             Box(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier
+                    .fillMaxSize(),
                 contentAlignment = Alignment.Center
             ) {
-                Text(
-                    text = text,
-                    color = textColor,
-                    style = MaterialTheme.typography.displayLarge,
-                    modifier = Modifier
+                Column(
+                    modifier = Modifier.wrapContentSize()
                         .background(
                             color = Color(26, 26, 26, 220),
                             shape = RoundedCornerShape(dimensionResource(id = R.dimen.rounded_corner))
+                        ),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = text,
+                        color = textColor,
+                        style = MaterialTheme.typography.displayLarge,
+                        modifier = Modifier
+                            .padding(dimensionResource(id = R.dimen.medium_padding))
+                    )
+
+                    if(extraText != null) {
+                        Text(
+                            text = extraText,
+                            color = Color.White,
+                            style = MaterialTheme.typography.displayMedium,
+                            modifier = Modifier
+                                .padding(dimensionResource(id = R.dimen.medium_padding))
                         )
-                        .padding(dimensionResource(id = R.dimen.medium_padding))
-                )
+                    }
+                }
             }
         }
 
@@ -201,15 +218,22 @@ fun GameScreen(
         }
 
         if(isSkuchaDialogVisible) {
-            gameResultAndSkuchaDialog(text = "Skucha!", textColor = Color(212, 212, 212))
+            gameResultAndSkuchaDialog(
+                text = "Skucha!", textColor = Color(212, 212, 212),
+                extraText = null
+            )
         }
 
         if(isGameResultDialogVisible && isOpponentTurn) {
-            gameResultAndSkuchaDialog(text = "Defeat", textColor = DarkRed)
+            gameResultAndSkuchaDialog(
+                text = "Defeat", textColor = DarkRed,
+                extraText = "Next time will be better!"
+            )
         } else if(isGameResultDialogVisible) {
-            gameResultAndSkuchaDialog(text = "Win!", textColor = Color.Green)
+            gameResultAndSkuchaDialog(
+                text = "Win!", textColor = Color.Green,
+                extraText = "You are the champion!"
+            )
         }
     }
 }
-
-

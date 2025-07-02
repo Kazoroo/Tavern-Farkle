@@ -54,6 +54,13 @@ fun provideTypography(): Typography {
             shadow = Shadow(color = Color.Black)
         ),
 
+        displayMedium = TextStyle(
+            fontFamily = imFellEnglish,
+            fontWeight = FontWeight.Normal,
+            fontSize = 35.sp,
+            shadow = Shadow(color = Color.Black)
+        ),
+
         titleLarge = TextStyle(
             fontFamily = fenwickWoodtype,
             fontSize = if(screenWidthDp < 600) 80.sp else 130.sp,
