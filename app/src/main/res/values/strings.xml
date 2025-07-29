@@ -45,4 +45,7 @@
     <string name="here_you_can_read_the_rules">Here you can read the rules.</string>
     <string name="in_shop_you_buy_special_dice_that_gives_you_advantage">In shop you buy special dice, that gives you advantage.</string>
     <string name="in_inventory_you_select_dice_you_want_to_use_in_game">In inventory you select dice you want to use in game.</string>
+    <string name="play_online">Play online</string>
+    <string name="create_lobby">Create lobby</string>
+    <string name="join">Join</string>
 </resources>
