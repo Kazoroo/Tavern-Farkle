@@ -7,8 +7,9 @@ data class GameState(
     val gameUuid: UUID,
     val betAmount: Int,
     val isSkucha: Boolean,
-    val currentPlayerIndex: Int,
-    val players: List<Player>
+    val currentPlayerUuid: UUID,
+    val players: List<Player>,
+    val isGameEnd: Boolean
 )
 
 data class Player(
@@ -27,5 +28,6 @@ data class Dice(
     val value: Int,
     val isSelected: Boolean,
     val isVisible: Boolean,
-    val special: SpecialDiceName
+    val special: SpecialDiceName? = null,
+    val image: Int
 )
