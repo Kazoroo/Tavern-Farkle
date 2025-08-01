@@ -28,10 +28,10 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavHostController
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import pl.kazoroo.tavernFarkle.R
 import pl.kazoroo.tavernFarkle.core.data.presentation.BettingActions
 import pl.kazoroo.tavernFarkle.core.presentation.components.BackgroundImage
+import pl.kazoroo.tavernFarkle.game.data.repository.LocalGameRepository
 import pl.kazoroo.tavernFarkle.game.domain.model.TableData
 import pl.kazoroo.tavernFarkle.game.presentation.components.ButtonInfo
 import pl.kazoroo.tavernFarkle.game.presentation.components.SpeedDialMenu
@@ -48,10 +48,16 @@ fun GameScreen(
     navController: NavHostController,
     inventoryViewModel: InventoryViewModel
 ) {
-    val viewModel =  remember {
+    val viewModel2 =  remember {
         GameViewModel(
             bettingActions = bettingActions,
             ownedSpecialDices = inventoryViewModel.ownedSpecialDice.value
+        )
+    }
+
+    val viewModel =  remember {
+        GameViewModelRefactor(
+            repository = LocalGameRepository()
         )
     }
 
@@ -85,7 +91,7 @@ fun GameScreen(
 
     LaunchedEffect(isOpponentTurn) {
         if(!isOpponentTurn) {
-            viewModel.checkForSkucha(navController)
+            viewModel.checkForSkucha()
         }
     }
 
@@ -142,22 +148,14 @@ fun GameScreen(
                 ButtonInfo(
                     text = stringResource(id = R.string.score_and_roll_again),
                     onClick = {
-                        if(!isSkucha) {
-                            scope.launch {
-                                viewModel.prepareForNextThrow()
-                                delay(1000L)
-                                viewModel.checkForSkucha(navController)
-                            }
-                        } else { Unit }
+                        viewModel.onScoreAndRollAgain()
                     },
                     enabled = (selectedPoints != 0 && !isOpponentTurn) && !isGameEnd
                 ),
                 ButtonInfo(
                     text = stringResource(id = R.string.pass),
                     onClick = {
-                        if(!isSkucha) {
-                            viewModel.passTheRound(navController)
-                        } else { Unit }
+                        viewModel.onPass()
                     },
                     enabled = (selectedPoints != 0 && !isOpponentTurn) && !isGameEnd
                 ),
