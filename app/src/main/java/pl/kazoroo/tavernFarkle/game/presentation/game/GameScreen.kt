@@ -41,19 +41,21 @@ import pl.kazoroo.tavernFarkle.game.presentation.game.components.InteractiveDice
 import pl.kazoroo.tavernFarkle.game.presentation.game.components.PointsTable
 import pl.kazoroo.tavernFarkle.shop.presentation.inventory.InventoryViewModel
 import pl.kazoroo.tavernFarkle.ui.theme.DarkRed
+import java.util.UUID
 
 @Composable
 fun GameScreen(
     bettingActions: BettingActions,
     navController: NavHostController,
-    inventoryViewModel: InventoryViewModel
+    inventoryViewModel: InventoryViewModel,
+    playerUuid: UUID
 ) {
-    val viewModel2 =  remember {
+/*    val viewModel2 =  remember {
         GameViewModel(
             bettingActions = bettingActions,
             ownedSpecialDices = inventoryViewModel.ownedSpecialDice.value
         )
-    }
+    }*/
 
     val viewModel =  remember {
         GameViewModelRefactor(
@@ -61,25 +63,30 @@ fun GameScreen(
         )
     }
 
-    val isSkucha = viewModel.skuchaState.collectAsState().value
-    val isGameEnd = viewModel.isGameEnd.collectAsState().value
-    val isOpponentTurn = viewModel.isOpponentTurn.collectAsState().value
-    val selectedPoints = viewModel.userPointsState.collectAsState().value.selectedPoints
+    val isSkucha = viewModel.gameState.collectAsState().value.isSkucha
+    val isGameEnd = viewModel.gameState.collectAsState().value.isGameEnd
+    val currentPlayerUuid = viewModel.gameState.collectAsState().value.currentPlayerUuid
+    val currentPlayerIndex = viewModel.gameState.collectAsState().value.players.indexOfFirst {
+        it.uuid == currentPlayerUuid
+    }
+    val isOpponentTurn = currentPlayerUuid == playerUuid
+    val selectedPoints = viewModel.gameState.collectAsState().value.players[0].selectedPoints
+
     val tableData = listOf(
         TableData(
             pointsType = stringResource(R.string.total),
-            yourPoints = viewModel.userPointsState.collectAsState().value.totalPoints.toString(),
-            opponentPoints = viewModel.opponentPointsState.collectAsState().value.totalPoints.toString()
+            yourPoints = viewModel.gameState.collectAsState().value.players[0].totalPoints.toString(),
+            opponentPoints = viewModel.gameState.collectAsState().value.players[1].totalPoints.toString()
         ),
         TableData(
             pointsType = stringResource(R.string.round),
-            yourPoints = viewModel.userPointsState.collectAsState().value.roundPoints.toString(),
-            opponentPoints = viewModel.opponentPointsState.collectAsState().value.roundPoints.toString()
+            yourPoints = viewModel.gameState.collectAsState().value.players[0].roundPoints.toString(),
+            opponentPoints = viewModel.gameState.collectAsState().value.players[1].roundPoints.toString()
         ),
         TableData(
             pointsType = stringResource(R.string.selected_forDices),
             yourPoints = selectedPoints.toString(),
-            opponentPoints = viewModel.opponentPointsState.collectAsState().value.selectedPoints.toString()
+            opponentPoints = viewModel.gameState.collectAsState().value.players[1].selectedPoints.toString()
         ),
     )
     val scope = rememberCoroutineScope()
@@ -89,11 +96,7 @@ fun GameScreen(
         showExitDialog.value = true
     }
 
-    LaunchedEffect(isOpponentTurn) {
-        if(!isOpponentTurn) {
-            viewModel.checkForSkucha()
-        }
-    }
+    // NOTE: here was LaunchedEffect checking for skucha, may be needed in future.
 
     if(showExitDialog.value) {
         ExitDialog(
@@ -132,15 +135,14 @@ fun GameScreen(
             }
 
             InteractiveDiceLayout(
-                diceState = viewModel.diceState.collectAsState().value,
+                diceState = viewModel.gameState.collectAsState().value.players[currentPlayerIndex].diceSet,
                 diceOnClick = { index ->
-                    if(!viewModel.skuchaState.value) {
+                    if(!isSkucha) {
                         viewModel.toggleDiceSelection(index)
                     }
                 },
                 isDiceClickable = !isOpponentTurn && !isGameEnd,
-                isDiceAnimating = viewModel.isDiceAnimating.collectAsState().value,
-                isDiceVisibleAfterGameEnd = viewModel.isDiceVisibleAfterGameEnd.collectAsState().value
+                isDiceAnimating = false, //viewModel.isDiceAnimating.collectAsState().value,
             )
             Spacer(modifier = Modifier.weight(1f))
 
