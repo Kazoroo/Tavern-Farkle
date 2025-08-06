@@ -3,7 +3,6 @@ package pl.kazoroo.tavernFarkle.game.domain.usecase
 import pl.kazoroo.tavernFarkle.R
 import pl.kazoroo.tavernFarkle.core.data.local.repository.SpecialDiceList
 import pl.kazoroo.tavernFarkle.game.domain.model.Dice
-import pl.kazoroo.tavernFarkle.shop.data.model.OwnedSpecialDice
 import pl.kazoroo.tavernFarkle.shop.domain.model.SpecialDiceName
 import kotlin.random.Random
 
@@ -20,44 +19,55 @@ class DrawDiceUseCase {
     private val opponentSpecialDiceList = List(Random.nextInt(until = 5)) {
         SpecialDiceList.specialDiceList.random().name
     }
+    /*
+        /**
+         * Constructs a list of 6 dice objects, including special dice specified by name, and filling any remaining slots with regular dice.
+         *
+         * @param ownedSpecialDices list of all special dice owned by the user
+         * @param usedSpecialDice a list of special dice used during the game, meaning that they will not be used in further draws
+         * @param isDiceVisible list of booleans indicating whether each dice should be visible or not
+         *
+         * @return A list of 6 Dice objects, containing the specified special dice and regular dice if needed, in random order.
+         */
 
-    /**
-     * Constructs a list of 6 dice objects, including special dice specified by name, and filling any remaining slots with regular dice.
-     *
-     * @param ownedSpecialDices list of all special dice owned by the user
-     * @param usedSpecialDice a list of special dice used during the game, meaning that they will not be used in further draws
-     * @param isDiceVisible list of booleans indicating whether each dice should be visible or not
-     *
-     * @return A list of 6 Dice objects, containing the specified special dice and regular dice if needed, in random order.
-     */
-    operator fun invoke(
-        ownedSpecialDices: List<OwnedSpecialDice>,
-        usedSpecialDice: List<SpecialDiceName>,
-        isDiceVisible: List<Boolean>,
-        isOpponentTurn: Boolean
-    ): List<Dice> {
-        if(isOpponentTurn) {
-            val notUsedSpecialDice = opponentSpecialDiceList.toMutableList().apply {
-                usedSpecialDice.forEach { used ->
-                    remove(used)
+        operator fun invoke(
+            ownedSpecialDices: List<OwnedSpecialDice>,
+            usedSpecialDice: List<SpecialDiceName>,
+            isDiceVisible: List<Boolean>,
+            isOpponentTurn: Boolean
+        ): List<Dice> {
+            if(isOpponentTurn) {
+                val notUsedSpecialDice = opponentSpecialDiceList.toMutableList().apply {
+                    usedSpecialDice.forEach { used ->
+                        remove(used)
+                    }
                 }
-            }
 
-            return constructRandomDiceListWithSpecials(notUsedSpecialDice, isDiceVisible)
-        } else {
-            val inGameSpecialDiceNames = ownedSpecialDices.flatMap { dice ->
-                dice.isSelected.mapIndexedNotNull { _, isSelected ->
-                    if (isSelected) dice.name else null
+                return constructRandomDiceListWithSpecials(notUsedSpecialDice, isDiceVisible)
+            } else {
+                val inGameSpecialDiceNames = ownedSpecialDices.flatMap { dice ->
+                    dice.isSelected.mapIndexedNotNull { _, isSelected ->
+                        if (isSelected) dice.name else null
+                    }
                 }
-            }
 
-            val notUsedSpecialDice = inGameSpecialDiceNames.toMutableList().apply {
-                usedSpecialDice.forEach { used ->
-                    remove(used)
+                val notUsedSpecialDice = inGameSpecialDiceNames.toMutableList().apply {
+                    usedSpecialDice.forEach { used ->
+                        remove(used)
+                    }
                 }
-            }
 
-            return constructRandomDiceListWithSpecials(notUsedSpecialDice, isDiceVisible)
+                return constructRandomDiceListWithSpecials(notUsedSpecialDice, isDiceVisible)
+            }
+        }
+    */
+
+    operator fun invoke(): List<Dice> {
+        return List(6) {
+            Dice(
+                value = 3,
+                image = diceDrawables[0]
+            )
         }
     }
 

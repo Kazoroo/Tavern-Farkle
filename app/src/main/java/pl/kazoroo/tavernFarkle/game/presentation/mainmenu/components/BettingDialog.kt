@@ -16,7 +16,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -31,17 +30,15 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import pl.kazoroo.tavernFarkle.R
-import pl.kazoroo.tavernFarkle.core.presentation.CoinsViewModel
 import pl.kazoroo.tavernFarkle.ui.theme.DarkRed
 
 @Composable
 fun BettingDialog(
-    onClick: () -> Unit,
+    onClick: (betAmount: String) -> Unit,
     onCloseClick: () -> Unit,
-    coinsViewModel: CoinsViewModel,
+    coinsAmount: Int,
 ) {
     var betAmount by remember { mutableStateOf("0") }
-    val coinsAmount = coinsViewModel.coinsAmount.collectAsState().value.toInt()
 
     Dialog(
         onDismissRequest = onCloseClick
@@ -120,8 +117,7 @@ fun BettingDialog(
 
             Button(
                 onClick = {
-                    onClick()
-                    coinsViewModel.setBetValue(betAmount)
+                    onClick(betAmount)
                 },
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)

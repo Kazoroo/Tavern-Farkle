@@ -8,6 +8,7 @@ import androidx.navigation.compose.rememberNavController
 import pl.kazoroo.tavernFarkle.core.presentation.CoinsViewModel
 import pl.kazoroo.tavernFarkle.di.DependencyContainer
 import pl.kazoroo.tavernFarkle.game.presentation.game.GameScreen
+import pl.kazoroo.tavernFarkle.game.presentation.game.GameViewModelRefactor
 import pl.kazoroo.tavernFarkle.game.presentation.mainmenu.MainMenuScreen
 import pl.kazoroo.tavernFarkle.game.presentation.mainmenu.MainMenuViewModel
 import pl.kazoroo.tavernFarkle.multiplayer.presentation.LobbyScreen
@@ -25,7 +26,8 @@ fun Navigation(
     mainMenuViewModel: MainMenuViewModel,
     coinsViewModel: CoinsViewModel,
     inventoryViewModel: InventoryViewModel,
-    settingsViewModel: SettingsViewModel
+    settingsViewModel: SettingsViewModel,
+    gameViewModel: GameViewModelRefactor
 ) {
     val navController = rememberNavController()
 
@@ -46,10 +48,9 @@ fun Navigation(
             route = Screen.GameScreen.route
         ) {
             GameScreen(
-                bettingActions = coinsViewModel,
                 navController = navController,
-                inventoryViewModel = inventoryViewModel,
-                playerUuid = UUID.randomUUID()
+                playerUuid = UUID.randomUUID(),
+                viewModel = gameViewModel
             )
         }
         composable(

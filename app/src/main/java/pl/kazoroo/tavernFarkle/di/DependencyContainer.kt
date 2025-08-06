@@ -7,6 +7,8 @@ import pl.kazoroo.tavernFarkle.core.domain.ReadUserDataUseCase
 import pl.kazoroo.tavernFarkle.core.domain.SaveUserDataUseCase
 import pl.kazoroo.tavernFarkle.core.presentation.CoinsViewModel
 import pl.kazoroo.tavernFarkle.core.presentation.viewModelFactoryHelper
+import pl.kazoroo.tavernFarkle.game.data.repository.LocalGameRepository
+import pl.kazoroo.tavernFarkle.game.presentation.game.GameViewModelRefactor
 import pl.kazoroo.tavernFarkle.game.presentation.mainmenu.MainMenuViewModel
 import pl.kazoroo.tavernFarkle.settings.presentation.SettingsViewModel
 import pl.kazoroo.tavernFarkle.shop.domain.InventoryDataRepositoryImpl
@@ -28,6 +30,9 @@ class DependencyContainer(
     }
     val readUserDataUseCase by lazy {
         ReadUserDataUseCase(userDataRepository)
+    }
+    val localGameRepository by lazy {
+        LocalGameRepository()
     }
 
     val settingsViewModelFactory: ViewModelProvider.Factory
@@ -53,7 +58,14 @@ class DependencyContainer(
         get() = viewModelFactoryHelper {
             MainMenuViewModel(
                 saveUserDataUseCase = saveUserDataUseCase,
-                readUserDataUseCase = readUserDataUseCase
+                readUserDataUseCase = readUserDataUseCase,
+                gameRepository = localGameRepository
+            )
+        }
+    val gameViewModelFactory: ViewModelProvider.Factory
+        get() = viewModelFactoryHelper {
+            GameViewModelRefactor(
+                repository = localGameRepository
             )
         }
 }

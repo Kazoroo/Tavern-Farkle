@@ -18,7 +18,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -29,9 +28,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavHostController
 import kotlinx.coroutines.delay
 import pl.kazoroo.tavernFarkle.R
-import pl.kazoroo.tavernFarkle.core.data.presentation.BettingActions
 import pl.kazoroo.tavernFarkle.core.presentation.components.BackgroundImage
-import pl.kazoroo.tavernFarkle.game.data.repository.LocalGameRepository
 import pl.kazoroo.tavernFarkle.game.domain.model.TableData
 import pl.kazoroo.tavernFarkle.game.presentation.components.ButtonInfo
 import pl.kazoroo.tavernFarkle.game.presentation.components.SpeedDialMenu
@@ -39,64 +36,47 @@ import pl.kazoroo.tavernFarkle.game.presentation.game.components.ExitDialog
 import pl.kazoroo.tavernFarkle.game.presentation.game.components.GameButtons
 import pl.kazoroo.tavernFarkle.game.presentation.game.components.InteractiveDiceLayout
 import pl.kazoroo.tavernFarkle.game.presentation.game.components.PointsTable
-import pl.kazoroo.tavernFarkle.shop.presentation.inventory.InventoryViewModel
 import pl.kazoroo.tavernFarkle.ui.theme.DarkRed
 import java.util.UUID
 
 @Composable
 fun GameScreen(
-    bettingActions: BettingActions,
     navController: NavHostController,
-    inventoryViewModel: InventoryViewModel,
-    playerUuid: UUID
+    playerUuid: UUID,
+    viewModel: GameViewModelRefactor
 ) {
-/*    val viewModel2 =  remember {
-        GameViewModel(
-            bettingActions = bettingActions,
-            ownedSpecialDices = inventoryViewModel.ownedSpecialDice.value
-        )
-    }*/
+    val state by viewModel.gameState.collectAsState()
 
-    val viewModel =  remember {
-        GameViewModelRefactor(
-            repository = LocalGameRepository()
-        )
+    val currentPlayerIndex = state.players.indexOfFirst {
+        it.uuid == state.currentPlayerUuid
     }
-
-    val isSkucha = viewModel.gameState.collectAsState().value.isSkucha
-    val isGameEnd = viewModel.gameState.collectAsState().value.isGameEnd
-    val currentPlayerUuid = viewModel.gameState.collectAsState().value.currentPlayerUuid
-    val currentPlayerIndex = viewModel.gameState.collectAsState().value.players.indexOfFirst {
-        it.uuid == currentPlayerUuid
-    }
-    val isOpponentTurn = currentPlayerUuid == playerUuid
-    val selectedPoints = viewModel.gameState.collectAsState().value.players[0].selectedPoints
+    val isOpponentTurn = state.currentPlayerUuid == playerUuid
+    val selectedPoints = state.players[0].selectedPoints
 
     val tableData = listOf(
         TableData(
             pointsType = stringResource(R.string.total),
-            yourPoints = viewModel.gameState.collectAsState().value.players[0].totalPoints.toString(),
-            opponentPoints = viewModel.gameState.collectAsState().value.players[1].totalPoints.toString()
+            yourPoints = state.players[0].totalPoints.toString(),
+            opponentPoints = state.players[1].totalPoints.toString()
         ),
         TableData(
             pointsType = stringResource(R.string.round),
-            yourPoints = viewModel.gameState.collectAsState().value.players[0].roundPoints.toString(),
-            opponentPoints = viewModel.gameState.collectAsState().value.players[1].roundPoints.toString()
+            yourPoints = state.players[0].roundPoints.toString(),
+            opponentPoints = state.players[1].roundPoints.toString()
         ),
         TableData(
             pointsType = stringResource(R.string.selected_forDices),
             yourPoints = selectedPoints.toString(),
-            opponentPoints = viewModel.gameState.collectAsState().value.players[1].selectedPoints.toString()
+            opponentPoints = state.players[1].selectedPoints.toString()
         ),
     )
-    val scope = rememberCoroutineScope()
     val showExitDialog = remember { mutableStateOf(false) }
 
     BackHandler {
         showExitDialog.value = true
     }
 
-    // NOTE: here was LaunchedEffect checking for skucha, may be needed in future.
+    // TODO: here was LaunchedEffect checking for skucha, may be needed in future.
 
     if(showExitDialog.value) {
         ExitDialog(
@@ -135,14 +115,14 @@ fun GameScreen(
             }
 
             InteractiveDiceLayout(
-                diceState = viewModel.gameState.collectAsState().value.players[currentPlayerIndex].diceSet,
+                diceState = state.players[currentPlayerIndex].diceSet,
                 diceOnClick = { index ->
-                    if(!isSkucha) {
+                    if(!state.isSkucha) {
                         viewModel.toggleDiceSelection(index)
                     }
                 },
-                isDiceClickable = !isOpponentTurn && !isGameEnd,
-                isDiceAnimating = false, //viewModel.isDiceAnimating.collectAsState().value,
+                isDiceClickable = !isOpponentTurn && !state.isGameEnd,
+                isDiceAnimating = false, //viewModel.isDiceAnimating.collectAsState().value, TODO: add animations
             )
             Spacer(modifier = Modifier.weight(1f))
 
@@ -152,14 +132,14 @@ fun GameScreen(
                     onClick = {
                         viewModel.onScoreAndRollAgain()
                     },
-                    enabled = (selectedPoints != 0 && !isOpponentTurn) && !isGameEnd
+                    enabled = (selectedPoints != 0 && !isOpponentTurn) && !state.isGameEnd
                 ),
                 ButtonInfo(
                     text = stringResource(id = R.string.pass),
                     onClick = {
                         viewModel.onPass()
                     },
-                    enabled = (selectedPoints != 0 && !isOpponentTurn) && !isGameEnd
+                    enabled = (selectedPoints != 0 && !isOpponentTurn) && !state.isGameEnd
                 ),
             )
 
@@ -207,14 +187,14 @@ fun GameScreen(
         var isSkuchaDialogVisible by remember { mutableStateOf(false) }
         var isGameResultDialogVisible by remember { mutableStateOf(false) }
 
-        LaunchedEffect(isSkucha) {
-            isSkuchaDialogVisible = isSkucha
+        LaunchedEffect(state.isSkucha) {
+            isSkuchaDialogVisible = state.isSkucha
         }
 
-        LaunchedEffect(isGameEnd) {
+        LaunchedEffect(state.isGameEnd) {
             delay(1000L)
 
-            isGameResultDialogVisible = isGameEnd
+            isGameResultDialogVisible = state.isGameEnd
         }
 
         if(isSkuchaDialogVisible) {
