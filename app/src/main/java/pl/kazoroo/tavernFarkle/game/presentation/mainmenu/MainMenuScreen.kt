@@ -96,11 +96,13 @@ fun MainMenuScreen(
             onCloseClick = {
                 isBettingDialogVisible = false
             },
-            onClick = {
+            onClick = { betAmount ->
+                mainMenuViewModel.startNewGame(betAmount = betAmount.toInt())
                 SoundPlayer.playSound(SoundType.CLICK)
                 navController.navigate(Screen.GameScreen.withArgs())
+                coinsViewModel.setBetValue(betAmount)
             },
-            coinsViewModel = coinsViewModel
+            coinsAmount = coinsViewModel.coinsAmount.collectAsState().value.toInt()
         )
     }
 }
