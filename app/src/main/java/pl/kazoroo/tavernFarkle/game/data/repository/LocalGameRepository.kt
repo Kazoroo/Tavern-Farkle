@@ -3,6 +3,7 @@ package pl.kazoroo.tavernFarkle.game.data.repository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import pl.kazoroo.tavernFarkle.game.domain.model.GameState
 import pl.kazoroo.tavernFarkle.game.domain.repository.GameRepository
 import java.util.UUID
@@ -24,7 +25,20 @@ class LocalGameRepository: GameRepository {
     }
 
     override fun toggleDiceSelection(index: Int) {
-        TODO("Not yet implemented")
+        val currentState = _gameState.value
+        val currentPlayerIndex = currentState.getCurrentPlayerIndex()
+        val currentPlayer = currentState.players[currentPlayerIndex]
+
+        val updatedDiceSet = currentPlayer.diceSet.toMutableList().also {
+            val old = it[index]
+            it[index] = old.copy(isSelected = !old.isSelected)
+        }
+
+        val updatedPlayers = currentState.players.toMutableList().also {
+            it[currentPlayerIndex] = currentPlayer.copy(diceSet = updatedDiceSet)
+        }
+
+        _gameState.update { it.copy(players = updatedPlayers) }
     }
 
     override fun passTheRound() {

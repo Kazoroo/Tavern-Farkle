@@ -47,9 +47,7 @@ fun GameScreen(
 ) {
     val state by viewModel.gameState.collectAsState()
 
-    val currentPlayerIndex = state.players.indexOfFirst {
-        it.uuid == state.currentPlayerUuid
-    }
+    val currentPlayerIndex = state.getCurrentPlayerIndex()
     val isOpponentTurn = state.currentPlayerUuid == playerUuid
     val selectedPoints = state.players[0].selectedPoints
 
