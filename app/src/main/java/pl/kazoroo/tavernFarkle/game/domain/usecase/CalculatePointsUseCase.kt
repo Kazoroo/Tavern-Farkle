@@ -1,15 +1,17 @@
 package pl.kazoroo.tavernFarkle.game.domain.usecase
 
 import pl.kazoroo.tavernFarkle.game.domain.model.Dice
+import pl.kazoroo.tavernFarkle.game.domain.repository.GameRepository
 
-class CalculatePointsUseCase {
+class CalculatePointsUseCase(
+    private val repository: GameRepository,
+) {
     operator fun invoke(
         diceList: List<Dice>,
-        isDiceSelected: List<Boolean>,
         includeNonScoringDice: Boolean = true
     ): Int {
-        val valuesOfSelectedDicesList: List<Int> = diceList.mapIndexed { index, dice ->
-            if (isDiceSelected[index]) dice.value else 0
+        val valuesOfSelectedDicesList: List<Int> = diceList.map { dice ->
+            if (dice.isSelected) dice.value else 0
         }.filter { it > 0 }
 
         val occurrencesMap: Map<Int, Int> = valuesOfSelectedDicesList.groupingBy { it }.eachCount()
@@ -34,7 +36,11 @@ class CalculatePointsUseCase {
         }
 
         val isAvailablePoints = nonScoringDice.isEmpty() || !includeNonScoringDice
-        return if(isAvailablePoints) points else 0
+
+        val selectedPoints = if(isAvailablePoints) points else 0
+        repository.savePoints(selectedPoints)
+
+        return selectedPoints
     }
 
     private fun calculatePointsForSingleDiceValues(
