@@ -65,7 +65,7 @@ class DrawDiceUseCase {
     operator fun invoke(): List<Dice> {
         return List(6) {
             Dice(
-                value = 3,
+                value = 1,
                 image = diceDrawables[0]
             )
         }
