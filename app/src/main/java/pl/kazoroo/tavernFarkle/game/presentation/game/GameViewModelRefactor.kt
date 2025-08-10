@@ -1,9 +1,7 @@
 package pl.kazoroo.tavernFarkle.game.presentation.game
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.launch
 import pl.kazoroo.tavernFarkle.game.domain.model.GameState
 import pl.kazoroo.tavernFarkle.game.domain.repository.GameRepository
 import pl.kazoroo.tavernFarkle.game.domain.usecase.CalculatePointsUseCase
@@ -22,15 +20,13 @@ class GameViewModelRefactor(
 
     fun onPass() {
         if(!gameState.value.isSkucha) {
-            viewModelScope.launch {
-                repository.passTheRound()
-            }
+            repository.passTheRound()
+            //repository.sumTotalPoints()
         }
     }
 
     fun onScoreAndRollAgain() {
-        viewModelScope.launch {
-            repository.scoreAndRollAgain()
-        }
+        repository.sumRoundPoints()
+        repository.hideSelectedDice()
     }
 }
