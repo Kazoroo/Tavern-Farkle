@@ -38,8 +38,8 @@ class CalculatePointsUseCase(
         val isAvailablePoints = nonScoringDice.isEmpty() || !includeNonScoringDice
 
         val selectedPoints = if(isAvailablePoints) points else 0
-        repository.savePoints(selectedPoints)
 
+        repository.updateSelectedPoints(selectedPoints)
         return selectedPoints
     }
 
