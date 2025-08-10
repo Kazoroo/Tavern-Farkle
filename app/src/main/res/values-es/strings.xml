@@ -38,8 +38,8 @@
     <string name="open_source">de código abierto</string>
     <string name="music">Música: </string>
     <string name="sound">Sonido: </string>
-    <string name="yes">Sí</string>
-    <string name="no">No</string>
+    <string name="leave">Salir</string>
+    <string name="cancel">Cancelar</string>
     <string name="settings">Configuración</string>
     <string name="tutorial">Tutorial</string>
     <string name="select_dice_you_want_to_use_in_the_game">Elige los dados que quieres usar en el juego</string>
