@@ -8,6 +8,7 @@ interface GameRepository {
     fun saveGameState(gameState: GameState)
     fun savePoints(selectedPoints: Int)
     fun toggleDiceSelection(index: Int)
+    fun sumRoundPoints()
+    fun hideSelectedDice()
     fun passTheRound()
-    fun scoreAndRollAgain()
 }
