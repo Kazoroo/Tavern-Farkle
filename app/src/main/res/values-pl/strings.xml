@@ -38,8 +38,8 @@
     <string name="open_source">otwartoźródłowa</string>
     <string name="music">Muzyka: </string>
     <string name="sound">Dźwięk: </string>
-    <string name="yes">Tak</string>
-    <string name="no">Nie</string>
+    <string name="leave">Wyjdź</string>
+    <string name="cancel">Anuluj</string>
     <string name="settings">Ustawienia</string>
     <string name="tutorial">Samouczek</string>
     <string name="select_dice_you_want_to_use_in_the_game">Wybierz kości które chcesz użyć w grze</string>
