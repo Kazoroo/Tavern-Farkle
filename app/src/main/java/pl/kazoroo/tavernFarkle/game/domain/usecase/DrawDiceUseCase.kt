@@ -3,10 +3,13 @@ package pl.kazoroo.tavernFarkle.game.domain.usecase
 import pl.kazoroo.tavernFarkle.R
 import pl.kazoroo.tavernFarkle.core.data.local.repository.SpecialDiceList
 import pl.kazoroo.tavernFarkle.game.domain.model.Dice
+import pl.kazoroo.tavernFarkle.game.domain.repository.GameRepository
 import pl.kazoroo.tavernFarkle.shop.domain.model.SpecialDiceName
 import kotlin.random.Random
 
-class DrawDiceUseCase {
+class DrawDiceUseCase(
+    private val repository: GameRepository
+) {
     private val diceDrawables = listOf(
         R.drawable.dice_1,
         R.drawable.dice_2,
@@ -63,12 +66,17 @@ class DrawDiceUseCase {
     */
 
     operator fun invoke(): List<Dice> {
-        return List(6) {
+        val newDice = List(6) {
+            val value = Random.nextInt(until = 6)
+
             Dice(
-                value = 1,
-                image = diceDrawables[0]
+                value = value + 1,
+                image = diceDrawables[value]
             )
         }
+        if(repository.gameState.value.players.isNotEmpty()) repository.updateDiceSet(newDice)
+
+        return newDice
     }
 
     /**
