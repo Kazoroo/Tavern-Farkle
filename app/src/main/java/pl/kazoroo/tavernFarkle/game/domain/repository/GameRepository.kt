@@ -1,6 +1,7 @@
 package pl.kazoroo.tavernFarkle.game.domain.repository
 
 import kotlinx.coroutines.flow.StateFlow
+import pl.kazoroo.tavernFarkle.game.domain.model.Dice
 import pl.kazoroo.tavernFarkle.game.domain.model.GameState
 
 interface GameRepository {
@@ -11,4 +12,5 @@ interface GameRepository {
     fun sumRoundPoints()
     fun hideSelectedDice()
     fun passTheRound()
+    fun updateDiceSet(newDice: List<Dice>)
 }

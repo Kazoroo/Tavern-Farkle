@@ -5,10 +5,12 @@ import kotlinx.coroutines.flow.StateFlow
 import pl.kazoroo.tavernFarkle.game.domain.model.GameState
 import pl.kazoroo.tavernFarkle.game.domain.repository.GameRepository
 import pl.kazoroo.tavernFarkle.game.domain.usecase.CalculatePointsUseCase
+import pl.kazoroo.tavernFarkle.game.domain.usecase.DrawDiceUseCase
 
 class GameViewModelRefactor(
     private val repository: GameRepository,
-    private val calculatePointsUseCase: CalculatePointsUseCase
+    private val calculatePointsUseCase: CalculatePointsUseCase,
+    private val drawDiceUseCase: DrawDiceUseCase
 ): ViewModel() {
     val gameState: StateFlow<GameState> = repository.gameState
 
@@ -28,5 +30,6 @@ class GameViewModelRefactor(
     fun onScoreAndRollAgain() {
         repository.sumRoundPoints()
         repository.hideSelectedDice()
+        drawDiceUseCase()
     }
 }
