@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.update
 
 import pl.kazoroo.tavernFarkle.game.domain.model.Dice
 import pl.kazoroo.tavernFarkle.game.domain.model.GameState
+import pl.kazoroo.tavernFarkle.game.domain.model.Player
 import pl.kazoroo.tavernFarkle.game.domain.repository.GameRepository
 import java.util.UUID
 
@@ -22,6 +23,12 @@ class LocalGameRepository: GameRepository {
     )
     override val gameState: StateFlow<GameState> = _gameState.asStateFlow()
 
+    val currentPlayerIndex: Int
+        get() = _gameState.value.getCurrentPlayerIndex()
+
+    val currentPlayer: Player
+        get() = _gameState.value.players[currentPlayerIndex]
+
     /**
      * Saves provided data as the current game state. Used to initialize game data.
      * @param gameState state to save.
@@ -36,13 +43,12 @@ class LocalGameRepository: GameRepository {
      */
     override fun toggleDiceSelection(index: Int) {
         val state = _gameState.value
-        val playerIndex = state.getCurrentPlayerIndex()
 
         val updatedPlayers = state.players.toMutableList()
-        val updatedDiceSet = updatedPlayers[playerIndex].diceSet.toMutableList()
+        val updatedDiceSet = updatedPlayers[currentPlayerIndex].diceSet.toMutableList()
 
         updatedDiceSet[index] = updatedDiceSet[index].copy(isSelected = !updatedDiceSet[index].isSelected)
-        updatedPlayers[playerIndex] = updatedPlayers[playerIndex].copy(diceSet = updatedDiceSet)
+        updatedPlayers[currentPlayerIndex] = updatedPlayers[currentPlayerIndex].copy(diceSet = updatedDiceSet)
 
         _gameState.update { it.copy(players = updatedPlayers) }
     }
@@ -53,7 +59,6 @@ class LocalGameRepository: GameRepository {
      */
     override fun updateSelectedPoints(selectedPoints: Int) {
         _gameState.update { state ->
-            val currentPlayerIndex = state.getCurrentPlayerIndex()
             val playersWithUpdatedPoints = state.players.toMutableList().apply {
                 this[currentPlayerIndex] = this[currentPlayerIndex].copy(selectedPoints = selectedPoints)
             }
@@ -67,7 +72,6 @@ class LocalGameRepository: GameRepository {
      */
     override fun sumRoundPoints() {
         _gameState.update { state ->
-            val currentPlayerIndex = state.getCurrentPlayerIndex()
             val roundPoints = state.players[currentPlayerIndex].roundPoints
             val selectedPoints = state.players[currentPlayerIndex].selectedPoints
 
@@ -86,9 +90,6 @@ class LocalGameRepository: GameRepository {
      * Updates the dice visibility state for the current player based on their selected state.
      */
     override fun hideSelectedDice() {
-        val currentPlayerIndex = _gameState.value.getCurrentPlayerIndex()
-        val currentPlayer = _gameState.value.players[currentPlayerIndex]
-
         val updatedDiceList = currentPlayer.diceSet.map { dice ->
             if (dice.isSelected) dice.copy(isVisible = false, isSelected = false)
             else dice
@@ -108,8 +109,6 @@ class LocalGameRepository: GameRepository {
      * @param newDice The new dice set to be assigned to the current player state.
      */
     override fun updateDiceSet(newDice: List<Dice>) {
-        val currentPlayer = _gameState.value.players[currentPlayerIndex]
-
         val updatedDiceSet = currentPlayer.diceSet.toMutableList().apply {
             clear()
             addAll(newDice)
