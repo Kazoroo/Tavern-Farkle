@@ -1,6 +1,7 @@
 package pl.kazoroo.tavernFarkle.data.repository
 
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
@@ -9,6 +10,7 @@ import pl.kazoroo.tavernFarkle.game.domain.model.Dice
 import pl.kazoroo.tavernFarkle.game.domain.model.GameState
 import pl.kazoroo.tavernFarkle.game.domain.model.Player
 import java.util.UUID
+import kotlin.test.assertNotEquals
 
 class LocalGameRepositoryTest {
     lateinit var repository: LocalGameRepository
@@ -89,8 +91,68 @@ class LocalGameRepositoryTest {
         assertEquals(isDiceVisible, repository.currentPlayer.diceSet[0].isVisible)
 
         repository.toggleDiceSelection(0)
-        assertTrue(!repository.currentPlayer.diceSet[0].isSelected)
+        assertFalse(repository.currentPlayer.diceSet[0].isSelected)
         assertEquals(diceValue, repository.currentPlayer.diceSet[0].value)
         assertEquals(isDiceVisible, repository.currentPlayer.diceSet[0].isVisible)
+    }
+
+    @Test
+    fun `updateSelectedPoints should update current player selected points`() {
+        repository.updateSelectedPoints(300)
+        assertEquals(300, repository.currentPlayer.selectedPoints)
+    }
+
+    @Test
+    fun `sumRoundPoints should add selected points to round points and reset selected only for current player`() {
+        repository.sumRoundPoints()
+
+        val updatedPlayer = repository.gameState.value.players[0]
+        assertEquals(900, updatedPlayer.totalPoints)
+        assertEquals(250, updatedPlayer.roundPoints)
+        assertEquals(0, updatedPlayer.selectedPoints)
+
+        val secondPlayer = repository.gameState.value.players[1]
+        assertEquals(1200, secondPlayer.totalPoints)
+        assertEquals(0, secondPlayer.roundPoints)
+        assertEquals(0, secondPlayer.selectedPoints)
+    }
+
+    @Test
+    fun `hideSelectedDice should hide and deselect selected dice`() {
+        repository.toggleDiceSelection(0)
+        repository.toggleDiceSelection(4)
+        repository.hideSelectedDice()
+
+        repository.currentPlayer.diceSet.forEachIndexed { index, dice ->
+            if (index == 0 || index == 4) {
+                assertFalse(dice.isVisible)
+                assertFalse(dice.isSelected)
+            } else {
+                assertTrue(dice.isVisible)
+                assertFalse(dice.isSelected)
+            }
+        }
+    }
+
+    @Test
+    fun `hideSelectedDice when no selected dice should not change anything`() {
+        repository.hideSelectedDice()
+
+        repository.currentPlayer.diceSet.forEachIndexed { index, dice ->
+            assertTrue(dice.isVisible)
+            assertFalse(dice.isSelected)
+        }
+    }
+
+    @Test
+    fun `updateDiceSet correctly changes diceSet only for current player`() {
+        val newDiceSet = List(6) { index ->
+            Dice(value = 77, image = index)
+        }
+
+        repository.updateDiceSet(newDiceSet)
+
+        assertEquals(newDiceSet, repository.currentPlayer.diceSet)
+        assertNotEquals(newDiceSet, repository.gameState.value.players[1].diceSet)
     }
 }
