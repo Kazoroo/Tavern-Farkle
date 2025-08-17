@@ -24,7 +24,7 @@
     <string name="inventory">Inventory</string>
     <string name="buy_for">Buy for %1$s</string>
     <string name="select">Select</string>
-    <string name="your_inventory_is_empty_buy_some_special_dice_in_shop">Your inventory is empty, buy some special dice in shop!</string>
+    <string name="your_inventory_is_empty_buy_some_special_dice_in_shop">Your inventory is empty, buy some special dice in shop and select them here</string>
     <string name="not_enough_coins">Not enough coins</string>
     <string name="successfully_purchased">Successfully purchased %1$s</string>
     <string name="selected_text">Selected</string>
