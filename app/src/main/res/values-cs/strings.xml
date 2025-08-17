@@ -25,7 +25,7 @@
     <string name="inventory">Inventář</string>
     <string name="buy_for">Koupit za %1$s</string>
     <string name="select">Vybrat</string>
-    <string name="your_inventory_is_empty_buy_some_special_dice_in_shop">Tvůj inventář je prázdný, kup si nějaké speciální kostky v obchodě!</string>
+    <string name="your_inventory_is_empty_buy_some_special_dice_in_shop">Tvůj inventář je prázdný, kup si speciální kostky v obchodě a vyber je zde.</string>
     <string name="not_enough_coins">Nemáš dost mincí</string>
     <string name="successfully_purchased">Úspěšně zakoupeno %1$s</string>
     <string name="selected_text">Vybráno</string>
@@ -43,4 +43,10 @@
     <string name="settings">Nastavení</string>
     <string name="tutorial">Návod</string>
     <string name="select_dice_you_want_to_use_in_the_game">Vyber kostky, které chceš použít ve hře</string>
+    <string name="here_you_can_read_the_rules">Zde si můžeš přečíst pravidla.</string>
+    <string name="in_shop_you_buy_special_dice_that_gives_you_advantage">V obchodě kupuješ speciální kostky, které ti dají výhodu.</string>
+    <string name="in_inventory_you_select_dice_you_want_to_use_in_game">V inventáři vybíráš kostky, které chceš použít ve hře.</string>
+    <string name="play_online">Hraj online</string>
+    <string name="create_lobby">Vytvořit lobby</string>
+    <string name="join">Připojit se</string>
 </resources>

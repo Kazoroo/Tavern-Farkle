@@ -25,7 +25,7 @@
     <string name="inventory">Ekwipunek</string>
     <string name="buy_for">Zakup za %1$s</string>
     <string name="select">Zaznacz</string>
-    <string name="your_inventory_is_empty_buy_some_special_dice_in_shop">Twój ekwipunek jest pusty, kup jakieś kości w sklepie!</string>
+    <string name="your_inventory_is_empty_buy_some_special_dice_in_shop">Twój ekwipunek jest pusty, kup specjalne kości w sklepie i wybierz je tutaj.</string>
     <string name="not_enough_coins">Brak wystarczającej liczby monet</string>
     <string name="successfully_purchased">Pomyślnie zakupiono %1$s</string>
     <string name="selected_text">Zaznaczono</string>
@@ -43,4 +43,10 @@
     <string name="settings">Ustawienia</string>
     <string name="tutorial">Samouczek</string>
     <string name="select_dice_you_want_to_use_in_the_game">Wybierz kości które chcesz użyć w grze</string>
+    <string name="here_you_can_read_the_rules">Tutaj możesz przeczytać zasady.</string>
+    <string name="in_shop_you_buy_special_dice_that_gives_you_advantage">W sklepie kupujesz specjalne kości, które dają ci przewagę.</string>
+    <string name="in_inventory_you_select_dice_you_want_to_use_in_game">W ekwipunku wybierasz kości, których chcesz używać w grze.</string>
+    <string name="play_online">Graj online</string>
+    <string name="create_lobby">Stwórz lobby</string>
+    <string name="join">Dołącz</string>
 </resources>

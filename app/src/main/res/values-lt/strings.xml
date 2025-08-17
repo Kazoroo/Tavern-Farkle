@@ -25,7 +25,7 @@
     <string name="inventory">Inventorius</string>
     <string name="buy_for">Pirkti už %1$s</string>
     <string name="select">Pažymėk</string>
-    <string name="your_inventory_is_empty_buy_some_special_dice_in_shop">Tavo inventorius tuščias, pirk keletą specialių kauliukų parduotuvėje!</string>
+    <string name="your_inventory_is_empty_buy_some_special_dice_in_shop">Tavo inventorius tuščias, nusipirk specialių kauliukų parduotuvėje ir pasirink juos čia.</string>
     <string name="not_enough_coins">Nepakanka monetų</string>
     <string name="successfully_purchased">Sėkmingai įsigyta %1$s</string>
     <string name="selected_text">Pažymėta</string>
@@ -43,4 +43,10 @@
     <string name="settings">Nustatymai</string>
     <string name="tutorial">Vadovas</string>
     <string name="select_dice_you_want_to_use_in_the_game">Pasirink kauliukus, kuriuos nori naudoti žaidime</string>
+    <string name="here_you_can_read_the_rules">Čia gali perskaityti taisykles.</string>
+    <string name="in_shop_you_buy_special_dice_that_gives_you_advantage">Parduotuvėje perki specialius kauliukus, kurie suteikia tau pranašumą.</string>
+    <string name="in_inventory_you_select_dice_you_want_to_use_in_game">Inventoriuje pasirenki kauliukus, kuriuos nori naudoti žaidime.</string>
+    <string name="play_online">Žaisti internete</string>
+    <string name="create_lobby">Sukurti kambarį</string>
+    <string name="join">Prisijungti</string>
 </resources>
