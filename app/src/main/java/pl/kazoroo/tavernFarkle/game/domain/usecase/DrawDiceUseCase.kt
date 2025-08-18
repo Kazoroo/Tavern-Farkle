@@ -7,7 +7,7 @@ import pl.kazoroo.tavernFarkle.game.domain.repository.GameRepository
 import pl.kazoroo.tavernFarkle.shop.domain.model.SpecialDiceName
 import kotlin.random.Random
 
-class DrawDiceUseCase(
+open class DrawDiceUseCase(
     private val repository: GameRepository
 ) {
     private val diceDrawables = listOf(
@@ -65,7 +65,7 @@ class DrawDiceUseCase(
         }
     */
 
-    operator fun invoke(): List<Dice> {
+    open operator fun invoke(): List<Dice> {
         val newDice = List(6) {
             val value = Random.nextInt(until = 6)
 
