@@ -34,8 +34,8 @@ fun CoinAmountIndicator(
             painter = painterResource(R.drawable.coin),
             contentDescription = "Coin icon",
             modifier = Modifier
-                .size(dimensionResource(R.dimen.coin_icon_size))
-                .padding(start = dimensionResource(R.dimen.small_padding))
+                .size(dimensionResource(R.dimen.icon_size))
+                .padding(dimensionResource(R.dimen.small_padding))
         )
     }
 }

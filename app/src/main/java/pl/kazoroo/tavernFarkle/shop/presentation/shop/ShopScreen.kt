@@ -3,9 +3,12 @@ package pl.kazoroo.tavernFarkle.shop.presentation.shop
 import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
@@ -23,6 +26,7 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import io.github.windedge.table.components.Divider
 import kotlinx.coroutines.flow.collectLatest
 import pl.kazoroo.tavernFarkle.R
@@ -30,6 +34,7 @@ import pl.kazoroo.tavernFarkle.core.data.local.repository.SpecialDiceList.specia
 import pl.kazoroo.tavernFarkle.core.presentation.CoinsViewModel
 import pl.kazoroo.tavernFarkle.core.presentation.components.BackgroundImage
 import pl.kazoroo.tavernFarkle.core.presentation.components.CoinAmountIndicator
+import pl.kazoroo.tavernFarkle.core.presentation.components.NavigateBackButton
 import pl.kazoroo.tavernFarkle.game.presentation.components.ButtonInfo
 import pl.kazoroo.tavernFarkle.game.presentation.components.DiceButton
 import pl.kazoroo.tavernFarkle.shop.domain.usecase.BuySpecialDiceUseCase
@@ -40,7 +45,8 @@ import pl.kazoroo.tavernFarkle.shop.presentation.components.SpecialDiceCard
 fun ShopScreen(
     coinsViewModel: CoinsViewModel,
     adViewModel: AdViewModel = viewModel(),
-    buySpecialDiceUseCase: BuySpecialDiceUseCase
+    buySpecialDiceUseCase: BuySpecialDiceUseCase,
+    navController: NavController
 ) {
     val viewModel =  remember {
         ShopViewModel(
@@ -67,10 +73,19 @@ fun ShopScreen(
                 .fillMaxSize()
                 .systemBarsPadding()
         ) {
-            CoinAmountIndicator(
-                coinsAmount = coinsAmount,
-                modifier = Modifier.align(Alignment.Start)
-            )
+            Row(
+                modifier = Modifier.fillMaxWidth().align(Alignment.Start),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                NavigateBackButton {
+                    navController.navigateUp()
+                }
+
+                CoinAmountIndicator(
+                    coinsAmount = coinsAmount
+                )
+            }
 
             LazyColumn {
                 item {

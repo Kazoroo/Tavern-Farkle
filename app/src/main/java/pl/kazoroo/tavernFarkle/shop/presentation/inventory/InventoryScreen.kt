@@ -3,6 +3,7 @@ package pl.kazoroo.tavernFarkle.shop.presentation.inventory
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -32,15 +33,20 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import kotlinx.coroutines.flow.collectLatest
 import pl.kazoroo.tavernFarkle.R
 import pl.kazoroo.tavernFarkle.core.data.local.repository.SpecialDiceList.specialDiceList
 import pl.kazoroo.tavernFarkle.core.presentation.components.BackgroundImage
+import pl.kazoroo.tavernFarkle.core.presentation.components.NavigateBackButton
 import pl.kazoroo.tavernFarkle.shop.domain.model.SpecialDice
 import pl.kazoroo.tavernFarkle.shop.presentation.components.SpecialDiceCard
 
 @Composable
-fun InventoryScreen(inventoryViewModel: InventoryViewModel) {
+fun InventoryScreen(
+    inventoryViewModel: InventoryViewModel,
+    navController: NavController
+) {
     val ownedSpecialDiceList = inventoryViewModel.ownedSpecialDice.collectAsState().value
     val context = LocalContext.current
 
@@ -57,54 +63,63 @@ fun InventoryScreen(inventoryViewModel: InventoryViewModel) {
     ) {
         BackgroundImage()
 
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .systemBarsPadding()
+        Column(
+            modifier = Modifier.systemBarsPadding()
         ) {
-            if (ownedSpecialDiceList.isEmpty()) {
-                item {
-                    Box(
-                        modifier = Modifier.fillParentMaxSize(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            text = stringResource(R.string.your_inventory_is_empty_buy_some_special_dice_in_shop),
-                            color = Color.White,
-                            modifier = Modifier
-                                .width((LocalWindowInfo.current.containerSize / 2).width.dp)
-                                .align(Alignment.Center),
-                            textAlign = TextAlign.Center
-                        )
-                    }
-                }
-            } else {
-                item {
-                    InventoryAdvice()
-                }
+            NavigateBackButton {
+                navController.navigateUp()
+            }
 
-                ownedSpecialDiceList.forEach { item ->
-                    items(item.count) { index ->
-                        val specialDiceData: SpecialDice = specialDiceList.find { item.name == it.name }!!
-
-                        SpecialDiceCard(
-                            isInventoryCard = true,
-                            name = specialDiceData.name,
-                            image = specialDiceData.image[0],
-                            chancesOfDrawingValue = specialDiceData.chancesOfDrawingValue,
-                            price = specialDiceData.price,
-                            isSelected = item.isSelected[index]
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .systemBarsPadding()
+            ) {
+                if (ownedSpecialDiceList.isEmpty()) {
+                    item {
+                        Box(
+                            modifier = Modifier.fillParentMaxSize(),
+                            contentAlignment = Alignment.Center
                         ) {
-                            inventoryViewModel.updateSelectedStatus(
-                                name = specialDiceData.name,
-                                index = index,
-                                context = context
+                            Text(
+                                text = stringResource(R.string.your_inventory_is_empty_buy_some_special_dice_in_shop),
+                                color = Color.White,
+                                modifier = Modifier
+                                    .width((LocalWindowInfo.current.containerSize / 2).width.dp)
+                                    .align(Alignment.Center),
+                                textAlign = TextAlign.Center
                             )
+                        }
+                    }
+                } else {
+                    item {
+                        InventoryAdvice()
+                    }
+
+                    ownedSpecialDiceList.forEach { item ->
+                        items(item.count) { index ->
+                            val specialDiceData: SpecialDice = specialDiceList.find { item.name == it.name }!!
+
+                            SpecialDiceCard(
+                                isInventoryCard = true,
+                                name = specialDiceData.name,
+                                image = specialDiceData.image[0],
+                                chancesOfDrawingValue = specialDiceData.chancesOfDrawingValue,
+                                price = specialDiceData.price,
+                                isSelected = item.isSelected[index]
+                            ) {
+                                inventoryViewModel.updateSelectedStatus(
+                                    name = specialDiceData.name,
+                                    index = index,
+                                    context = context
+                                )
+                            }
                         }
                     }
                 }
             }
         }
+
     }
 }
 

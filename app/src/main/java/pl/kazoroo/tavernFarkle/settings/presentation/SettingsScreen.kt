@@ -3,7 +3,9 @@ package pl.kazoroo.tavernFarkle.settings.presentation
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
@@ -22,12 +24,15 @@ import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.navigation.NavController
 import pl.kazoroo.tavernFarkle.R
 import pl.kazoroo.tavernFarkle.core.presentation.components.BackgroundImage
+import pl.kazoroo.tavernFarkle.core.presentation.components.NavigateBackButton
 
 @Composable
 fun SettingsScreen(
-    viewModel: SettingsViewModel
+    viewModel: SettingsViewModel,
+    navController: NavController
 ) {
     val context = LocalContext.current
     val isSoundEnabled = viewModel.isSoundEnabled.value
@@ -44,6 +49,13 @@ fun SettingsScreen(
                 .systemBarsPadding()
                 .padding(start = dimensionResource(R.dimen.small_padding))
         ) {
+            NavigateBackButton{
+                navController.navigateUp()
+            }
+
+
+            Spacer(modifier = Modifier.height(dimensionResource(R.dimen.medium_padding)))
+
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {

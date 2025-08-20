@@ -53,7 +53,8 @@ fun Navigation(
         ) {
             ShopScreen(
                 coinsViewModel = coinsViewModel,
-                buySpecialDiceUseCase = BuySpecialDiceUseCase(dependencyContainer.inventoryDataRepository)
+                buySpecialDiceUseCase = BuySpecialDiceUseCase(dependencyContainer.inventoryDataRepository),
+                navController = navController
             )
         }
 
@@ -61,14 +62,18 @@ fun Navigation(
             route = Screen.InventoryScreen.route
         ) {
             InventoryScreen(
-                inventoryViewModel = inventoryViewModel
+                inventoryViewModel = inventoryViewModel,
+                navController = navController
             )
         }
 
         composable(
             route = Screen.SettingsScreen.route
         ) {
-            SettingsScreen(settingsViewModel)
+            SettingsScreen(
+                settingsViewModel,
+                navController = navController
+            )
         }
     }
 }
