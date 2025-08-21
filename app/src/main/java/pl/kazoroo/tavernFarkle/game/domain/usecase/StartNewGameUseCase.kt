@@ -1,8 +1,10 @@
 package pl.kazoroo.tavernFarkle.game.domain.usecase
 
+import pl.kazoroo.tavernFarkle.game.domain.model.Dice
 import pl.kazoroo.tavernFarkle.game.domain.model.GameState
 import pl.kazoroo.tavernFarkle.game.domain.model.Player
 import pl.kazoroo.tavernFarkle.game.domain.repository.GameRepository
+import pl.kazoroo.tavernFarkle.shop.domain.model.SpecialDiceName
 import java.util.UUID
 
 class StartNewGameUseCase(
@@ -14,11 +16,29 @@ class StartNewGameUseCase(
         val players = listOf(
             Player(
                 uuid = currentPlayerId,
-                diceSet = drawDiceUseCase.invoke()
+                diceSet = drawDiceUseCase.invoke(
+                    listOf(
+                        Dice(value = 0, image = 0, specialDiceName = null),
+                        Dice(value = 0, image = 0, specialDiceName = null),
+                        Dice(value = 0, image = 0, specialDiceName = SpecialDiceName.SPIDERS_DICE),
+                        Dice(value = 0, image = 0, specialDiceName = null),
+                        Dice(value = 0, image = 0, specialDiceName = SpecialDiceName.ROYAL_DICE),
+                        Dice(value = 0, image = 0, specialDiceName = null),
+                    )
+                )
             ),
             Player(
                 uuid = UUID.randomUUID(),
-                diceSet = drawDiceUseCase.invoke()
+                diceSet = drawDiceUseCase.invoke(
+                    listOf(
+                        Dice(value = 0, image = 0, specialDiceName = null),
+                        Dice(value = 0, image = 0, specialDiceName = null),
+                        Dice(value = 0, image = 0, specialDiceName = SpecialDiceName.SPIDERS_DICE),
+                        Dice(value = 0, image = 0, specialDiceName = null),
+                        Dice(value = 0, image = 0, specialDiceName = SpecialDiceName.ROYAL_DICE),
+                        Dice(value = 0, image = 0, specialDiceName = null),
+                    )
+                )
             ),
         )
 
