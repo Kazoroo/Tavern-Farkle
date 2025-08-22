@@ -10,6 +10,6 @@ data class Player(
     val diceSet: List<Dice>
 ) {
     init {
-        require(diceSet.size == 6) { "Game rules enforce DiceSet to have exactly 6 dice" }
+        require(diceSet.size == 6) { "Game rules enforce diceSet to have exactly 6 dice" }
     }
 }
