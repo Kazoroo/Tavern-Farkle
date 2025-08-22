@@ -68,7 +68,7 @@ class LocalGameRepository: GameRepository {
     }
 
     /**
-     * Assign selected and round points to the current player state. Reset selected points.
+     * Assign selected and round points to the current player round points state. Reset selected points.
      */
     override fun sumRoundPoints() {
         _gameState.update { state ->
@@ -121,7 +121,55 @@ class LocalGameRepository: GameRepository {
         _gameState.update { it.copy(players = playersWithUpdatedDice) }
     }
 
-    override fun passTheRound() {
-        TODO("Not yet implemented")
+    /**
+     * Assign selected, round and total points to the total current player points. Reset selected and round points.
+     */
+    override fun sumTotalPoints() {
+        _gameState.update { state ->
+            val totalPoints = state.players[currentPlayerIndex].totalPoints
+            val roundPoints = state.players[currentPlayerIndex].roundPoints
+            val selectedPoints = state.players[currentPlayerIndex].selectedPoints
+
+            val playersWithUpdatedPoints = state.players.toMutableList().apply {
+                this[currentPlayerIndex] = this[currentPlayerIndex].copy(
+                    totalPoints = totalPoints + roundPoints + selectedPoints,
+                    roundPoints = 0,
+                    selectedPoints = 0
+                )
+            }
+
+            state.copy(players = playersWithUpdatedPoints)
+        }
+    }
+
+    /**
+     * Resets to default the dice selection and visibility state for the current player.
+     */
+    override fun resetDiceState() {
+        _gameState.update {
+            val updatedPlayers = it.players.toMutableList().apply {
+                this[currentPlayerIndex] = this[currentPlayerIndex].copy(
+                    diceSet = this[currentPlayerIndex].diceSet.map { dice ->
+                        dice.copy(
+                            isSelected = false,
+                            isVisible = true
+                        )
+                    }
+                )
+            }
+
+            it.copy(players = updatedPlayers)
+        }
+    }
+
+    /**
+     * Updates the state of current player uuid to the next player.
+     */
+    override fun changeCurrentPlayer() {
+        _gameState.update { state ->
+            state.copy(
+                currentPlayerUuid = state.players.first { it.uuid != state.currentPlayerUuid }.uuid
+            )
+        }
     }
 }
