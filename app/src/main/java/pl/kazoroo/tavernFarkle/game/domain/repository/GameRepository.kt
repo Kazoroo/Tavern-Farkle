@@ -11,6 +11,8 @@ interface GameRepository {
     fun toggleDiceSelection(index: Int)
     fun sumRoundPoints()
     fun hideSelectedDice()
-    fun passTheRound()
+    fun sumTotalPoints()
     fun updateDiceSet(newDice: List<Dice>)
+    fun resetDiceState()
+    fun changeCurrentPlayer()
 }
