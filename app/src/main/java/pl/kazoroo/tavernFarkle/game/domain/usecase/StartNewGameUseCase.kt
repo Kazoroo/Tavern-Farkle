@@ -52,5 +52,6 @@ class StartNewGameUseCase(
         )
 
         gameRepository.saveGameState(gameState)
+        gameRepository.setMyUuid(currentPlayerId)
     }
 }
