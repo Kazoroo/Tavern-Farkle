@@ -18,7 +18,6 @@ import pl.kazoroo.tavernFarkle.shop.domain.usecase.BuySpecialDiceUseCase
 import pl.kazoroo.tavernFarkle.shop.presentation.inventory.InventoryScreen
 import pl.kazoroo.tavernFarkle.shop.presentation.inventory.InventoryViewModel
 import pl.kazoroo.tavernFarkle.shop.presentation.shop.ShopScreen
-import java.util.UUID
 
 @Composable
 fun Navigation(
@@ -49,7 +48,6 @@ fun Navigation(
         ) {
             GameScreen(
                 navController = navController,
-                playerUuid = UUID.randomUUID(),
                 viewModel = gameViewModel
             )
         }
