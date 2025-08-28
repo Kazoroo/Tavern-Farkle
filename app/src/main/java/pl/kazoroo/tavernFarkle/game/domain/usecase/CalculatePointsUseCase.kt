@@ -6,6 +6,14 @@ import pl.kazoroo.tavernFarkle.game.domain.repository.GameRepository
 class CalculatePointsUseCase(
     private val repository: GameRepository,
 ) {
+    /**
+     * Calculates selected points and update state. Includes sequences and single dice values.
+     *
+     * @param diceList Current player list of values to get selected dice.
+     * @param includeNonScoringDice used for calculating points for skucha
+     *
+     * @return maximum number of points user can select.
+     */
     operator fun invoke(
         diceList: List<Dice>,
         includeNonScoringDice: Boolean = true
