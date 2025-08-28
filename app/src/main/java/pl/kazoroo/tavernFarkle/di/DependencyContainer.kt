@@ -10,6 +10,7 @@ import pl.kazoroo.tavernFarkle.core.presentation.viewModelFactoryHelper
 import pl.kazoroo.tavernFarkle.game.data.repository.LocalGameRepository
 import pl.kazoroo.tavernFarkle.game.domain.usecase.CalculatePointsUseCase
 import pl.kazoroo.tavernFarkle.game.domain.usecase.DrawDiceUseCase
+import pl.kazoroo.tavernFarkle.game.domain.usecase.PlayOpponentTurnUseCase
 import pl.kazoroo.tavernFarkle.game.presentation.game.GameViewModelRefactor
 import pl.kazoroo.tavernFarkle.game.presentation.mainmenu.MainMenuViewModel
 import pl.kazoroo.tavernFarkle.settings.presentation.SettingsViewModel
@@ -38,6 +39,9 @@ class DependencyContainer(
     }
     val drawDiceUseCase by lazy {
         DrawDiceUseCase(localGameRepository)
+    }
+    val playOpponentTurnUseCase by lazy {
+        PlayOpponentTurnUseCase(localGameRepository, drawDiceUseCase, calculatePointsUseCase)
     }
     val localGameRepository by lazy {
         LocalGameRepository()
@@ -76,7 +80,8 @@ class DependencyContainer(
             GameViewModelRefactor(
                 repository = localGameRepository,
                 calculatePointsUseCase = calculatePointsUseCase,
-                drawDiceUseCase = drawDiceUseCase
+                drawDiceUseCase = drawDiceUseCase,
+                playOpponentTurnUseCase = playOpponentTurnUseCase
             )
         }
 }
