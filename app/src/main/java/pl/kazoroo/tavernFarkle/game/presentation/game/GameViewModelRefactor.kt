@@ -2,8 +2,10 @@ package pl.kazoroo.tavernFarkle.game.presentation.game
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -26,6 +28,9 @@ class GameViewModelRefactor(
             state.currentPlayerUuid != repository.myUuidState.value
         }.stateIn(viewModelScope, SharingStarted.Lazily, false)
 
+    init {
+        observeSkucha()
+    }
 
     fun toggleDiceSelection(index: Int) {
         repository.toggleDiceSelection(index)
@@ -50,5 +55,26 @@ class GameViewModelRefactor(
         repository.sumRoundPoints()
         repository.hideSelectedDice()
         drawDiceUseCase(repository.gameState.value.players[gameState.value.getCurrentPlayerIndex()].diceSet)
+    }
+
+    private fun observeSkucha() {
+        viewModelScope.launch {
+            repository.gameState
+                .map { it.isSkucha }
+                .distinctUntilChanged()
+                .collect { isSkucha ->
+                    if(isSkucha) {
+                        launch {
+                            repository.resetRoundAndSelectedPoints()
+                            delay(3500L)
+                            repository.changeCurrentPlayer()
+                            repository.toggleSkucha()
+                            viewModelScope.launch {
+                                playOpponentTurnUseCase()
+                            }
+                        }
+                    }
+                }
+        }
     }
 }

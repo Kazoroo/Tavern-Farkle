@@ -18,4 +18,6 @@ interface GameRepository {
     fun updateDiceSet(newDice: List<Dice>)
     fun resetDiceState()
     fun changeCurrentPlayer()
+    fun resetRoundAndSelectedPoints()
+    fun toggleSkucha()
 }

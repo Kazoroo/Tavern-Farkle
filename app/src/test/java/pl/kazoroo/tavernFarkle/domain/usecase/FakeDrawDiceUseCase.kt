@@ -2,9 +2,14 @@ package pl.kazoroo.tavernFarkle.domain.usecase
 
 import pl.kazoroo.tavernFarkle.game.domain.model.Dice
 import pl.kazoroo.tavernFarkle.game.domain.repository.GameRepository
+import pl.kazoroo.tavernFarkle.game.domain.usecase.CalculatePointsUseCase
+import pl.kazoroo.tavernFarkle.game.domain.usecase.CheckForSkuchaUseCase
 import pl.kazoroo.tavernFarkle.game.domain.usecase.DrawDiceUseCase
 
-class FakeDrawDiceUseCase(private val repository: GameRepository) : DrawDiceUseCase(repository) {
+class FakeDrawDiceUseCase(private val repository: GameRepository) : DrawDiceUseCase(
+    repository,
+    CheckForSkuchaUseCase(CalculatePointsUseCase(repository))
+) {
     private var callCounter = 0
 
     override operator fun invoke(diceSet: List<Dice>): List<Dice> {

@@ -14,9 +14,14 @@ class CheckForSkuchaUseCase(
     operator fun invoke(
         diceList: List<Dice>
     ): Boolean {
+        val diceListWithVisibleSelected = diceList.map {
+            if(it.isVisible) it.copy(isSelected = true)
+            else it
+        }
+
         val points = calculatePointsUseCase(
-            diceList = diceList,
-            includeNonScoringDice = false
+            diceList = diceListWithVisibleSelected,
+            isCheckingForSkucha = true
         )
 
         return points == 0
