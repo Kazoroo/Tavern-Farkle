@@ -178,4 +178,25 @@ class LocalGameRepository: GameRepository {
             )
         }
     }
+
+    override fun resetRoundAndSelectedPoints() {
+        _gameState.update { state ->
+            val updatedPlayers = state.players.toMutableList().apply {
+                this[currentPlayerIndex] = this[currentPlayerIndex].copy(
+                    roundPoints = 0,
+                    selectedPoints = 0
+                )
+            }
+
+            state.copy(players = updatedPlayers)
+        }
+    }
+
+    override fun toggleSkucha() {
+        _gameState.update { state ->
+            state.copy(
+                isSkucha = !state.isSkucha
+            )
+        }
+    }
 }

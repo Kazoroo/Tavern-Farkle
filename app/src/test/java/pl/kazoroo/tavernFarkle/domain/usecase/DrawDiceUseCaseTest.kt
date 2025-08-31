@@ -5,6 +5,8 @@ import org.junit.Test
 import pl.kazoroo.tavernFarkle.R
 import pl.kazoroo.tavernFarkle.game.data.repository.LocalGameRepository
 import pl.kazoroo.tavernFarkle.game.domain.model.Dice
+import pl.kazoroo.tavernFarkle.game.domain.usecase.CalculatePointsUseCase
+import pl.kazoroo.tavernFarkle.game.domain.usecase.CheckForSkuchaUseCase
 import pl.kazoroo.tavernFarkle.game.domain.usecase.DrawDiceUseCase
 import pl.kazoroo.tavernFarkle.game.domain.usecase.StartNewGameUseCase
 import pl.kazoroo.tavernFarkle.shop.domain.model.SpecialDiceName
@@ -25,7 +27,9 @@ class DrawDiceUseCaseTest {
     @Before
     fun setUp() {
         repository = LocalGameRepository()
-        drawDiceUseCase = DrawDiceUseCase(repository)
+        val calculatePointsUseCase = CalculatePointsUseCase(repository)
+        val checkForSkuchaUseCase = CheckForSkuchaUseCase(calculatePointsUseCase)
+        drawDiceUseCase = DrawDiceUseCase(repository, checkForSkuchaUseCase)
     }
 
     @Test

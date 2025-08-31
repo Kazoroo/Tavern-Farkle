@@ -10,13 +10,13 @@ class CalculatePointsUseCase(
      * Calculates selected points and update state. Includes sequences and single dice values.
      *
      * @param diceList Current player list of values to get selected dice.
-     * @param includeNonScoringDice used for calculating points for skucha
+     * @param isCheckingForSkucha used for calculating points for skucha. Bypass some rules of normal CalculatePointsUseCase behavior to get proper result.
      *
      * @return maximum number of points user can select.
      */
     operator fun invoke(
         diceList: List<Dice>,
-        includeNonScoringDice: Boolean = true
+        isCheckingForSkucha: Boolean = false
     ): Int {
         val valuesOfSelectedDicesList: List<Int> = diceList.map { dice ->
             if (dice.isSelected) dice.value else 0
@@ -36,26 +36,25 @@ class CalculatePointsUseCase(
         }
 
         if(points == 0) {
-            points = calculatePointsForSingleDiceValues(occurrencesMap, points)
+            points = calculatePointsForSingleDiceValues(occurrencesMap)
 
             nonScoringDice = occurrencesMap.keys.filter { value ->
                 (value != 1 && value != 5 && (occurrencesMap[value] ?: 0) < 3)
             }
         }
 
-        val isAvailablePoints = nonScoringDice.isEmpty() || !includeNonScoringDice
+        val isAvailablePoints = nonScoringDice.isEmpty() || isCheckingForSkucha
 
         val selectedPoints = if(isAvailablePoints) points else 0
 
-        repository.updateSelectedPoints(selectedPoints)
+        if(!isCheckingForSkucha) repository.updateSelectedPoints(selectedPoints)
         return selectedPoints
     }
 
     private fun calculatePointsForSingleDiceValues(
-        occurrencesMap: Map<Int, Int>,
-        points: Int
+        occurrencesMap: Map<Int, Int>
     ): Int {
-        var singleDiceValuePoints = points
+        var singleDiceValuePoints = 0
 
         occurrencesMap.forEach { (value, count) ->
             when (value) {
