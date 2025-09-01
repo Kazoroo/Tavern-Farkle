@@ -180,6 +180,7 @@ fun GameScreen(
         }
 
         var isGameResultDialogVisible by remember { mutableStateOf(false) }
+        var isSkuchaDialogVisible by remember { mutableStateOf(false) }
 
         LaunchedEffect(state.isGameEnd) {
             delay(1000L)
@@ -187,7 +188,13 @@ fun GameScreen(
             isGameResultDialogVisible = state.isGameEnd
         }
 
-        if(state.isSkucha) {
+        LaunchedEffect(state.isSkucha) {
+            delay(1000L)
+
+            isSkuchaDialogVisible = state.isSkucha
+        }
+
+        if(isSkuchaDialogVisible) {
             gameResultAndSkuchaDialog(
                 text = "Skucha!", textColor = Color(212, 212, 212),
                 extraText = null

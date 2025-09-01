@@ -67,6 +67,7 @@ class GameViewModelRefactor(
                         launch {
                             repository.resetRoundAndSelectedPoints()
                             delay(3500L)
+                            repository.resetDiceState()
                             repository.changeCurrentPlayer()
                             repository.toggleSkucha()
                             viewModelScope.launch {
