@@ -73,7 +73,7 @@ fun InteractiveDiceLayout(
                     for (column in 0..2) {
                         val index = row * 3 + column
                         val offsetX by animateDpAsState(
-                            targetValue = if (diceState[index].isVisible) 0.dp else imageSize * 3 //!isDiceVisibleAfterGameEnd[index]
+                            targetValue = if (diceState[index].isVisible) 0.dp else imageSize * 3
                         )
                         val offsetLambda: () -> IntOffset = {
                             with(localDensity) {
@@ -85,12 +85,12 @@ fun InteractiveDiceLayout(
                             visible = diceState[index].isVisible,
                             enter = slideInHorizontally(
                                 initialOffsetX = {
-                                    (if(index == 0 || index == 3) -it else it) * 3
+                                    (if(index == 0 || index == 3) -it * 2 else it) * 3
                                 }
                             ),
                             exit = slideOutHorizontally(
                                 targetOffsetX = {
-                                    (if(index == 0 || index == 3) -it else it) * 3
+                                    (if(index == 0 || index == 3) -it * 2 else it) * 3
                                 }
                             )
                         ) {

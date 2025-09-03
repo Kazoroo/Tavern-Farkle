@@ -8,17 +8,15 @@ class PlayOpponentTurnUseCase(
     private val drawDiceUseCase: DrawDiceUseCase,
     private val calculatePointsUseCase: CalculatePointsUseCase
 ) {
-    suspend operator fun invoke() {
+    suspend operator fun invoke(triggerDiceRowAnimation: suspend () -> Unit) {
         val playingUntilDiceLeft = (2..3).random()
         var numberOfVisibleDice = 6
 
         while(numberOfVisibleDice > playingUntilDiceLeft) {
-            delay((1600L..2000L).random())
+            delay((1400L..1400L).random())
             val indexesOfDiceGivingPoints = searchForDiceIndexGivingPoints()
 
             if (indexesOfDiceGivingPoints.isEmpty()) {
-                //TODO: perform skucha
-
                 return
             }
 
@@ -29,10 +27,10 @@ class PlayOpponentTurnUseCase(
             }
 
             if (numberOfVisibleDice - indexesOfDiceGivingPoints.size > playingUntilDiceLeft) {
-                scoreAndRollAgain()
+                scoreAndRollAgain(triggerDiceRowAnimation)
                 numberOfVisibleDice = repository.gameState.value.players[1].diceSet.count { it.isVisible }
             } else {
-                passRound()
+                passRound(triggerDiceRowAnimation)
                 break
             }
         }
@@ -55,8 +53,9 @@ class PlayOpponentTurnUseCase(
         return indexesOfDiceGivingPoints
     }
 
-    private fun passRound() {
+    private suspend fun passRound(triggerDiceRowAnimation: suspend () -> Unit) {
         repository.sumTotalPoints()
+        triggerDiceRowAnimation()
         repository.resetDiceState()
         repository.changeCurrentPlayer()
 
@@ -66,9 +65,10 @@ class PlayOpponentTurnUseCase(
         drawDiceUseCase(currentPlayer.diceSet)
     }
 
-    private fun scoreAndRollAgain() {
+    private suspend fun scoreAndRollAgain(triggerDiceRowAnimation: suspend () -> Unit) {
         repository.sumRoundPoints()
         repository.hideSelectedDice()
+        triggerDiceRowAnimation()
 
         val state = repository.gameState.value
         val currentPlayer = state.players[state.getCurrentPlayerIndex()]

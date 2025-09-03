@@ -116,7 +116,7 @@ fun GameScreen(
                     }
                 },
                 isDiceClickable = !isOpponentTurn && !state.isGameEnd,
-                isDiceAnimating = false, //viewModel.isDiceAnimating.collectAsState().value, TODO: add animations
+                isDiceAnimating = viewModel.isDiceAnimating.collectAsState().value
             )
             Spacer(modifier = Modifier.weight(1f))
 
