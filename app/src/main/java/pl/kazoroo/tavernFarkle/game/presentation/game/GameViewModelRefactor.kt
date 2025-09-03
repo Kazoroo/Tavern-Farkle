@@ -7,6 +7,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -18,6 +19,8 @@ import pl.kazoroo.tavernFarkle.game.domain.repository.GameRepository
 import pl.kazoroo.tavernFarkle.game.domain.usecase.CalculatePointsUseCase
 import pl.kazoroo.tavernFarkle.game.domain.usecase.DrawDiceUseCase
 import pl.kazoroo.tavernFarkle.game.domain.usecase.PlayOpponentTurnUseCase
+import pl.kazoroo.tavernFarkle.game.presentation.sound.SoundPlayer
+import pl.kazoroo.tavernFarkle.game.presentation.sound.SoundType
 
 class GameViewModelRefactor(
     private val repository: GameRepository,
@@ -35,6 +38,9 @@ class GameViewModelRefactor(
             state.currentPlayerUuid != repository.myUuidState.value
         }.stateIn(viewModelScope, SharingStarted.Lazily, false)
 
+    val _isDiceAnimating = MutableStateFlow(false)
+    val isDiceAnimating: StateFlow<Boolean> = _isDiceAnimating
+
     init {
         observeSkucha()
     }
@@ -46,22 +52,28 @@ class GameViewModelRefactor(
     }
 
     fun onPass() {
-        repository.sumTotalPoints()
-        repository.resetDiceState()
-        repository.changeCurrentPlayer()
-        drawDiceUseCase(repository.gameState.value.players[gameState.value.getCurrentPlayerIndex()].diceSet)
+        scope.launch {
+            repository.sumTotalPoints()
+            triggerDiceRowAnimation()
+            repository.resetDiceState()
+            repository.changeCurrentPlayer()
+            drawDiceUseCase(repository.gameState.value.players[gameState.value.getCurrentPlayerIndex()].diceSet)
 
-        if(repository.gameState.value.currentPlayerUuid != repository.myUuidState.value) {
-            scope.launch {
-                playOpponentTurnUseCase()
+            if(repository.gameState.value.currentPlayerUuid != repository.myUuidState.value) {
+                playOpponentTurnUseCase { triggerDiceRowAnimation() }
             }
         }
     }
 
     fun onScoreAndRollAgain() {
         repository.sumRoundPoints()
-        repository.hideSelectedDice()
-        drawDiceUseCase(repository.gameState.value.players[gameState.value.getCurrentPlayerIndex()].diceSet)
+
+        scope.launch {
+            repository.hideSelectedDice()
+            delay(200L)
+            triggerDiceRowAnimation()
+            drawDiceUseCase(repository.gameState.value.players[gameState.value.getCurrentPlayerIndex()].diceSet)
+        }
     }
 
     private fun observeSkucha() {
@@ -72,17 +84,33 @@ class GameViewModelRefactor(
                 .collect { isSkucha ->
                     if(isSkucha) {
                         launch {
+                            delay(1000L)
+                            SoundPlayer.playSound(SoundType.SKUCHA)
+                            delay(2000L)
+
+                            repository.toggleSkucha()
                             repository.resetRoundAndSelectedPoints()
-                            delay(3500L)
+
+                            triggerDiceRowAnimation()
+
                             repository.resetDiceState()
                             repository.changeCurrentPlayer()
-                            repository.toggleSkucha()
-                            viewModelScope.launch {
-                                playOpponentTurnUseCase()
+
+                            if(repository.gameState.value.currentPlayerUuid != repository.myUuidState.value) {
+                                playOpponentTurnUseCase { triggerDiceRowAnimation() }
                             }
                         }
                     }
                 }
         }
+    }
+
+    private suspend fun triggerDiceRowAnimation() {
+        delay(200L)
+        _isDiceAnimating.value = true
+        delay(500L)
+        SoundPlayer.playSound(SoundType.DICE_ROLLING)
+        delay(500L)
+        _isDiceAnimating.value = false
     }
 }
