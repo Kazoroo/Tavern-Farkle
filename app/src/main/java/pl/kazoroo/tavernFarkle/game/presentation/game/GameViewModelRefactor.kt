@@ -72,6 +72,11 @@ class GameViewModelRefactor(
             repository.hideSelectedDice()
             delay(200L)
             triggerDiceRowAnimation()
+
+            if(repository.gameState.value.players[gameState.value.getCurrentPlayerIndex()].diceSet.all { !it.isVisible }) {
+                repository.resetDiceState()
+            }
+
             drawDiceUseCase(repository.gameState.value.players[gameState.value.getCurrentPlayerIndex()].diceSet)
         }
     }
