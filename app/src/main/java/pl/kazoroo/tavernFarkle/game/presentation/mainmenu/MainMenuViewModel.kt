@@ -12,6 +12,7 @@ import pl.kazoroo.tavernFarkle.core.domain.SaveUserDataUseCase
 import pl.kazoroo.tavernFarkle.game.domain.repository.GameRepository
 import pl.kazoroo.tavernFarkle.game.domain.usecase.DrawDiceUseCase
 import pl.kazoroo.tavernFarkle.game.domain.usecase.StartNewGameUseCase
+import pl.kazoroo.tavernFarkle.shop.domain.model.SpecialDiceName
 
 class MainMenuViewModel(
     private val saveUserDataUseCase: SaveUserDataUseCase,
@@ -37,7 +38,7 @@ class MainMenuViewModel(
         }
     }
 
-    fun startNewGame(betAmount: Int) {
-        StartNewGameUseCase(gameRepository, drawDiceUseCase).invoke(betAmount)
+    fun startNewGame(betAmount: Int, userSpecialDiceNames: List<SpecialDiceName>) {
+        StartNewGameUseCase(gameRepository, drawDiceUseCase).invoke(betAmount, userSpecialDiceNames)
     }
 }

@@ -62,4 +62,14 @@ class InventoryViewModel(
             }
         }
     }
+
+    fun getSelectedSpecialDiceNames(): List<SpecialDiceName> {
+        val selected = _ownedSpecialDice.value.flatMap { dice ->
+            dice.isSelected.mapNotNull { isSelected ->
+                if (isSelected) dice.name else null
+            }
+        }
+
+        return selected
+    }
 }
