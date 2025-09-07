@@ -13,23 +13,25 @@ class StartNewGameUseCase(
 ) {
     operator fun invoke(betAmount: Int, userDiceNames: List<SpecialDiceName>) {
         val currentPlayerId = UUID.randomUUID()
-        val userDiceNames = userDiceNames.padWithNullsToSix()
+        val paddedUserDiceNames = userDiceNames.padWithNullsToSix()
 
         val opponentDiceNames: List<SpecialDiceName?> = List(
             (userDiceNames.size..userDiceNames.size + 1).random()
         ) {
             SpecialDiceName.entries.toTypedArray().random()
         }.padWithNullsToSix()
+        val userDiceSet = createDiceSet(paddedUserDiceNames)
+        val currentSkuchaStatus = gameRepository.gameState.value.isSkucha
 
         val players = listOf(
-            Player(currentPlayerId, diceSet = createDiceSet(userDiceNames)),
+            Player(currentPlayerId, diceSet = userDiceSet),
             Player(UUID.randomUUID(), diceSet = createDiceSet(opponentDiceNames))
         )
 
         val gameState = GameState(
             betAmount = betAmount,
             gameUuid = UUID.randomUUID(),
-            isSkucha = false,
+            isSkucha = currentSkuchaStatus,
             currentPlayerUuid = currentPlayerId,
             players = players,
             isGameEnd = false,
