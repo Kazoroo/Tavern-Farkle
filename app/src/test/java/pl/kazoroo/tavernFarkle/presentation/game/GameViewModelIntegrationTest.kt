@@ -22,14 +22,14 @@ import pl.kazoroo.tavernFarkle.game.domain.usecase.CalculatePointsUseCase
 import pl.kazoroo.tavernFarkle.game.domain.usecase.CheckGameEndUseCase
 import pl.kazoroo.tavernFarkle.game.domain.usecase.PlayOpponentTurnUseCase
 import pl.kazoroo.tavernFarkle.game.domain.usecase.StartNewGameUseCase
-import pl.kazoroo.tavernFarkle.game.presentation.game.GameViewModelRefactor
+import pl.kazoroo.tavernFarkle.game.presentation.game.GameViewModel
 import pl.kazoroo.tavernFarkle.game.presentation.sound.SoundPlayer
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class GameViewModelIntegrationTest {
-    private lateinit var viewModel: GameViewModelRefactor
+    private lateinit var viewModel: GameViewModel
     private lateinit var fakeDrawDiceUseCase: FakeDrawDiceUseCase
     private lateinit var navController: NavHostController
     private val testDispatcher = StandardTestDispatcher()
@@ -46,7 +46,7 @@ class GameViewModelIntegrationTest {
         val calculatePointsUseCase = CalculatePointsUseCase(repository)
         val checkGameEndUseCase = CheckGameEndUseCase(repository, navController)
 
-        viewModel = GameViewModelRefactor(
+        viewModel = GameViewModel(
             repository = repository,
             calculatePointsUseCase = calculatePointsUseCase,
             drawDiceUseCase = fakeDrawDiceUseCase,

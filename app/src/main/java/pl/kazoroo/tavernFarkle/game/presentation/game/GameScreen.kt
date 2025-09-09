@@ -42,7 +42,7 @@ import pl.kazoroo.tavernFarkle.ui.theme.DarkRed
 @Composable
 fun GameScreen(
     navController: NavHostController,
-    viewModel: GameViewModelRefactor,
+    viewModel: GameViewModel,
     coinsViewModel: CoinsViewModel
 ) {
     val state by viewModel.gameState.collectAsState()
