@@ -6,14 +6,13 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import pl.kazoroo.tavernFarkle.core.data.local.UserDataKey
-import pl.kazoroo.tavernFarkle.core.data.presentation.BettingActions
 import pl.kazoroo.tavernFarkle.core.domain.ReadUserDataUseCase
 import pl.kazoroo.tavernFarkle.core.domain.SaveUserDataUseCase
 
 class CoinsViewModel(
     private val saveUserDataUseCase: SaveUserDataUseCase,
     private val readUserDataUseCase: ReadUserDataUseCase
-) : ViewModel(), BettingActions {
+) : ViewModel() {
     private val _betValue = MutableStateFlow("0")
 
     private val _coinsAmount = MutableStateFlow("0")
@@ -61,7 +60,7 @@ class CoinsViewModel(
         return coins
     }
 
-    override fun addBetCoinsToTotalCoinsAmount() {
+    fun addBetCoinsToTotalCoinsAmount() {
         viewModelScope.launch {
             _coinsAmount.value = (coinsAmount.value.toInt() + _betValue.value.toInt() * 2).toString()
 

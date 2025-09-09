@@ -43,6 +43,7 @@ open class DrawDiceUseCase(
         if(repository.gameState.value.players.isNotEmpty()) repository.updateDiceSet(shuffledDiceSet)
         val skucha = checkForSkuchaUseCase.invoke(shuffledDiceSet)
         if(skucha) repository.toggleSkucha()
+
         return shuffledDiceSet
     }
 

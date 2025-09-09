@@ -6,7 +6,8 @@ import pl.kazoroo.tavernFarkle.game.domain.repository.GameRepository
 class PlayOpponentTurnUseCase(
     private val repository: GameRepository,
     private val drawDiceUseCase: DrawDiceUseCase,
-    private val calculatePointsUseCase: CalculatePointsUseCase
+    private val calculatePointsUseCase: CalculatePointsUseCase,
+    private val checkGameEndUseCase: CheckGameEndUseCase
 ) {
     suspend operator fun invoke(triggerDiceRowAnimation: suspend () -> Unit) {
         val playingUntilDiceLeft = (2..3).random()
@@ -55,6 +56,9 @@ class PlayOpponentTurnUseCase(
 
     private suspend fun passRound(triggerDiceRowAnimation: suspend () -> Unit) {
         repository.sumTotalPoints()
+
+        if(checkGameEndUseCase()) return
+
         triggerDiceRowAnimation()
         repository.resetDiceState()
         repository.changeCurrentPlayer()
