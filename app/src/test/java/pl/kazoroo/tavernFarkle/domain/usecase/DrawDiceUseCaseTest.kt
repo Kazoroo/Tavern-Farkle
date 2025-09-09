@@ -47,7 +47,7 @@ class DrawDiceUseCaseTest {
     fun `check repository value and returned value are equal`() {
         val diceSet = List(6) { Dice(value = 3, image = 0, specialDiceName = null) }
 
-        StartNewGameUseCase(repository, drawDiceUseCase).invoke(0)
+        StartNewGameUseCase(repository, drawDiceUseCase).invoke(0, emptyList())
         val returnedDiceSet = drawDiceUseCase(diceSet)
 
         assert(repository.gameState.value.players.isNotEmpty())
