@@ -49,7 +49,8 @@ fun Navigation(
         ) {
             GameScreen(
                 navController = navController,
-                viewModel = gameViewModel
+                viewModel = gameViewModel,
+                coinsViewModel = coinsViewModel
             )
         }
         composable(

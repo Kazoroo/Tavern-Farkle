@@ -28,6 +28,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavHostController
 import kotlinx.coroutines.delay
 import pl.kazoroo.tavernFarkle.R
+import pl.kazoroo.tavernFarkle.core.presentation.CoinsViewModel
 import pl.kazoroo.tavernFarkle.core.presentation.components.BackgroundImage
 import pl.kazoroo.tavernFarkle.game.domain.model.TableData
 import pl.kazoroo.tavernFarkle.game.presentation.components.ButtonInfo
@@ -41,7 +42,8 @@ import pl.kazoroo.tavernFarkle.ui.theme.DarkRed
 @Composable
 fun GameScreen(
     navController: NavHostController,
-    viewModel: GameViewModelRefactor
+    viewModel: GameViewModelRefactor,
+    coinsViewModel: CoinsViewModel
 ) {
     val state by viewModel.gameState.collectAsState()
 
@@ -70,6 +72,10 @@ fun GameScreen(
 
     BackHandler {
         showExitDialog.value = true
+    }
+
+    LaunchedEffect(true) {
+        viewModel.initializeNavController(navController, coinsViewModel)
     }
 
     if(showExitDialog.value) {
@@ -131,7 +137,7 @@ fun GameScreen(
                 ButtonInfo(
                     text = stringResource(id = R.string.pass),
                     onClick = {
-                        viewModel.onPass()
+                        viewModel.onPass(navController)
                     },
                     enabled = (selectedPoints != 0 && !isOpponentTurn) && !state.isGameEnd
                 ),
