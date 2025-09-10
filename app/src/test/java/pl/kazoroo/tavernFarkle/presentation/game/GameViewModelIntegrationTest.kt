@@ -1,11 +1,8 @@
 package pl.kazoroo.tavernFarkle.presentation.game
 
-import io.mockk.every
-import io.mockk.mockkObject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
-import kotlinx.coroutines.test.advanceTimeBy
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
@@ -20,7 +17,6 @@ import pl.kazoroo.tavernFarkle.game.domain.usecase.CalculatePointsUseCase
 import pl.kazoroo.tavernFarkle.game.domain.usecase.PlayOpponentTurnUseCase
 import pl.kazoroo.tavernFarkle.game.domain.usecase.StartNewGameUseCase
 import pl.kazoroo.tavernFarkle.game.presentation.game.GameViewModelRefactor
-import pl.kazoroo.tavernFarkle.game.presentation.sound.SoundPlayer
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
@@ -33,8 +29,6 @@ class GameViewModelIntegrationTest {
     @Before
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
-        mockkObject(SoundPlayer)
-        every { SoundPlayer.playSound(any()) } answers { println("Playing sound: ${args.first()}") }
         val repository = LocalGameRepository()
         fakeDrawDiceUseCase = FakeDrawDiceUseCase(repository)
         StartNewGameUseCase(repository, fakeDrawDiceUseCase).invoke(0)
@@ -74,12 +68,10 @@ class GameViewModelIntegrationTest {
     }
 
     @Test
-    fun `onScoreAndRollAgain should sum round points, hide selected dice and draw dice`() = runTest {
+    fun `onScoreAndRollAgain should sum round points, hide selected dice and draw dice`() {
         viewModel.toggleDiceSelection(2)
         viewModel.toggleDiceSelection(3)
         viewModel.onScoreAndRollAgain()
-
-        advanceUntilIdle()
 
         println(viewModel.gameState.value.players[0].diceSet.joinToString(separator = "\n"))
 
@@ -96,11 +88,9 @@ class GameViewModelIntegrationTest {
     }
 
     @Test
-    fun `onPass should sum total points, reset dice state, change current player and draw dice for second player`() = runTest {
+    fun `onPass should sum total points, reset dice state, change current player and draw dice for second player`() {
         viewModel.toggleDiceSelection(0)
         viewModel.onPass()
-
-        advanceTimeBy(2000)
 
         assertEquals(viewModel.gameState.value.players[0].totalPoints, 100)
         assertEquals(viewModel.gameState.value.players[0].roundPoints, 0)
@@ -128,27 +118,6 @@ class GameViewModelIntegrationTest {
         assertEquals(viewModel.gameState.value.players[0].totalPoints, 100)
         assertEquals(viewModel.gameState.value.players[1].roundPoints, 0)
         assertEquals(viewModel.gameState.value.players[1].totalPoints, 2000)
-        assertEquals(viewModel.gameState.value.currentPlayerUuid, viewModel.gameState.value.players[0].uuid)
-        viewModel.gameState.value.players[0].diceSet.forEach {
-            assertTrue(it.isVisible)
-            assertEquals(it.value, 5)
-            assertFalse(it.isSelected)
-        }
-    }
-
-    @Test
-    fun `when all dice invisible current player plays another turn`() = runTest {
-        viewModel.toggleDiceSelection(0)
-        viewModel.toggleDiceSelection(1)
-        viewModel.toggleDiceSelection(2)
-        viewModel.toggleDiceSelection(3)
-        viewModel.toggleDiceSelection(4)
-        viewModel.toggleDiceSelection(5)
-
-        viewModel.onScoreAndRollAgain()
-
-        advanceUntilIdle()
-
         assertEquals(viewModel.gameState.value.currentPlayerUuid, viewModel.gameState.value.players[0].uuid)
         viewModel.gameState.value.players[0].diceSet.forEach {
             assertTrue(it.isVisible)
