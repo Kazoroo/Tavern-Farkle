@@ -16,8 +16,7 @@ import pl.kazoroo.tavernFarkle.game.domain.usecase.StartNewGameUseCase
 class MainMenuViewModel(
     private val saveUserDataUseCase: SaveUserDataUseCase,
     readUserDataUseCase: ReadUserDataUseCase,
-    private val gameRepository: GameRepository,
-    private val drawDiceUseCase: DrawDiceUseCase
+    private val gameRepository: GameRepository
 ): ViewModel() {
     private val _onboardingStage = MutableStateFlow(RevealableKeys.SpeedDialMenu.ordinal)
     val onboardingStage: StateFlow<Int> = _onboardingStage.asStateFlow()
@@ -38,6 +37,6 @@ class MainMenuViewModel(
     }
 
     fun startNewGame(betAmount: Int) {
-        StartNewGameUseCase(gameRepository, drawDiceUseCase).invoke(betAmount)
+        StartNewGameUseCase(gameRepository, DrawDiceUseCase()).invoke(betAmount)
     }
 }

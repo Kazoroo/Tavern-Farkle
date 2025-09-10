@@ -4,8 +4,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-
-import pl.kazoroo.tavernFarkle.game.domain.model.Dice
 import pl.kazoroo.tavernFarkle.game.domain.model.GameState
 import pl.kazoroo.tavernFarkle.game.domain.repository.GameRepository
 import java.util.UUID
@@ -101,25 +99,6 @@ class LocalGameRepository: GameRepository {
         _gameState.update { state ->
             state.copy(players = playersWithUpdatedDice)
         }
-    }
-
-    /**
-     * Assigns given dice list to the current player dice set state.
-     * @param newDice The new dice set to be assigned to the current player state.
-     */
-    override fun updateDiceSet(newDice: List<Dice>) {
-        val currentPlayer = _gameState.value.players[currentPlayerIndex]
-
-        val updatedDiceSet = currentPlayer.diceSet.toMutableList().apply {
-            clear()
-            addAll(newDice)
-        }
-
-        val playersWithUpdatedDice = _gameState.value.players.toMutableList().apply {
-            this[currentPlayerIndex] = this[currentPlayerIndex].copy(diceSet = updatedDiceSet)
-        }
-
-        _gameState.update { it.copy(players = playersWithUpdatedDice) }
     }
 
     override fun passTheRound() {
