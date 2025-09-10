@@ -1,8 +1,6 @@
 package pl.kazoroo.tavernFarkle.presentation.game
 
-import androidx.navigation.NavHostController
 import io.mockk.every
-import io.mockk.mockk
 import io.mockk.mockkObject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -19,7 +17,6 @@ import org.junit.Test
 import pl.kazoroo.tavernFarkle.domain.usecase.FakeDrawDiceUseCase
 import pl.kazoroo.tavernFarkle.game.data.repository.LocalGameRepository
 import pl.kazoroo.tavernFarkle.game.domain.usecase.CalculatePointsUseCase
-import pl.kazoroo.tavernFarkle.game.domain.usecase.CheckGameEndUseCase
 import pl.kazoroo.tavernFarkle.game.domain.usecase.PlayOpponentTurnUseCase
 import pl.kazoroo.tavernFarkle.game.domain.usecase.StartNewGameUseCase
 import pl.kazoroo.tavernFarkle.game.presentation.game.GameViewModelRefactor
@@ -31,20 +28,17 @@ import kotlin.test.assertTrue
 class GameViewModelIntegrationTest {
     private lateinit var viewModel: GameViewModelRefactor
     private lateinit var fakeDrawDiceUseCase: FakeDrawDiceUseCase
-    private lateinit var navController: NavHostController
     private val testDispatcher = StandardTestDispatcher()
 
     @Before
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
         mockkObject(SoundPlayer)
-        navController = mockk<NavHostController>(relaxed = true)
         every { SoundPlayer.playSound(any()) } answers { println("Playing sound: ${args.first()}") }
         val repository = LocalGameRepository()
         fakeDrawDiceUseCase = FakeDrawDiceUseCase(repository)
-        StartNewGameUseCase(repository, fakeDrawDiceUseCase).invoke(0, emptyList())
+        StartNewGameUseCase(repository, fakeDrawDiceUseCase).invoke(0)
         val calculatePointsUseCase = CalculatePointsUseCase(repository)
-        val checkGameEndUseCase = CheckGameEndUseCase(repository, navController)
 
         viewModel = GameViewModelRefactor(
             repository = repository,
@@ -53,11 +47,9 @@ class GameViewModelIntegrationTest {
             playOpponentTurnUseCase = PlayOpponentTurnUseCase(
                 repository = repository,
                 drawDiceUseCase = fakeDrawDiceUseCase,
-                calculatePointsUseCase = calculatePointsUseCase,
-                checkGameEndUseCase = checkGameEndUseCase
+                calculatePointsUseCase = calculatePointsUseCase
             ),
-            dispatcher = testDispatcher,
-            checkGameEndUseCase = checkGameEndUseCase
+            dispatcher = testDispatcher
         )
     }
 
@@ -106,7 +98,7 @@ class GameViewModelIntegrationTest {
     @Test
     fun `onPass should sum total points, reset dice state, change current player and draw dice for second player`() = runTest {
         viewModel.toggleDiceSelection(0)
-        viewModel.onPass(navController)
+        viewModel.onPass()
 
         advanceTimeBy(2000)
 
@@ -128,9 +120,9 @@ class GameViewModelIntegrationTest {
     @Test
     fun `after user pass the computer play its round`() = runTest {
         viewModel.toggleDiceSelection(0)
-        viewModel.onPass(navController)
+        viewModel.onPass()
 
-        advanceTimeBy(2000)
+        advanceUntilIdle()
 
         assertEquals(viewModel.gameState.value.players[0].roundPoints, 0)
         assertEquals(viewModel.gameState.value.players[0].totalPoints, 100)

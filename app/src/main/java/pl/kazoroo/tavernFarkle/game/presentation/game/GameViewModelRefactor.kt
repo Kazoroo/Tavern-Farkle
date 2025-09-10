@@ -40,7 +40,7 @@ class GameViewModelRefactor(
     val isOpponentTurn: StateFlow<Boolean> =
         gameState.map { state ->
             state.currentPlayerUuid != repository.myUuidState.value
-        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(1000L, 0), false)
+        }.stateIn(viewModelScope, SharingStarted.Lazily, false)
 
     val _isDiceAnimating = MutableStateFlow(false)
     val isDiceAnimating: StateFlow<Boolean> = _isDiceAnimating
