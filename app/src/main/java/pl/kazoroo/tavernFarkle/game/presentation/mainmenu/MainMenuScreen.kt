@@ -41,6 +41,7 @@ import pl.kazoroo.tavernFarkle.core.presentation.navigation.Screen
 import pl.kazoroo.tavernFarkle.game.presentation.components.SpeedDialMenu
 import pl.kazoroo.tavernFarkle.game.presentation.mainmenu.components.AppTitleText
 import pl.kazoroo.tavernFarkle.game.presentation.mainmenu.components.BettingDialog
+import pl.kazoroo.tavernFarkle.game.presentation.mainmenu.components.CustomRhombusShadow
 import pl.kazoroo.tavernFarkle.game.presentation.mainmenu.components.MenuNavigationButtons
 import pl.kazoroo.tavernFarkle.game.presentation.mainmenu.components.RevealOverlayContent
 import pl.kazoroo.tavernFarkle.game.presentation.sound.SoundPlayer
@@ -153,11 +154,16 @@ private fun MainMenuContent(
                     .testTag("Main menu screen")
                     .align(Alignment.TopCenter)
             ) {
-                Image(
-                    painter = painterResource(id = R.drawable.dice_1),
-                    contentDescription = "Dice",
-                    modifier = Modifier.size(imageSize)
-                )
+                Box {
+                    CustomRhombusShadow(imageSize)
+
+                    Image(
+                        painter = painterResource(id = R.drawable.dice_1),
+                        contentDescription = "Dice",
+                        modifier = Modifier.size(imageSize)
+                    )
+
+                }
 
                 AppTitleText()
 
