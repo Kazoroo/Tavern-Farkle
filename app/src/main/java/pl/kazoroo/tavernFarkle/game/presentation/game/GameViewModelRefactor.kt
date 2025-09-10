@@ -101,8 +101,6 @@ class GameViewModelRefactor(
                             repository.resetDiceState()
                             repository.changeCurrentPlayer()
 
-                            drawDiceUseCase(repository.gameState.value.players[gameState.value.getCurrentPlayerIndex()].diceSet)
-
                             if(repository.gameState.value.currentPlayerUuid != repository.myUuidState.value) {
                                 playOpponentTurnUseCase { triggerDiceRowAnimation() }
                             }
