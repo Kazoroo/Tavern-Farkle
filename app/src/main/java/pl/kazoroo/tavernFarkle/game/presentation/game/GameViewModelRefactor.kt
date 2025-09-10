@@ -21,10 +21,10 @@ class GameViewModelRefactor(
     }
 
     fun onPass() {
-        repository.sumTotalPoints()
-        repository.resetDiceState()
-        repository.changeCurrentPlayer()
-        drawDiceUseCase(repository.gameState.value.players[gameState.value.getCurrentPlayerIndex()].diceSet)
+        if(!gameState.value.isSkucha) {
+            repository.passTheRound()
+            //repository.sumTotalPoints()
+        }
     }
 
     fun onScoreAndRollAgain() {
