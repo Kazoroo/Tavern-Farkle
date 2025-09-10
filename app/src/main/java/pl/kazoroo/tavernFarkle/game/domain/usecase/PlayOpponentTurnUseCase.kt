@@ -26,7 +26,7 @@ class PlayOpponentTurnUseCase(
                 delay((1200L..1600L).random())
             }
 
-            if (numberOfVisibleDice - indexesOfDiceGivingPoints.size > playingUntilDiceLeft || numberOfVisibleDice - indexesOfDiceGivingPoints.size == 0) {
+            if (numberOfVisibleDice - indexesOfDiceGivingPoints.size > playingUntilDiceLeft) {
                 scoreAndRollAgain(triggerDiceRowAnimation)
                 numberOfVisibleDice = repository.gameState.value.players[1].diceSet.count { it.isVisible }
             } else {
@@ -69,10 +69,6 @@ class PlayOpponentTurnUseCase(
         repository.sumRoundPoints()
         repository.hideSelectedDice()
         triggerDiceRowAnimation()
-
-        if(repository.gameState.value.players[repository.gameState.value.getCurrentPlayerIndex()].diceSet.all { !it.isVisible }) {
-            repository.resetDiceState()
-        }
 
         val state = repository.gameState.value
         val currentPlayer = state.players[state.getCurrentPlayerIndex()]
