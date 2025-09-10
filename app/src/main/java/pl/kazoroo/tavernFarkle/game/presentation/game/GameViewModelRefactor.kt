@@ -30,6 +30,6 @@ class GameViewModelRefactor(
     fun onScoreAndRollAgain() {
         repository.sumRoundPoints()
         repository.hideSelectedDice()
-        drawDiceUseCase(repository.gameState.value.players[gameState.value.getCurrentPlayerIndex()].diceSet)
+        drawDiceUseCase()
     }
 }

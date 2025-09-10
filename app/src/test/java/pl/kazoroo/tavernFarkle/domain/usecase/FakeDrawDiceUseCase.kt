@@ -15,7 +15,7 @@ class FakeDrawDiceUseCase(private val repository: GameRepository) : DrawDiceUseC
         Dice(value = 5, image = 0)
     )
 
-    operator fun invoke(): List<Dice> {
+    override operator fun invoke(): List<Dice> {
         val diceSet1 = listOf(
             Dice(value = 1, image = 0),
             Dice(value = 1, image = 0),
