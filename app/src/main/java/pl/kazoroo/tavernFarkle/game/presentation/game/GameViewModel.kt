@@ -34,7 +34,6 @@ class GameViewModel(
     dispatcher: CoroutineDispatcher = Dispatchers.Main
 ): ViewModel() {
     private val scope = CoroutineScope(dispatcher + SupervisorJob())
-
     val gameState: StateFlow<GameState> = repository.gameState
 
     val isOpponentTurn: StateFlow<Boolean> =
@@ -48,13 +47,13 @@ class GameViewModel(
     private var internalNavController: NavHostController? = null
     private var internalCoinsViewModel: CoinsViewModel? = null
 
+    init {
+        observeSkucha()
+    }
+
     fun initializeNavController(navController: NavHostController, coinsViewModel: CoinsViewModel) {
         this.internalNavController = navController
         this.internalCoinsViewModel = coinsViewModel
-    }
-
-    init {
-        observeSkucha()
     }
 
     fun toggleDiceSelection(index: Int) {
