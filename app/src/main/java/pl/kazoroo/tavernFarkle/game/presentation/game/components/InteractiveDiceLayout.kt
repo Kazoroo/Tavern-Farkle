@@ -43,7 +43,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import pl.kazoroo.tavernFarkle.R
-import pl.kazoroo.tavernFarkle.game.domain.model.Dice
+import pl.kazoroo.tavernFarkle.game.presentation.game.Dice
 
 @Composable
 fun InteractiveDiceLayout(
