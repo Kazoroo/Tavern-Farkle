@@ -2,10 +2,6 @@ package pl.kazoroo.tavernFarkle.game.presentation.game
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -23,11 +19,8 @@ class GameViewModelRefactor(
     private val repository: GameRepository,
     private val calculatePointsUseCase: CalculatePointsUseCase,
     private val drawDiceUseCase: DrawDiceUseCase,
-    private val playOpponentTurnUseCase: PlayOpponentTurnUseCase,
-    dispatcher: CoroutineDispatcher = Dispatchers.Main
+    private val playOpponentTurnUseCase: PlayOpponentTurnUseCase
 ): ViewModel() {
-    private val scope = CoroutineScope(dispatcher + SupervisorJob())
-
     val gameState: StateFlow<GameState> = repository.gameState
 
     val isOpponentTurn: StateFlow<Boolean> =
@@ -52,7 +45,7 @@ class GameViewModelRefactor(
         drawDiceUseCase(repository.gameState.value.players[gameState.value.getCurrentPlayerIndex()].diceSet)
 
         if(repository.gameState.value.currentPlayerUuid != repository.myUuidState.value) {
-            scope.launch {
+            viewModelScope.launch {
                 playOpponentTurnUseCase()
             }
         }
@@ -65,7 +58,7 @@ class GameViewModelRefactor(
     }
 
     private fun observeSkucha() {
-        scope.launch {
+        viewModelScope.launch {
             repository.gameState
                 .map { it.isSkucha }
                 .distinctUntilChanged()

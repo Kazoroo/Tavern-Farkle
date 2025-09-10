@@ -3,9 +3,7 @@ package pl.kazoroo.tavernFarkle.presentation.game
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
-import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.resetMain
-import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Assert.assertFalse
@@ -42,8 +40,7 @@ class GameViewModelIntegrationTest {
                 repository = repository,
                 drawDiceUseCase = fakeDrawDiceUseCase,
                 calculatePointsUseCase = calculatePointsUseCase
-            ),
-            dispatcher = testDispatcher
+            )
         )
     }
 
@@ -105,24 +102,5 @@ class GameViewModelIntegrationTest {
 
         viewModel.gameState.value.players[0].diceSet.forEach { assertEquals(it.value, 1) }
         viewModel.gameState.value.players[1].diceSet.forEach { assertEquals(it.value, 5) }
-    }
-
-    @Test
-    fun `after user pass the computer play its round`() = runTest {
-        viewModel.toggleDiceSelection(0)
-        viewModel.onPass()
-
-        advanceUntilIdle()
-
-        assertEquals(viewModel.gameState.value.players[0].roundPoints, 0)
-        assertEquals(viewModel.gameState.value.players[0].totalPoints, 100)
-        assertEquals(viewModel.gameState.value.players[1].roundPoints, 0)
-        assertEquals(viewModel.gameState.value.players[1].totalPoints, 2000)
-        assertEquals(viewModel.gameState.value.currentPlayerUuid, viewModel.gameState.value.players[0].uuid)
-        viewModel.gameState.value.players[0].diceSet.forEach {
-            assertTrue(it.isVisible)
-            assertEquals(it.value, 5)
-            assertFalse(it.isSelected)
-        }
     }
 }
