@@ -15,7 +15,7 @@ class CheckGameEndUseCase(
     private var navController: NavHostController?
 ) {
     operator fun invoke(sumCoins: () -> Unit = {}): Boolean {
-        if(repository.gameState.value.players[repository.gameState.value.getCurrentPlayerIndex()].totalPoints >= 4000) {
+        if(repository.gameState.value.players[repository.gameState.value.getCurrentPlayerIndex()].totalPoints >= 400) {
             CoroutineScope(Dispatchers.Main).launch {
                 if (repository.gameState.value.currentPlayerUuid == repository.myUuidState.value) {
                     SoundPlayer.playSound(SoundType.WIN)
