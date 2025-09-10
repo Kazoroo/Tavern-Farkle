@@ -1,8 +1,8 @@
 package pl.kazoroo.tavernFarkle.game.presentation.mainmenu.components
 
 import androidx.activity.compose.LocalActivity
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -33,17 +33,18 @@ fun RevealScope.MenuNavigationButtons(
         .height(dimensionResource(R.dimen.menu_button_height))
         .width(dimensionResource(R.dimen.menu_button_width))
 
-    DiceButton(
-        buttonInfo = ButtonInfo(
-            text = stringResource(R.string.play_with_computer),
+    Column {
+        DiceButton(
+            buttonInfo = ButtonInfo(
+                text = stringResource(R.string.play_with_computer),
+                modifier = buttonsModifier
+                    .testTag("Play with AI button"),
+                onClick = playWithComputerOnClick
+            ),
             modifier = buttonsModifier
-                .testTag("Play with AI button"),
-            onClick = playWithComputerOnClick
-        ),
-        modifier = buttonsModifier
-    )
+        )
 
-/*    DiceButton(
+        /*    DiceButton(
         buttonInfo = ButtonInfo(
             text = stringResource(R.string.play_online),
             modifier = buttonsModifier
@@ -53,43 +54,44 @@ fun RevealScope.MenuNavigationButtons(
         modifier = buttonsModifier
     )*/
 
-    DiceButton(
-        buttonInfo = ButtonInfo(
-            text = stringResource(R.string.shop),
+        DiceButton(
+            buttonInfo = ButtonInfo(
+                text = stringResource(R.string.shop),
+                modifier = buttonsModifier
+                    .testTag("Shop"),
+                onClick = {
+                    navController.navigate(Screen.ShopScreen.route)
+                    SoundPlayer.playSound(SoundType.CLICK)
+                }
+            ),
+            modifier = buttonsModifier.revealable(key = RevealableKeys.ShopButton)
+        )
+
+        DiceButton(
+            buttonInfo = ButtonInfo(
+                text = stringResource(R.string.inventory),
+                modifier = buttonsModifier
+                    .testTag("Inventory"),
+                onClick = {
+                    navController.navigate(Screen.InventoryScreen.route)
+                    SoundPlayer.playSound(SoundType.CLICK)
+                }
+            ),
+            modifier = buttonsModifier.revealable(key = RevealableKeys.InventoryButton)
+        )
+
+        Spacer(Modifier.weight(1f))
+
+        DiceButton(
+            buttonInfo = ButtonInfo(
+                text = stringResource(R.string.exit),
+                onClick = {
+                    activity?.finish()
+                    SoundPlayer.playSound(SoundType.CLICK)
+                }
+            ),
             modifier = buttonsModifier
-                .testTag("Shop"),
-            onClick = {
-                navController.navigate(Screen.ShopScreen.route)
-                SoundPlayer.playSound(SoundType.CLICK)
-            }
-        ),
-        modifier = buttonsModifier.revealable(key = RevealableKeys.ShopButton)
-    )
-
-    DiceButton(
-        buttonInfo = ButtonInfo(
-            text = stringResource(R.string.inventory),
-            modifier = buttonsModifier
-                .testTag("Inventory"),
-            onClick = {
-                navController.navigate(Screen.InventoryScreen.route)
-                SoundPlayer.playSound(SoundType.CLICK)
-            }
-        ),
-        modifier = buttonsModifier.revealable(key = RevealableKeys.InventoryButton)
-    )
-
-    Spacer(modifier = Modifier.fillMaxHeight(0.1f))
-
-    DiceButton(
-        buttonInfo = ButtonInfo(
-            text = stringResource(R.string.exit),
-            onClick = {
-                activity?.finish()
-                SoundPlayer.playSound(SoundType.CLICK)
-            }
-        ),
-        modifier = buttonsModifier
-            .testTag("Exit button")
-    )
+                .testTag("Exit button")
+        )
+    }
 }

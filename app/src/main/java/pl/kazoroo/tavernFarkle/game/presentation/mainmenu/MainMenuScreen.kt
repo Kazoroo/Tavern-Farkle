@@ -151,6 +151,7 @@ private fun MainMenuContent(
                 verticalArrangement = Arrangement.Top,
                 modifier = Modifier
                     .testTag("Main menu screen")
+                    .align(Alignment.TopCenter)
             ) {
                 Image(
                     painter = painterResource(id = R.drawable.dice_1),
