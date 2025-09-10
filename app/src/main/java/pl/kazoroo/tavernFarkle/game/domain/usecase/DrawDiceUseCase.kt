@@ -37,10 +37,9 @@ open class DrawDiceUseCase(
                 image = (specialDice?.image ?: diceDrawables)[value - 1]
             )
         }
-        val shuffledDiceSet = newDiceSet.shuffled()
 
-        if(repository.gameState.value.players.isNotEmpty()) repository.updateDiceSet(shuffledDiceSet)
-        return shuffledDiceSet
+        if(repository.gameState.value.players.isNotEmpty()) repository.updateDiceSet(newDiceSet.shuffled())
+        return newDiceSet.shuffled()
     }
 
     private fun getRandomWithProbability(probabilities: List<Float>): Int {
