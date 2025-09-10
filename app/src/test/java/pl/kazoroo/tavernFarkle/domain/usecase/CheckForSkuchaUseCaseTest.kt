@@ -1,72 +1,30 @@
 package pl.kazoroo.tavernFarkle.domain.usecase
 
-import org.junit.Before
 import org.junit.Test
-import pl.kazoroo.tavernFarkle.R
-import pl.kazoroo.tavernFarkle.game.data.repository.LocalGameRepository
 import pl.kazoroo.tavernFarkle.game.domain.model.Dice
-import pl.kazoroo.tavernFarkle.game.domain.model.GameState
-import pl.kazoroo.tavernFarkle.game.domain.model.Player
-import pl.kazoroo.tavernFarkle.game.domain.usecase.CalculatePointsUseCase
 import pl.kazoroo.tavernFarkle.game.domain.usecase.CheckForSkuchaUseCase
-import java.util.UUID
-import kotlin.random.Random
 
 class CheckForSkuchaUseCaseTest {
-    lateinit var checkForSkuchaUseCase: CheckForSkuchaUseCase
-
-    @Before
-    fun initialize() {
-        val repository = LocalGameRepository()
-
-        val currentPlayerId = UUID.randomUUID()
-
-        val diceList = List(6) {
-            val value = Random.nextInt(until = 6)
-
-            Dice(
-                value = value + 1,
-                image = R.drawable.dice_4
-            )
-        }
-
-        val players = listOf(
-            Player(
-                uuid = currentPlayerId,
-                diceSet = diceList
-            ),
-            Player(
-                uuid = UUID.randomUUID(),
-                diceSet = diceList
-            ),
-        )
-
-        val gameState = GameState(
-            betAmount = 200,
-            gameUuid = UUID.randomUUID(),
-            isSkucha = false,
-            currentPlayerUuid = currentPlayerId,
-            players = players,
-            isGameEnd = false,
-        )
-
-        repository.saveGameState(gameState)
-
-        val calculatePointsUseCase = CalculatePointsUseCase(repository)
-        checkForSkuchaUseCase = CheckForSkuchaUseCase(calculatePointsUseCase)
-    }
 
     @Test
     fun `check for skucha when all dice are visible and there are available points`() {
-        val result = checkForSkuchaUseCase.invoke(
+        val result = CheckForSkuchaUseCase().invoke(
             diceList = listOf(
-                Dice(value = 1, image = 0, isVisible = true),
-                Dice(value = 2, image = 0, isVisible = true),
-                Dice(value = 3, image = 0, isVisible = true),
-                Dice(value = 4, image = 0, isVisible = true),
-                Dice(value = 4, image = 0, isVisible = true),
-                Dice(value = 6, image = 0, isVisible = true),
+                Dice(null,1, 0),
+                Dice(null,2, 0),
+                Dice(null,3, 0),
+                Dice(null,4, 0),
+                Dice(null,4, 0),
+                Dice(null,6, 0)
             ),
+            isDiceVisible = listOf(
+                true,
+                true,
+                true,
+                true,
+                true,
+                true,
+            )
         )
 
         assert(!result)
@@ -74,15 +32,23 @@ class CheckForSkuchaUseCaseTest {
 
     @Test
     fun `check for skucha when all dice are visible and there are no available points`() {
-        val result = checkForSkuchaUseCase.invoke(
+        val result = CheckForSkuchaUseCase().invoke(
             diceList = listOf(
-                Dice(value = 6, image = 0, isVisible = true),
-                Dice(value = 2, image = 0, isVisible = true),
-                Dice(value = 3, image = 0, isVisible = true),
-                Dice(value = 4, image = 0, isVisible = true),
-                Dice(value = 4, image = 0, isVisible = true),
-                Dice(value = 6, image = 0, isVisible = true),
+                Dice(null,6, 0),
+                Dice(null,2, 0),
+                Dice(null,3, 0),
+                Dice(null,4, 0),
+                Dice(null,4, 0),
+                Dice(null,6, 0)
             ),
+            isDiceVisible = listOf(
+                true,
+                true,
+                true,
+                true,
+                true,
+                true,
+            )
         )
 
         assert(result)
@@ -90,18 +56,25 @@ class CheckForSkuchaUseCaseTest {
 
     @Test
     fun `check for skucha when three dice are visible and there are no available points`() {
-        val result = checkForSkuchaUseCase.invoke(
+        val result = CheckForSkuchaUseCase().invoke(
             diceList = listOf(
-                Dice(value = 6, image = 0, isVisible = true),
-                Dice(value = 2, image = 0, isVisible = true),
-                Dice(value = 3, image = 0, isVisible = true),
-                Dice(value = 1, image = 0, isVisible = false),
-                Dice(value = 1, image = 0, isVisible = false),
-                Dice(value = 1, image = 0, isVisible = false),
+                Dice(null,6, 0),
+                Dice(null,2, 0),
+                Dice(null,3, 0),
+                Dice(null,1, 0),
+                Dice(null,1, 0),
+                Dice(null,1, 0)
             ),
+            isDiceVisible = listOf(
+                true,
+                true,
+                true,
+                false,
+                false,
+                false,
+            )
         )
 
         assert(result)
     }
-
 }
