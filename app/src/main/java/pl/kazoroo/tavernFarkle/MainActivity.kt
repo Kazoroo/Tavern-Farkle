@@ -25,7 +25,6 @@ import pl.kazoroo.tavernFarkle.core.presentation.CoinsViewModel
 import pl.kazoroo.tavernFarkle.core.presentation.navigation.Navigation
 import pl.kazoroo.tavernFarkle.di.DependencyContainer
 import pl.kazoroo.tavernFarkle.di.TavernFarkleApp
-import pl.kazoroo.tavernFarkle.game.presentation.game.GameViewModelRefactor
 import pl.kazoroo.tavernFarkle.game.presentation.mainmenu.MainMenuViewModel
 import pl.kazoroo.tavernFarkle.game.presentation.sound.SoundPlayer
 import pl.kazoroo.tavernFarkle.game.presentation.splashscreen.StartingScreenViewModel
@@ -98,9 +97,6 @@ class MainActivity : ComponentActivity() {
             val inventoryViewModel = viewModel<InventoryViewModel>(
                 factory = dependencyContainer.inventoryViewModelFactory
             )
-            val gameViewModel = viewModel<GameViewModelRefactor>(
-                factory = dependencyContainer.gameViewModelFactory
-            )
 
             DicesTheme {
                 enableEdgeToEdge()
@@ -121,8 +117,7 @@ class MainActivity : ComponentActivity() {
                         coinsViewModel = coinsMenuViewModel,
                         inventoryViewModel = inventoryViewModel,
                         settingsViewModel = settingsViewModel,
-                        dependencyContainer = dependencyContainer,
-                        gameViewModel = gameViewModel
+                        dependencyContainer = dependencyContainer
                     )
                 }
             }

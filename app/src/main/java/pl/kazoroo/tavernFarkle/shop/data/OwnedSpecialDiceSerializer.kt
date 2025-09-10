@@ -8,6 +8,7 @@ import pl.kazoroo.tavernFarkle.shop.data.model.OwnedSpecialDice
 import java.io.InputStream
 import java.io.OutputStream
 
+@Suppress("BlockingMethodInNonBlockingContext")
 object OwnedSpecialDiceSerializer: Serializer<List<OwnedSpecialDice>> {
     override val defaultValue: List<OwnedSpecialDice>
         get() = emptyList()

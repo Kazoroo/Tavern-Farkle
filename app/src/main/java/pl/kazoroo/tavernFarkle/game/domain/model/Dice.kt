@@ -6,6 +6,6 @@ data class Dice(
     val value: Int,
     val isSelected: Boolean = false,
     val isVisible: Boolean = true,
-    val specialDiceName: SpecialDiceName? = null,
+    val special: SpecialDiceName? = null,
     val image: Int
 )

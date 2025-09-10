@@ -7,6 +7,6 @@ data class GameState(
     val betAmount: Int,
     val isSkucha: Boolean = false,
     val currentPlayerUuid: UUID,
-    val isGameEnd: Boolean = false,
-    val players: List<Player>
+    val players: List<Player>,
+    val isGameEnd: Boolean = false
 )

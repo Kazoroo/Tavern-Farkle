@@ -9,14 +9,10 @@ import kotlinx.coroutines.launch
 import pl.kazoroo.tavernFarkle.core.data.local.UserDataKey
 import pl.kazoroo.tavernFarkle.core.domain.ReadUserDataUseCase
 import pl.kazoroo.tavernFarkle.core.domain.SaveUserDataUseCase
-import pl.kazoroo.tavernFarkle.game.domain.repository.GameRepository
-import pl.kazoroo.tavernFarkle.game.domain.usecase.DrawDiceUseCase
-import pl.kazoroo.tavernFarkle.game.domain.usecase.StartNewGameUseCase
 
 class MainMenuViewModel(
     private val saveUserDataUseCase: SaveUserDataUseCase,
-    readUserDataUseCase: ReadUserDataUseCase,
-    private val gameRepository: GameRepository
+    readUserDataUseCase: ReadUserDataUseCase
 ): ViewModel() {
     private val _onboardingStage = MutableStateFlow(RevealableKeys.SpeedDialMenu.ordinal)
     val onboardingStage: StateFlow<Int> = _onboardingStage.asStateFlow()
@@ -34,9 +30,5 @@ class MainMenuViewModel(
         viewModelScope.launch {
             saveUserDataUseCase(false, UserDataKey.IS_FIRST_LAUNCH)
         }
-    }
-
-    fun startNewGame(betAmount: Int) {
-        StartNewGameUseCase(gameRepository, DrawDiceUseCase()).invoke(betAmount)
     }
 }
