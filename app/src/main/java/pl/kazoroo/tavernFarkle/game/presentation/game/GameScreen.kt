@@ -72,6 +72,8 @@ fun GameScreen(
         showExitDialog.value = true
     }
 
+    // TODO: here was LaunchedEffect checking for skucha, may be needed in future.
+
     if(showExitDialog.value) {
         ExitDialog(
             onDismissClick = { showExitDialog.value = false },
@@ -179,7 +181,12 @@ fun GameScreen(
             }
         }
 
+        var isSkuchaDialogVisible by remember { mutableStateOf(false) }
         var isGameResultDialogVisible by remember { mutableStateOf(false) }
+
+        LaunchedEffect(state.isSkucha) {
+            isSkuchaDialogVisible = state.isSkucha
+        }
 
         LaunchedEffect(state.isGameEnd) {
             delay(1000L)
@@ -187,7 +194,7 @@ fun GameScreen(
             isGameResultDialogVisible = state.isGameEnd
         }
 
-        if(state.isSkucha) {
+        if(isSkuchaDialogVisible) {
             gameResultAndSkuchaDialog(
                 text = "Skucha!", textColor = Color(212, 212, 212),
                 extraText = null
