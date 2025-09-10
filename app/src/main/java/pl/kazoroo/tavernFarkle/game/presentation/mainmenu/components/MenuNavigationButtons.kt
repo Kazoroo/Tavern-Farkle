@@ -21,7 +21,6 @@ import pl.kazoroo.tavernFarkle.game.presentation.mainmenu.RevealableKeys
 import pl.kazoroo.tavernFarkle.game.presentation.sound.SoundPlayer
 import pl.kazoroo.tavernFarkle.game.presentation.sound.SoundType
 
-
 @Composable
 fun RevealScope.MenuNavigationButtons(
     navController: NavController,
@@ -44,7 +43,7 @@ fun RevealScope.MenuNavigationButtons(
         modifier = buttonsModifier
     )
 
-    DiceButton(
+/*    DiceButton(
         buttonInfo = ButtonInfo(
             text = stringResource(R.string.play_online),
             modifier = buttonsModifier
@@ -52,7 +51,7 @@ fun RevealScope.MenuNavigationButtons(
             onClick = playOnlineOnClick
         ),
         modifier = buttonsModifier
-    )
+    )*/
 
     DiceButton(
         buttonInfo = ButtonInfo(

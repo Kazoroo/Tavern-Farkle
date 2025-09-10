@@ -1,5 +1,6 @@
 package pl.kazoroo.tavernFarkle.game.domain.usecase
 
+import android.util.Log
 import androidx.navigation.NavHostController
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -31,7 +32,7 @@ class CheckGameEndUseCase(
                     navController.navigate(Screen.MainScreen.withArgs()) {
                         popUpTo(Screen.GameScreen.withArgs()) { inclusive = true }
                     }
-                } ?: println("navController in CheckGameEndUseCase is null")
+                } ?: Log.e("CheckGameEndUseCase", "navController in CheckGameEndUseCase is null")
             }
 
             return true
