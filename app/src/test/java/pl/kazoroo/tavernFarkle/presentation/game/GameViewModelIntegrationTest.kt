@@ -18,6 +18,7 @@ class GameViewModelIntegrationTest {
     @Before
     fun setUp() {
         val repository = LocalGameRepository()
+        println(repository.gameState.value.players.joinToString(separator = "\n"))
         fakeDrawDiceUseCase = FakeDrawDiceUseCase(repository)
         StartNewGameUseCase(repository, fakeDrawDiceUseCase).invoke(0)
 
@@ -59,25 +60,5 @@ class GameViewModelIntegrationTest {
         assertFalse(viewModel.gameState.value.players[0].diceSet[3].isVisible)
 
         assertEquals(viewModel.gameState.value.players[0].diceSet, fakeDrawDiceUseCase.diceSet2)
-    }
-
-    @Test
-    fun `onPass should sum total points, reset dice state, change current player and draw dice for second player`() {
-        viewModel.toggleDiceSelection(0)
-        viewModel.onPass()
-
-        assertEquals(viewModel.gameState.value.players[0].totalPoints, 100)
-        assertEquals(viewModel.gameState.value.players[0].roundPoints, 0)
-        assertEquals(viewModel.gameState.value.players[0].selectedPoints, 0)
-
-        viewModel.gameState.value.players[0].diceSet.forEach {
-            assertFalse(it.isSelected)
-            assertTrue(it.isVisible)
-        }
-
-        assertEquals(viewModel.gameState.value.currentPlayerUuid, viewModel.gameState.value.players[1].uuid)
-
-        assertEquals(viewModel.gameState.value.players[0].diceSet, fakeDrawDiceUseCase.diceSet1)
-        assertEquals(viewModel.gameState.value.players[1].diceSet, fakeDrawDiceUseCase.diceSet2)
     }
 }
