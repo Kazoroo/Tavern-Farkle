@@ -18,7 +18,7 @@ fun NavigateBackButton(onClick: () -> Unit) {
             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
             contentDescription = "Back",
             tint = Color.White,
-            modifier = Modifier.size(dimensionResource(R.dimen.icon_size))
+            modifier = Modifier.size(dimensionResource(R.dimen.coin_icon_size))
         )
     }
 }
