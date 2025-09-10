@@ -4,6 +4,7 @@ import android.graphics.BlurMaskFilter
 import android.os.Build
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.EaseInOutCubic
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideInHorizontally
@@ -16,6 +17,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
@@ -34,9 +36,11 @@ import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import pl.kazoroo.tavernFarkle.R
 import pl.kazoroo.tavernFarkle.game.domain.model.Dice
@@ -57,6 +61,7 @@ fun InteractiveDiceLayout(
     ) {
         val screenWidth = LocalConfiguration.current.screenWidthDp
         val imageSize = (screenWidth.dp / 3) - 10.dp
+        val localDensity = LocalDensity.current
 
         for (row in 0..1) {
             AnimatedVisibility(
@@ -67,21 +72,29 @@ fun InteractiveDiceLayout(
                 ) {
                     for (column in 0..2) {
                         val index = row * 3 + column
+                        val offsetX by animateDpAsState(
+                            targetValue = if (diceState[index].isVisible) 0.dp else imageSize * 3
+                        )
+                        val offsetLambda: () -> IntOffset = {
+                            with(localDensity) {
+                                IntOffset(offsetX.toPx().toInt(), 0)
+                            }
+                        }
 
                         AnimatedVisibility(
                             visible = diceState[index].isVisible,
                             enter = slideInHorizontally(
                                 initialOffsetX = {
-                                    (if(index == 0 || index == 3) -it else it) * 3
+                                    (if(index == 0 || index == 3) -it * 2 else it) * 3
                                 }
                             ),
                             exit = slideOutHorizontally(
                                 targetOffsetX = {
-                                    (if(index == 0 || index == 3) -it else it) * 3
+                                    (if(index == 0 || index == 3) -it * 2 else it) * 3
                                 }
                             )
                         ) {
-                            DiceImageWithShadow(imageSize, diceState[index], index, isDiceClickable, diceOnClick)
+                            DiceImageWithShadow(imageSize, diceState[index], index, isDiceClickable, diceOnClick, offsetLambda)
                         }
                     }
                 }
@@ -96,7 +109,8 @@ private fun DiceImageWithShadow(
     diceState: Dice,
     index: Int,
     isDiceClickable: Boolean,
-    diceOnClick: (Int) -> Unit
+    diceOnClick: (Int) -> Unit,
+    offsetLambda: () -> IntOffset
 ) {
     CustomDiceShadow(shadowSize = imageSize)
 
@@ -116,6 +130,7 @@ private fun DiceImageWithShadow(
             ) {
                 diceOnClick(index)
             }
+            .offset { offsetLambda() }
     )
 }
 
