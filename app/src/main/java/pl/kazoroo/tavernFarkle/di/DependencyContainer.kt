@@ -13,7 +13,7 @@ import pl.kazoroo.tavernFarkle.game.domain.usecase.CheckForSkuchaUseCase
 import pl.kazoroo.tavernFarkle.game.domain.usecase.CheckGameEndUseCase
 import pl.kazoroo.tavernFarkle.game.domain.usecase.DrawDiceUseCase
 import pl.kazoroo.tavernFarkle.game.domain.usecase.PlayOpponentTurnUseCase
-import pl.kazoroo.tavernFarkle.game.presentation.game.GameViewModel
+import pl.kazoroo.tavernFarkle.game.presentation.game.GameViewModelRefactor
 import pl.kazoroo.tavernFarkle.game.presentation.mainmenu.MainMenuViewModel
 import pl.kazoroo.tavernFarkle.settings.presentation.SettingsViewModel
 import pl.kazoroo.tavernFarkle.shop.domain.InventoryDataRepositoryImpl
@@ -85,7 +85,7 @@ class DependencyContainer(
         }
     val gameViewModelFactory: ViewModelProvider.Factory
         get() = viewModelFactoryHelper {
-            GameViewModel(
+            GameViewModelRefactor(
                 repository = localGameRepository,
                 calculatePointsUseCase = calculatePointsUseCase,
                 drawDiceUseCase = drawDiceUseCase,
