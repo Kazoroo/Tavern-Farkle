@@ -41,6 +41,7 @@ class GameViewModelRefactor(
 
         if(repository.gameState.value.currentPlayerUuid != repository.myUuidState.value) {
             viewModelScope.launch {
+                println("Opponent turn")
                 playOpponentTurnUseCase()
             }
         }

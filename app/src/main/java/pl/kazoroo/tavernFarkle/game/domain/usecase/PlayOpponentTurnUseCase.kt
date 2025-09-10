@@ -18,6 +18,7 @@ class PlayOpponentTurnUseCase(
 
             if (indexesOfDiceGivingPoints.isEmpty()) {
                 //TODO: perform skucha
+                println("performing skucha")
 
                 return
             }
@@ -25,17 +26,31 @@ class PlayOpponentTurnUseCase(
             indexesOfDiceGivingPoints.forEach {
                 repository.toggleDiceSelection(it)
                 calculatePointsUseCase(repository.gameState.value.players[1].diceSet)
+                println("selected dice index $it")
                 delay((1200L..1600L).random())
             }
 
+            println("number of visible dice: $numberOfVisibleDice")
+            println("selected dice: ${indexesOfDiceGivingPoints.size}")
+            println("playing until dice left: $playingUntilDiceLeft")
+
             if (numberOfVisibleDice - indexesOfDiceGivingPoints.size > playingUntilDiceLeft) {
                 scoreAndRollAgain()
-                numberOfVisibleDice = repository.gameState.value.players[1].diceSet.count { it.isVisible }
+                println("rolling again")
+                numberOfVisibleDice = repository.gameState.value.players[1].diceSet.count { !it.isVisible }
             } else {
                 passRound()
+                println("Pass round")
                 break
             }
+
+            println(repository.gameState.value.currentPlayerUuid)
+            repository.gameState.value.players.forEach { println(it.uuid) }
+            println(repository.gameState.value.players[0].totalPoints)
+            println(repository.gameState.value.players[1].totalPoints)
         }
+
+        println("ending turn")
     }
 
     /**
@@ -56,23 +71,19 @@ class PlayOpponentTurnUseCase(
     }
 
     private fun passRound() {
+        val gameState = repository.gameState.value
+
         repository.sumTotalPoints()
         repository.resetDiceState()
         repository.changeCurrentPlayer()
-
-        val state = repository.gameState.value
-        val currentPlayer = state.players[state.getCurrentPlayerIndex()]
-
-        drawDiceUseCase(currentPlayer.diceSet)
+        drawDiceUseCase(gameState.players[gameState.getCurrentPlayerIndex()].diceSet)
     }
 
     private fun scoreAndRollAgain() {
+        val gameState = repository.gameState.value
+
         repository.sumRoundPoints()
         repository.hideSelectedDice()
-
-        val state = repository.gameState.value
-        val currentPlayer = state.players[state.getCurrentPlayerIndex()]
-
-        drawDiceUseCase(currentPlayer.diceSet)
+        drawDiceUseCase(gameState.players[gameState.getCurrentPlayerIndex()].diceSet)
     }
 }
