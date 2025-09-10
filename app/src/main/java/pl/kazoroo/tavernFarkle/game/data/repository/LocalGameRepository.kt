@@ -20,18 +20,10 @@ class LocalGameRepository: GameRepository {
     )
     override val gameState: StateFlow<GameState> = _gameState.asStateFlow()
 
-    /**
-     * Saves provided data as the current game state. Used to initialize game data.
-     * @param gameState state to save.
-     */
     override fun saveGameState(gameState: GameState) {
         _gameState.value = gameState
     }
 
-    /**
-     * Toggles the selection state of a dice at the specified index.
-     * @param index The index of the dice to toggle the selection state for.
-     */
     override fun toggleDiceSelection(index: Int) {
         val state = _gameState.value
         val playerIndex = state.getCurrentPlayerIndex()
@@ -45,11 +37,7 @@ class LocalGameRepository: GameRepository {
         _gameState.update { it.copy(players = updatedPlayers) }
     }
 
-    /**
-     * Updates the selected points state for the current player.
-     * @param selectedPoints The new selected points value.
-     */
-    override fun updateSelectedPoints(selectedPoints: Int) {
+    override fun savePoints(selectedPoints: Int) {
         _gameState.update { state ->
             val currentPlayerIndex = state.getCurrentPlayerIndex()
             val playersWithUpdatedPoints = state.players.toMutableList().apply {
@@ -60,9 +48,7 @@ class LocalGameRepository: GameRepository {
         }
     }
 
-    /**
-     * Assign selected and round points to the current player state. Reset selected points.
-     */
+
     override fun sumRoundPoints() {
         _gameState.update { state ->
             val currentPlayerIndex = state.getCurrentPlayerIndex()
@@ -80,9 +66,6 @@ class LocalGameRepository: GameRepository {
         }
     }
 
-    /**
-     * Updates the dice visibility state for the current player based on their selected state.
-     */
     override fun hideSelectedDice() {
         val currentPlayerIndex = _gameState.value.getCurrentPlayerIndex()
         val currentPlayer = _gameState.value.players[currentPlayerIndex]

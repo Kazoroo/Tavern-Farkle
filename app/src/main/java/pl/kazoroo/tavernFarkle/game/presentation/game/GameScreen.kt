@@ -154,8 +154,7 @@ fun GameScreen(
                 contentAlignment = Alignment.Center
             ) {
                 Column(
-                    modifier = Modifier
-                        .wrapContentSize()
+                    modifier = Modifier.wrapContentSize()
                         .background(
                             color = Color(26, 26, 26, 220),
                             shape = RoundedCornerShape(dimensionResource(id = R.dimen.rounded_corner))

@@ -6,7 +6,7 @@ import pl.kazoroo.tavernFarkle.game.domain.model.GameState
 interface GameRepository {
     val gameState: StateFlow<GameState>
     fun saveGameState(gameState: GameState)
-    fun updateSelectedPoints(selectedPoints: Int)
+    fun savePoints(selectedPoints: Int)
     fun toggleDiceSelection(index: Int)
     fun sumRoundPoints()
     fun hideSelectedDice()
