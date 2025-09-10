@@ -1,52 +1,31 @@
 package pl.kazoroo.tavernFarkle.presentation.game
 
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.StandardTestDispatcher
-import kotlinx.coroutines.test.resetMain
-import kotlinx.coroutines.test.setMain
-import org.junit.After
 import org.junit.Assert.assertFalse
 import org.junit.Before
 import org.junit.Test
 import pl.kazoroo.tavernFarkle.domain.usecase.FakeDrawDiceUseCase
 import pl.kazoroo.tavernFarkle.game.data.repository.LocalGameRepository
 import pl.kazoroo.tavernFarkle.game.domain.usecase.CalculatePointsUseCase
-import pl.kazoroo.tavernFarkle.game.domain.usecase.PlayOpponentTurnUseCase
 import pl.kazoroo.tavernFarkle.game.domain.usecase.StartNewGameUseCase
 import pl.kazoroo.tavernFarkle.game.presentation.game.GameViewModelRefactor
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-@OptIn(ExperimentalCoroutinesApi::class)
 class GameViewModelIntegrationTest {
     private lateinit var viewModel: GameViewModelRefactor
     private lateinit var fakeDrawDiceUseCase: FakeDrawDiceUseCase
-    private val testDispatcher = StandardTestDispatcher()
 
     @Before
     fun setUp() {
-        Dispatchers.setMain(testDispatcher)
         val repository = LocalGameRepository()
         fakeDrawDiceUseCase = FakeDrawDiceUseCase(repository)
         StartNewGameUseCase(repository, fakeDrawDiceUseCase).invoke(0)
-        val calculatePointsUseCase = CalculatePointsUseCase(repository)
 
         viewModel = GameViewModelRefactor(
             repository = repository,
-            calculatePointsUseCase = calculatePointsUseCase,
-            drawDiceUseCase = fakeDrawDiceUseCase,
-            playOpponentTurnUseCase = PlayOpponentTurnUseCase(
-                repository = repository,
-                drawDiceUseCase = fakeDrawDiceUseCase,
-                calculatePointsUseCase = calculatePointsUseCase
-            )
+            calculatePointsUseCase = CalculatePointsUseCase(repository),
+            drawDiceUseCase = fakeDrawDiceUseCase
         )
-    }
-
-    @After
-    fun tearDown() {
-        Dispatchers.resetMain()
     }
 
     @Test
@@ -70,8 +49,6 @@ class GameViewModelIntegrationTest {
         viewModel.toggleDiceSelection(3)
         viewModel.onScoreAndRollAgain()
 
-        println(viewModel.gameState.value.players[0].diceSet.joinToString(separator = "\n"))
-
         assertEquals(viewModel.gameState.value.players[0].roundPoints, 200)
         assertEquals(viewModel.gameState.value.players[0].selectedPoints, 0)
         assertEquals(viewModel.gameState.value.players[0].totalPoints, 0)
@@ -81,7 +58,7 @@ class GameViewModelIntegrationTest {
         assertFalse(viewModel.gameState.value.players[0].diceSet[3].isSelected)
         assertFalse(viewModel.gameState.value.players[0].diceSet[3].isVisible)
 
-        viewModel.gameState.value.players[0].diceSet.forEach { assertEquals(it.value, 5) }
+        assertEquals(viewModel.gameState.value.players[0].diceSet, fakeDrawDiceUseCase.diceSet2)
     }
 
     @Test
@@ -100,7 +77,7 @@ class GameViewModelIntegrationTest {
 
         assertEquals(viewModel.gameState.value.currentPlayerUuid, viewModel.gameState.value.players[1].uuid)
 
-        viewModel.gameState.value.players[0].diceSet.forEach { assertEquals(it.value, 1) }
-        viewModel.gameState.value.players[1].diceSet.forEach { assertEquals(it.value, 5) }
+        assertEquals(viewModel.gameState.value.players[0].diceSet, fakeDrawDiceUseCase.diceSet1)
+        assertEquals(viewModel.gameState.value.players[1].diceSet, fakeDrawDiceUseCase.diceSet2)
     }
 }

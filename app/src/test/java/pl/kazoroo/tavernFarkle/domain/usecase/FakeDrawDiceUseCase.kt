@@ -6,20 +6,20 @@ import pl.kazoroo.tavernFarkle.game.domain.usecase.DrawDiceUseCase
 
 class FakeDrawDiceUseCase(private val repository: GameRepository) : DrawDiceUseCase(repository) {
     private var callCounter = 0
+    val diceSet2 = List(6) {
+        Dice(value = 5, image = 0)
+    }
+
+    val diceSet1 = List(6) {
+        Dice(value = 1, image = 0)
+    }
 
     override operator fun invoke(diceSet: List<Dice>): List<Dice> {
-        val currentDiceSet = if (repository.gameState.value.players.isEmpty())
-            List(6) { Dice(value = 1, image = 0) }
-            else repository.gameState.value.players[0].diceSet
-        val modifierDiceSet = currentDiceSet.map {
-            it.copy(
-                value = if(callCounter == 0) 1 else 5
-            )
-        }
+        val diceSetToReturn = if(callCounter == 0) diceSet1 else diceSet2
 
-        if(repository.gameState.value.players.isNotEmpty()) repository.updateDiceSet(modifierDiceSet)
+        if(repository.gameState.value.players.isNotEmpty()) repository.updateDiceSet(diceSetToReturn)
         callCounter++
 
-        return modifierDiceSet
+        return diceSetToReturn
     }
 }
