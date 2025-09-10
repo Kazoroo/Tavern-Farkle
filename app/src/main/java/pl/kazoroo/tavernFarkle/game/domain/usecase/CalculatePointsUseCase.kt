@@ -1,6 +1,6 @@
 package pl.kazoroo.tavernFarkle.game.domain.usecase
 
-import pl.kazoroo.tavernFarkle.game.presentation.game.Dice
+import pl.kazoroo.tavernFarkle.game.domain.model.Dice
 
 class CalculatePointsUseCase {
     operator fun invoke(

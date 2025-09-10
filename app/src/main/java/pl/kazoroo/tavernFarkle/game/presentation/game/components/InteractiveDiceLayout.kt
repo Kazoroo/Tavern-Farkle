@@ -43,14 +43,15 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import pl.kazoroo.tavernFarkle.R
-import pl.kazoroo.tavernFarkle.game.presentation.game.Dice
+import pl.kazoroo.tavernFarkle.game.domain.model.DiceSetInfo
 
 @Composable
 fun InteractiveDiceLayout(
-    diceState: List<Dice>,
+    diceState: DiceSetInfo,
     diceOnClick: (Int) -> Unit,
     isDiceClickable: Boolean,
-    isDiceAnimating: Boolean
+    isDiceAnimating: Boolean,
+    isDiceVisibleAfterGameEnd: List<Boolean>
 ) {
     Column(
         modifier = Modifier
@@ -73,7 +74,7 @@ fun InteractiveDiceLayout(
                     for (column in 0..2) {
                         val index = row * 3 + column
                         val offsetX by animateDpAsState(
-                            targetValue = if (!diceState[index].isVisible) 0.dp else imageSize * 3 //!isDiceVisibleAfterGameEnd[index]
+                            targetValue = if (!isDiceVisibleAfterGameEnd[index]) 0.dp else imageSize * 3
                         )
                         val offsetLambda: () -> IntOffset = {
                             with(localDensity) {
@@ -82,7 +83,7 @@ fun InteractiveDiceLayout(
                         }
 
                         AnimatedVisibility(
-                            visible = diceState[index].isVisible,
+                            visible = diceState.isDiceVisible[index],
                             enter = slideInHorizontally(
                                 initialOffsetX = {
                                     (if(index == 0 || index == 3) -it else it) * 3
@@ -94,7 +95,7 @@ fun InteractiveDiceLayout(
                                 }
                             )
                         ) {
-                            DiceImageWithShadow(imageSize, diceState[index], index, isDiceClickable, diceOnClick, offsetLambda)
+                            DiceImageWithShadow(imageSize, diceState, index, isDiceClickable, diceOnClick, offsetLambda)
                         }
                     }
                 }
@@ -106,7 +107,7 @@ fun InteractiveDiceLayout(
 @Composable
 private fun DiceImageWithShadow(
     imageSize: Dp,
-    diceState: Dice,
+    diceState: DiceSetInfo,
     index: Int,
     isDiceClickable: Boolean,
     diceOnClick: (Int) -> Unit,
@@ -115,13 +116,13 @@ private fun DiceImageWithShadow(
     CustomDiceShadow(shadowSize = imageSize)
 
     Image(
-        painter = painterResource(id = diceState.image),
+        painter = painterResource(id = diceState.diceList[index].image),
         contentDescription = "Dice $index",
         modifier = Modifier
             .padding(2.dp)
             .size(imageSize)
             .animatedCircularBorder(
-                isSelected = diceState.isSelected
+                isSelected = diceState.isDiceSelected[index]
             )
             .clickable(
                 indication = null,
