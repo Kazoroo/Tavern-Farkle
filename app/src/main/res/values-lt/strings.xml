@@ -38,8 +38,8 @@
     <string name="open_source">atviro kodo</string>
     <string name="music">Muzika: </string>
     <string name="sound">Garsas: </string>
-    <string name="leave">Išeiti</string>
-    <string name="cancel">Atšaukti</string>
+    <string name="yes">Taip</string>
+    <string name="no">Ne</string>
     <string name="settings">Nustatymai</string>
     <string name="tutorial">Vadovas</string>
     <string name="select_dice_you_want_to_use_in_the_game">Pasirink kauliukus, kuriuos nori naudoti žaidime</string>

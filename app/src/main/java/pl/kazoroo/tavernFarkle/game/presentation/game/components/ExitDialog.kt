@@ -3,11 +3,13 @@ package pl.kazoroo.tavernFarkle.game.presentation.game.components
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import pl.kazoroo.tavernFarkle.R
@@ -20,23 +22,24 @@ fun ExitDialog(
     AlertDialog(
         onDismissRequest = onDismissClick,
         confirmButton = {
-            Button(
+            TextButton(
                 onClick = onQuitClick,
                 modifier = Modifier.padding(
                     horizontal = dimensionResource(R.dimen.medium_padding)
                 )
             ) {
-                Text(text = stringResource(R.string.leave))
+                Text(text = stringResource(R.string.yes))
             }
         },
         dismissButton = {
-            TextButton(
+            Button(
                 onClick = onDismissClick,
                 modifier = Modifier.padding(
-                    end = dimensionResource(R.dimen.medium_padding)
-                )
+                    horizontal = dimensionResource(R.dimen.medium_padding)
+                ),
+                colors = ButtonDefaults.buttonColors(containerColor = Color.Red)
             ) {
-                Text(text = stringResource(R.string.cancel))
+                Text(text = stringResource(R.string.no))
             }
         },
         text = {

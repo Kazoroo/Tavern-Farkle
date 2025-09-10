@@ -38,8 +38,8 @@
     <string name="open_source">açık kaynaklı</string>
     <string name="music">Müzik: </string>
     <string name="sound">Ses: </string>
-    <string name="leave">Çıkış</string>
-    <string name="cancel">İptal et</string>
+    <string name="yes">Evet</string>
+    <string name="no">Hayır</string>
     <string name="settings">Ayarlar</string>
     <string name="tutorial">Kılavuz</string>
     <string name="select_dice_you_want_to_use_in_the_game">Oyunda kullanmak istediğin zarları seç</string>
