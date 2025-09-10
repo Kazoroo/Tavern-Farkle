@@ -40,8 +40,7 @@ fun Navigation(
             MainMenuScreen(
                 navController = navController,
                 coinsViewModel = coinsViewModel,
-                mainMenuViewModel = mainMenuViewModel,
-                inventoryViewModel = inventoryViewModel
+                mainMenuViewModel = mainMenuViewModel
             )
         }
         composable(

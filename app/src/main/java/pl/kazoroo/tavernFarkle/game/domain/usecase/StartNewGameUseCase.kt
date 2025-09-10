@@ -11,19 +11,35 @@ class StartNewGameUseCase(
     private val gameRepository: GameRepository,
     private val drawDiceUseCase: DrawDiceUseCase
 ) {
-    operator fun invoke(betAmount: Int, userDiceNames: List<SpecialDiceName>) {
+    operator fun invoke(betAmount: Int) {
         val currentPlayerId = UUID.randomUUID()
-        val userDiceNames = userDiceNames.padWithNullsToSix()
-
-        val opponentDiceNames: List<SpecialDiceName?> = List(
-            (userDiceNames.size..userDiceNames.size + 1).random()
-        ) {
-            SpecialDiceName.entries.toTypedArray().random()
-        }.padWithNullsToSix()
-
         val players = listOf(
-            Player(currentPlayerId, diceSet = createDiceSet(userDiceNames)),
-            Player(UUID.randomUUID(), diceSet = createDiceSet(opponentDiceNames))
+            Player(
+                uuid = currentPlayerId,
+                diceSet = drawDiceUseCase.invoke(
+                    listOf(
+                        Dice(value = 0, image = 0, specialDiceName = null),
+                        Dice(value = 0, image = 0, specialDiceName = null),
+                        Dice(value = 0, image = 0, specialDiceName = SpecialDiceName.SPIDERS_DICE),
+                        Dice(value = 0, image = 0, specialDiceName = null),
+                        Dice(value = 0, image = 0, specialDiceName = SpecialDiceName.ROYAL_DICE),
+                        Dice(value = 0, image = 0, specialDiceName = null),
+                    )
+                )
+            ),
+            Player(
+                uuid = UUID.randomUUID(),
+                diceSet = drawDiceUseCase.invoke(
+                    listOf(
+                        Dice(value = 0, image = 0, specialDiceName = null),
+                        Dice(value = 0, image = 0, specialDiceName = null),
+                        Dice(value = 0, image = 0, specialDiceName = SpecialDiceName.SPIDERS_DICE),
+                        Dice(value = 0, image = 0, specialDiceName = null),
+                        Dice(value = 0, image = 0, specialDiceName = SpecialDiceName.ROYAL_DICE),
+                        Dice(value = 0, image = 0, specialDiceName = null),
+                    )
+                )
+            ),
         )
 
         val gameState = GameState(
@@ -38,14 +54,4 @@ class StartNewGameUseCase(
         gameRepository.saveGameState(gameState)
         gameRepository.setMyUuid(currentPlayerId)
     }
-
-
-    private fun createDiceSet(specialDiceNames: List<SpecialDiceName?>) =
-        drawDiceUseCase(List(6) {
-            index -> Dice(value = 0, image = 0, specialDiceName = specialDiceNames[index])
-        })
-
-
-    private fun List<SpecialDiceName?>.padWithNullsToSix(): List<SpecialDiceName?> =
-        take(6) + List((6 - size).coerceAtLeast(0)) { null }
 }
