@@ -1,11 +1,7 @@
 package pl.kazoroo.tavernFarkle.game.presentation.game
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
 import pl.kazoroo.tavernFarkle.game.domain.model.GameState
 import pl.kazoroo.tavernFarkle.game.domain.repository.GameRepository
 import pl.kazoroo.tavernFarkle.game.domain.usecase.CalculatePointsUseCase
@@ -17,12 +13,6 @@ class GameViewModelRefactor(
     private val drawDiceUseCase: DrawDiceUseCase
 ): ViewModel() {
     val gameState: StateFlow<GameState> = repository.gameState
-
-    val isOpponentTurn: StateFlow<Boolean> =
-        gameState.map { state ->
-            state.currentPlayerUuid != repository.myUuidState.value
-        }.stateIn(viewModelScope, SharingStarted.Lazily, false)
-
 
     fun toggleDiceSelection(index: Int) {
         repository.toggleDiceSelection(index)

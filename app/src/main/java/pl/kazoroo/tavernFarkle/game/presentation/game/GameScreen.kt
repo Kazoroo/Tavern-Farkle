@@ -37,16 +37,18 @@ import pl.kazoroo.tavernFarkle.game.presentation.game.components.GameButtons
 import pl.kazoroo.tavernFarkle.game.presentation.game.components.InteractiveDiceLayout
 import pl.kazoroo.tavernFarkle.game.presentation.game.components.PointsTable
 import pl.kazoroo.tavernFarkle.ui.theme.DarkRed
+import java.util.UUID
 
 @Composable
 fun GameScreen(
     navController: NavHostController,
+    playerUuid: UUID,
     viewModel: GameViewModelRefactor
 ) {
     val state by viewModel.gameState.collectAsState()
 
     val currentPlayerIndex = state.getCurrentPlayerIndex()
-    val isOpponentTurn = viewModel.isOpponentTurn.collectAsState().value
+    val isOpponentTurn = state.currentPlayerUuid == playerUuid
     val selectedPoints = state.players[0].selectedPoints
 
     val tableData = listOf(
