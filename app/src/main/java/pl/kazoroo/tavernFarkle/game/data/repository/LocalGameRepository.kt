@@ -25,29 +25,21 @@ class LocalGameRepository: GameRepository {
     }
 
     override fun toggleDiceSelection(index: Int) {
-        val state = _gameState.value
-        val playerIndex = state.getCurrentPlayerIndex()
+        val currentState = _gameState.value
+        val currentPlayerIndex = currentState.getCurrentPlayerIndex()
+        val currentPlayer = currentState.players[currentPlayerIndex]
 
-        val updatedPlayers = state.players.toMutableList()
-        val updatedDiceSet = updatedPlayers[playerIndex].diceSet.toMutableList()
+        val updatedDiceSet = currentPlayer.diceSet.toMutableList().also {
+            val old = it[index]
+            it[index] = old.copy(isSelected = !old.isSelected)
+        }
 
-        updatedDiceSet[index] = updatedDiceSet[index].copy(isSelected = !updatedDiceSet[index].isSelected)
-        updatedPlayers[playerIndex] = updatedPlayers[playerIndex].copy(diceSet = updatedDiceSet)
+        val updatedPlayers = currentState.players.toMutableList().also {
+            it[currentPlayerIndex] = currentPlayer.copy(diceSet = updatedDiceSet)
+        }
 
         _gameState.update { it.copy(players = updatedPlayers) }
     }
-
-    override fun savePoints(selectedPoints: Int) {
-        _gameState.update { state ->
-            val currentPlayerIndex = state.getCurrentPlayerIndex()
-            val updatedPoints = state.players.toMutableList().apply {
-                this[currentPlayerIndex] = this[currentPlayerIndex].copy(selectedPoints = selectedPoints)
-            }
-
-            state.copy(players = updatedPoints)
-        }
-    }
-
 
     override fun passTheRound() {
         TODO("Not yet implemented")
