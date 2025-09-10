@@ -7,9 +7,7 @@ import kotlinx.coroutines.launch
 import pl.kazoroo.tavernFarkle.game.domain.model.GameState
 import pl.kazoroo.tavernFarkle.game.domain.repository.GameRepository
 
-class GameViewModelRefactor(
-    private val repository: GameRepository
-): ViewModel() {
+class GameViewModelRefactor(private val repository: GameRepository): ViewModel() {
     val gameState: StateFlow<GameState> = repository.gameState
 
     fun toggleDiceSelection(index: Int) {

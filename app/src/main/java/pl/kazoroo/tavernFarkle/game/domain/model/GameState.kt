@@ -9,8 +9,4 @@ data class GameState(
     val currentPlayerUuid: UUID,
     val isGameEnd: Boolean = false,
     val players: List<Player>
-) {
-    fun getCurrentPlayerIndex(): Int {
-        return players.indexOfFirst { it.uuid == currentPlayerUuid }
-    }
-}
+)
