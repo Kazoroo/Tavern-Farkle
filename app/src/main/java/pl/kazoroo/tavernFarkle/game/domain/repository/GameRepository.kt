@@ -20,5 +20,4 @@ interface GameRepository {
     fun changeCurrentPlayer()
     fun resetRoundAndSelectedPoints()
     fun toggleSkucha()
-    fun toggleGameEnd()
 }

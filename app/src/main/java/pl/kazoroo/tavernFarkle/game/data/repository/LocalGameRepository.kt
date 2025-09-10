@@ -11,7 +11,7 @@ import pl.kazoroo.tavernFarkle.game.domain.repository.GameRepository
 import java.util.UUID
 
 class LocalGameRepository: GameRepository {
-    private val _gameState = MutableStateFlow(
+    private val _gameState = MutableStateFlow<GameState>(
         GameState(
             betAmount = 0,
             gameUuid = UUID.randomUUID(),
@@ -196,14 +196,6 @@ class LocalGameRepository: GameRepository {
         _gameState.update { state ->
             state.copy(
                 isSkucha = !state.isSkucha
-            )
-        }
-    }
-
-    override fun toggleGameEnd() {
-        _gameState.update { state ->
-            state.copy(
-                isGameEnd = !state.isGameEnd
             )
         }
     }

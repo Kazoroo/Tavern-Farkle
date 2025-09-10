@@ -2,7 +2,6 @@ package pl.kazoroo.tavernFarkle.game.presentation.game
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.navigation.NavHostController
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -15,11 +14,9 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import pl.kazoroo.tavernFarkle.core.presentation.CoinsViewModel
 import pl.kazoroo.tavernFarkle.game.domain.model.GameState
 import pl.kazoroo.tavernFarkle.game.domain.repository.GameRepository
 import pl.kazoroo.tavernFarkle.game.domain.usecase.CalculatePointsUseCase
-import pl.kazoroo.tavernFarkle.game.domain.usecase.CheckGameEndUseCase
 import pl.kazoroo.tavernFarkle.game.domain.usecase.DrawDiceUseCase
 import pl.kazoroo.tavernFarkle.game.domain.usecase.PlayOpponentTurnUseCase
 import pl.kazoroo.tavernFarkle.game.presentation.sound.SoundPlayer
@@ -30,7 +27,6 @@ class GameViewModelRefactor(
     private val calculatePointsUseCase: CalculatePointsUseCase,
     private val drawDiceUseCase: DrawDiceUseCase,
     private val playOpponentTurnUseCase: PlayOpponentTurnUseCase,
-    private val checkGameEndUseCase: CheckGameEndUseCase,
     dispatcher: CoroutineDispatcher = Dispatchers.Main
 ): ViewModel() {
     private val scope = CoroutineScope(dispatcher + SupervisorJob())
@@ -45,14 +41,6 @@ class GameViewModelRefactor(
     val _isDiceAnimating = MutableStateFlow(false)
     val isDiceAnimating: StateFlow<Boolean> = _isDiceAnimating
 
-    private var internalNavController: NavHostController? = null
-    private var internalCoinsViewModel: CoinsViewModel? = null
-
-    fun initializeNavController(navController: NavHostController, coinsViewModel: CoinsViewModel) {
-        this.internalNavController = navController
-        this.internalCoinsViewModel = coinsViewModel
-    }
-
     init {
         observeSkucha()
     }
@@ -63,24 +51,16 @@ class GameViewModelRefactor(
         calculatePointsUseCase(currentPlayerDiceSet)
     }
 
-    fun onPass(navController: NavHostController) {
-        repository.sumTotalPoints()
-
-        checkGameEndUseCase.initializeNavController(navController)
-
-        if(checkGameEndUseCase { internalCoinsViewModel!!.addBetCoinsToTotalCoinsAmount() }) return
-
-
+    fun onPass() {
         scope.launch {
+            repository.sumTotalPoints()
             triggerDiceRowAnimation()
             repository.resetDiceState()
             repository.changeCurrentPlayer()
             drawDiceUseCase(repository.gameState.value.players[gameState.value.getCurrentPlayerIndex()].diceSet)
 
             if(repository.gameState.value.currentPlayerUuid != repository.myUuidState.value) {
-                playOpponentTurnUseCase(
-                    triggerDiceRowAnimation = { triggerDiceRowAnimation() }
-                )
+                playOpponentTurnUseCase { triggerDiceRowAnimation() }
             }
         }
     }
@@ -124,9 +104,7 @@ class GameViewModelRefactor(
                             drawDiceUseCase(repository.gameState.value.players[gameState.value.getCurrentPlayerIndex()].diceSet)
 
                             if(repository.gameState.value.currentPlayerUuid != repository.myUuidState.value) {
-                                playOpponentTurnUseCase(
-                                    triggerDiceRowAnimation = { triggerDiceRowAnimation() }
-                                )
+                                playOpponentTurnUseCase { triggerDiceRowAnimation() }
                             }
                         }
                     }

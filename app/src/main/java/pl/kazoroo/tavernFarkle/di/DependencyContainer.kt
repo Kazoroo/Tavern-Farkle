@@ -10,7 +10,6 @@ import pl.kazoroo.tavernFarkle.core.presentation.viewModelFactoryHelper
 import pl.kazoroo.tavernFarkle.game.data.repository.LocalGameRepository
 import pl.kazoroo.tavernFarkle.game.domain.usecase.CalculatePointsUseCase
 import pl.kazoroo.tavernFarkle.game.domain.usecase.CheckForSkuchaUseCase
-import pl.kazoroo.tavernFarkle.game.domain.usecase.CheckGameEndUseCase
 import pl.kazoroo.tavernFarkle.game.domain.usecase.DrawDiceUseCase
 import pl.kazoroo.tavernFarkle.game.domain.usecase.PlayOpponentTurnUseCase
 import pl.kazoroo.tavernFarkle.game.presentation.game.GameViewModelRefactor
@@ -45,11 +44,8 @@ class DependencyContainer(
     val drawDiceUseCase by lazy {
         DrawDiceUseCase(localGameRepository, checkForSkuchaUseCase)
     }
-    val checkGameEndUseCase by lazy {
-        CheckGameEndUseCase(localGameRepository, null)
-    }
     val playOpponentTurnUseCase by lazy {
-        PlayOpponentTurnUseCase(localGameRepository, drawDiceUseCase, calculatePointsUseCase, checkGameEndUseCase)
+        PlayOpponentTurnUseCase(localGameRepository, drawDiceUseCase, calculatePointsUseCase)
     }
     val localGameRepository by lazy {
         LocalGameRepository()
@@ -89,8 +85,7 @@ class DependencyContainer(
                 repository = localGameRepository,
                 calculatePointsUseCase = calculatePointsUseCase,
                 drawDiceUseCase = drawDiceUseCase,
-                playOpponentTurnUseCase = playOpponentTurnUseCase,
-                checkGameEndUseCase = checkGameEndUseCase
+                playOpponentTurnUseCase = playOpponentTurnUseCase
             )
         }
 }
