@@ -45,6 +45,7 @@ import pl.kazoroo.tavernFarkle.game.presentation.mainmenu.components.MenuNavigat
 import pl.kazoroo.tavernFarkle.game.presentation.mainmenu.components.RevealOverlayContent
 import pl.kazoroo.tavernFarkle.game.presentation.sound.SoundPlayer
 import pl.kazoroo.tavernFarkle.game.presentation.sound.SoundType
+import pl.kazoroo.tavernFarkle.shop.presentation.inventory.InventoryViewModel
 
 private const val ONBOARDING_INITIAL_DELAY_MS = 1500L
 
@@ -52,7 +53,8 @@ private const val ONBOARDING_INITIAL_DELAY_MS = 1500L
 fun MainMenuScreen(
     navController: NavController,
     coinsViewModel: CoinsViewModel,
-    mainMenuViewModel: MainMenuViewModel
+    mainMenuViewModel: MainMenuViewModel,
+    inventoryViewModel: InventoryViewModel
 ) {
     var isBettingDialogVisible by remember { mutableStateOf(false) }
     val revealCanvasState = rememberRevealCanvasState()
@@ -96,11 +98,16 @@ fun MainMenuScreen(
             onCloseClick = {
                 isBettingDialogVisible = false
             },
-            onClick = {
+            onClick = { betAmount ->
+                mainMenuViewModel.startNewGame(
+                    betAmount = betAmount.toInt(),
+                    userSpecialDiceNames = inventoryViewModel.getSelectedSpecialDiceNames()
+                )
                 SoundPlayer.playSound(SoundType.CLICK)
                 navController.navigate(Screen.GameScreen.withArgs())
+                coinsViewModel.setBetValue(betAmount)
             },
-            coinsViewModel = coinsViewModel
+            coinsAmount = coinsViewModel.coinsAmount.collectAsState().value.toInt()
         )
     }
 }
@@ -157,6 +164,7 @@ private fun MainMenuContent(
 
                 MenuNavigationButtons(
                     playWithComputerOnClick = playWithComputerOnClick,
+                    playOnlineOnClick = { navController.navigate(Screen.LobbyScreen.route) },
                     navController = navController
                 )
             }

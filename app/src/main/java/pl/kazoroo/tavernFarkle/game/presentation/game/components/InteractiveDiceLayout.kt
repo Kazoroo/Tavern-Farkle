@@ -4,7 +4,6 @@ import android.graphics.BlurMaskFilter
 import android.os.Build
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.EaseInOutCubic
-import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideInHorizontally
@@ -17,7 +16,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
@@ -36,22 +34,19 @@ import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import pl.kazoroo.tavernFarkle.R
-import pl.kazoroo.tavernFarkle.game.domain.model.DiceSetInfo
+import pl.kazoroo.tavernFarkle.game.domain.model.Dice
 
 @Composable
 fun InteractiveDiceLayout(
-    diceState: DiceSetInfo,
+    diceState: List<Dice>,
     diceOnClick: (Int) -> Unit,
     isDiceClickable: Boolean,
-    isDiceAnimating: Boolean,
-    isDiceVisibleAfterGameEnd: List<Boolean>
+    isDiceAnimating: Boolean
 ) {
     Column(
         modifier = Modifier
@@ -62,7 +57,6 @@ fun InteractiveDiceLayout(
     ) {
         val screenWidth = LocalConfiguration.current.screenWidthDp
         val imageSize = (screenWidth.dp / 3) - 10.dp
-        val localDensity = LocalDensity.current
 
         for (row in 0..1) {
             AnimatedVisibility(
@@ -73,17 +67,9 @@ fun InteractiveDiceLayout(
                 ) {
                     for (column in 0..2) {
                         val index = row * 3 + column
-                        val offsetX by animateDpAsState(
-                            targetValue = if (!isDiceVisibleAfterGameEnd[index]) 0.dp else imageSize * 3
-                        )
-                        val offsetLambda: () -> IntOffset = {
-                            with(localDensity) {
-                                IntOffset(offsetX.toPx().toInt(), 0)
-                            }
-                        }
 
                         AnimatedVisibility(
-                            visible = diceState.isDiceVisible[index],
+                            visible = diceState[index].isVisible,
                             enter = slideInHorizontally(
                                 initialOffsetX = {
                                     (if(index == 0 || index == 3) -it else it) * 3
@@ -95,7 +81,7 @@ fun InteractiveDiceLayout(
                                 }
                             )
                         ) {
-                            DiceImageWithShadow(imageSize, diceState, index, isDiceClickable, diceOnClick, offsetLambda)
+                            DiceImageWithShadow(imageSize, diceState[index], index, isDiceClickable, diceOnClick)
                         }
                     }
                 }
@@ -107,22 +93,21 @@ fun InteractiveDiceLayout(
 @Composable
 private fun DiceImageWithShadow(
     imageSize: Dp,
-    diceState: DiceSetInfo,
+    diceState: Dice,
     index: Int,
     isDiceClickable: Boolean,
-    diceOnClick: (Int) -> Unit,
-    offsetLambda: () -> IntOffset
+    diceOnClick: (Int) -> Unit
 ) {
     CustomDiceShadow(shadowSize = imageSize)
 
     Image(
-        painter = painterResource(id = diceState.diceList[index].image),
+        painter = painterResource(id = diceState.image),
         contentDescription = "Dice $index",
         modifier = Modifier
             .padding(2.dp)
             .size(imageSize)
             .animatedCircularBorder(
-                isSelected = diceState.isDiceSelected[index]
+                isSelected = diceState.isSelected
             )
             .clickable(
                 indication = null,
@@ -131,7 +116,6 @@ private fun DiceImageWithShadow(
             ) {
                 diceOnClick(index)
             }
-            .offset { offsetLambda() }
     )
 }
 

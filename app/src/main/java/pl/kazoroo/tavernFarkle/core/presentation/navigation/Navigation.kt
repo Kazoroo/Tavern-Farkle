@@ -1,14 +1,17 @@
 package pl.kazoroo.tavernFarkle.core.presentation.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import pl.kazoroo.tavernFarkle.core.presentation.CoinsViewModel
 import pl.kazoroo.tavernFarkle.di.DependencyContainer
 import pl.kazoroo.tavernFarkle.game.presentation.game.GameScreen
+import pl.kazoroo.tavernFarkle.game.presentation.game.GameViewModel
 import pl.kazoroo.tavernFarkle.game.presentation.mainmenu.MainMenuScreen
 import pl.kazoroo.tavernFarkle.game.presentation.mainmenu.MainMenuViewModel
+import pl.kazoroo.tavernFarkle.multiplayer.presentation.LobbyScreen
 import pl.kazoroo.tavernFarkle.settings.presentation.SettingsScreen
 import pl.kazoroo.tavernFarkle.settings.presentation.SettingsViewModel
 import pl.kazoroo.tavernFarkle.shop.domain.usecase.BuySpecialDiceUseCase
@@ -22,7 +25,8 @@ fun Navigation(
     mainMenuViewModel: MainMenuViewModel,
     coinsViewModel: CoinsViewModel,
     inventoryViewModel: InventoryViewModel,
-    settingsViewModel: SettingsViewModel
+    settingsViewModel: SettingsViewModel,
+    gameViewModel: GameViewModel
 ) {
     val navController = rememberNavController()
 
@@ -36,16 +40,24 @@ fun Navigation(
             MainMenuScreen(
                 navController = navController,
                 coinsViewModel = coinsViewModel,
-                mainMenuViewModel = mainMenuViewModel
+                mainMenuViewModel = mainMenuViewModel,
+                inventoryViewModel = inventoryViewModel
             )
         }
         composable(
             route = Screen.GameScreen.route
         ) {
             GameScreen(
-                bettingActions = coinsViewModel,
                 navController = navController,
-                inventoryViewModel = inventoryViewModel
+                viewModel = gameViewModel,
+                coinsViewModel = coinsViewModel
+            )
+        }
+        composable(
+            route = Screen.LobbyScreen.route
+        ) {
+            LobbyScreen(
+                coinsAmount = coinsViewModel.coinsAmount.collectAsState().value
             )
         }
         composable(

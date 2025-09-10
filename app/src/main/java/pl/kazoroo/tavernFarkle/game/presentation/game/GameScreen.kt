@@ -18,7 +18,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -28,9 +27,8 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavHostController
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import pl.kazoroo.tavernFarkle.R
-import pl.kazoroo.tavernFarkle.core.data.presentation.BettingActions
+import pl.kazoroo.tavernFarkle.core.presentation.CoinsViewModel
 import pl.kazoroo.tavernFarkle.core.presentation.components.BackgroundImage
 import pl.kazoroo.tavernFarkle.game.domain.model.TableData
 import pl.kazoroo.tavernFarkle.game.presentation.components.ButtonInfo
@@ -39,54 +37,45 @@ import pl.kazoroo.tavernFarkle.game.presentation.game.components.ExitDialog
 import pl.kazoroo.tavernFarkle.game.presentation.game.components.GameButtons
 import pl.kazoroo.tavernFarkle.game.presentation.game.components.InteractiveDiceLayout
 import pl.kazoroo.tavernFarkle.game.presentation.game.components.PointsTable
-import pl.kazoroo.tavernFarkle.shop.presentation.inventory.InventoryViewModel
 import pl.kazoroo.tavernFarkle.ui.theme.DarkRed
 
 @Composable
 fun GameScreen(
-    bettingActions: BettingActions,
     navController: NavHostController,
-    inventoryViewModel: InventoryViewModel
+    viewModel: GameViewModel,
+    coinsViewModel: CoinsViewModel
 ) {
-    val viewModel =  remember {
-        GameViewModel(
-            bettingActions = bettingActions,
-            ownedSpecialDices = inventoryViewModel.ownedSpecialDice.value
-        )
-    }
+    val state by viewModel.gameState.collectAsState()
 
-    val isSkucha = viewModel.skuchaState.collectAsState().value
-    val isGameEnd = viewModel.isGameEnd.collectAsState().value
+    val currentPlayerIndex = state.getCurrentPlayerIndex()
     val isOpponentTurn = viewModel.isOpponentTurn.collectAsState().value
-    val selectedPoints = viewModel.userPointsState.collectAsState().value.selectedPoints
+    val selectedPoints = state.players[0].selectedPoints
+
     val tableData = listOf(
         TableData(
             pointsType = stringResource(R.string.total),
-            yourPoints = viewModel.userPointsState.collectAsState().value.totalPoints.toString(),
-            opponentPoints = viewModel.opponentPointsState.collectAsState().value.totalPoints.toString()
+            yourPoints = state.players[0].totalPoints.toString(),
+            opponentPoints = state.players[1].totalPoints.toString()
         ),
         TableData(
             pointsType = stringResource(R.string.round),
-            yourPoints = viewModel.userPointsState.collectAsState().value.roundPoints.toString(),
-            opponentPoints = viewModel.opponentPointsState.collectAsState().value.roundPoints.toString()
+            yourPoints = state.players[0].roundPoints.toString(),
+            opponentPoints = state.players[1].roundPoints.toString()
         ),
         TableData(
             pointsType = stringResource(R.string.selected_forDices),
             yourPoints = selectedPoints.toString(),
-            opponentPoints = viewModel.opponentPointsState.collectAsState().value.selectedPoints.toString()
+            opponentPoints = state.players[1].selectedPoints.toString()
         ),
     )
-    val scope = rememberCoroutineScope()
     val showExitDialog = remember { mutableStateOf(false) }
 
     BackHandler {
         showExitDialog.value = true
     }
 
-    LaunchedEffect(isOpponentTurn) {
-        if(!isOpponentTurn) {
-            viewModel.checkForSkucha(navController)
-        }
+    LaunchedEffect(true) {
+        viewModel.initializeNavController(navController, coinsViewModel)
     }
 
     if(showExitDialog.value) {
@@ -126,15 +115,14 @@ fun GameScreen(
             }
 
             InteractiveDiceLayout(
-                diceState = viewModel.diceState.collectAsState().value,
+                diceState = state.players[currentPlayerIndex].diceSet,
                 diceOnClick = { index ->
-                    if(!viewModel.skuchaState.value) {
+                    if(!state.isSkucha) {
                         viewModel.toggleDiceSelection(index)
                     }
                 },
-                isDiceClickable = !isOpponentTurn && !isGameEnd,
-                isDiceAnimating = viewModel.isDiceAnimating.collectAsState().value,
-                isDiceVisibleAfterGameEnd = viewModel.isDiceVisibleAfterGameEnd.collectAsState().value
+                isDiceClickable = !isOpponentTurn && !state.isGameEnd,
+                isDiceAnimating = viewModel.isDiceAnimating.collectAsState().value
             )
             Spacer(modifier = Modifier.weight(1f))
 
@@ -142,24 +130,16 @@ fun GameScreen(
                 ButtonInfo(
                     text = stringResource(id = R.string.score_and_roll_again),
                     onClick = {
-                        if(!isSkucha) {
-                            scope.launch {
-                                viewModel.prepareForNextThrow()
-                                delay(1000L)
-                                viewModel.checkForSkucha(navController)
-                            }
-                        } else { Unit }
+                        viewModel.onScoreAndRollAgain()
                     },
-                    enabled = (selectedPoints != 0 && !isOpponentTurn) && !isGameEnd
+                    enabled = (selectedPoints != 0 && !isOpponentTurn) && !state.isGameEnd
                 ),
                 ButtonInfo(
                     text = stringResource(id = R.string.pass),
                     onClick = {
-                        if(!isSkucha) {
-                            viewModel.passTheRound(navController)
-                        } else { Unit }
+                        viewModel.onPass(navController)
                     },
-                    enabled = (selectedPoints != 0 && !isOpponentTurn) && !isGameEnd
+                    enabled = (selectedPoints != 0 && !isOpponentTurn) && !state.isGameEnd
                 ),
             )
 
@@ -176,7 +156,8 @@ fun GameScreen(
                 contentAlignment = Alignment.Center
             ) {
                 Column(
-                    modifier = Modifier.wrapContentSize()
+                    modifier = Modifier
+                        .wrapContentSize()
                         .background(
                             color = Color(26, 26, 26, 220),
                             shape = RoundedCornerShape(dimensionResource(id = R.dimen.rounded_corner))
@@ -204,17 +185,19 @@ fun GameScreen(
             }
         }
 
-        var isSkuchaDialogVisible by remember { mutableStateOf(false) }
         var isGameResultDialogVisible by remember { mutableStateOf(false) }
+        var isSkuchaDialogVisible by remember { mutableStateOf(false) }
 
-        LaunchedEffect(isSkucha) {
-            isSkuchaDialogVisible = isSkucha
-        }
-
-        LaunchedEffect(isGameEnd) {
+        LaunchedEffect(state.isGameEnd) {
             delay(1000L)
 
-            isGameResultDialogVisible = isGameEnd
+            isGameResultDialogVisible = state.isGameEnd
+        }
+
+        LaunchedEffect(state.isSkucha) {
+            delay(1000L)
+
+            isSkuchaDialogVisible = state.isSkucha
         }
 
         if(isSkuchaDialogVisible) {

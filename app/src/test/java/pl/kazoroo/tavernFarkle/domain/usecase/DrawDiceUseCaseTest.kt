@@ -1,148 +1,93 @@
 package pl.kazoroo.tavernFarkle.domain.usecase
 
+import org.junit.Before
 import org.junit.Test
+import pl.kazoroo.tavernFarkle.R
+import pl.kazoroo.tavernFarkle.game.data.repository.LocalGameRepository
+import pl.kazoroo.tavernFarkle.game.domain.model.Dice
+import pl.kazoroo.tavernFarkle.game.domain.usecase.CalculatePointsUseCase
+import pl.kazoroo.tavernFarkle.game.domain.usecase.CheckForSkuchaUseCase
 import pl.kazoroo.tavernFarkle.game.domain.usecase.DrawDiceUseCase
-import pl.kazoroo.tavernFarkle.shop.data.model.OwnedSpecialDice
+import pl.kazoroo.tavernFarkle.game.domain.usecase.StartNewGameUseCase
 import pl.kazoroo.tavernFarkle.shop.domain.model.SpecialDiceName
+import kotlin.test.assertEquals
 
 class DrawDiceUseCaseTest {
-    val ownedSpecialDice = listOf(
-        OwnedSpecialDice(
-            name = SpecialDiceName.ODD_DICE,
-            count = 4,
-            isSelected = listOf(true, true, true, false)
-        ),
-        OwnedSpecialDice(
-            name = SpecialDiceName.ALFONSES_DICE,
-            count = 5,
-            isSelected = listOf(true, true, true, false, false)
-        )
+    lateinit var repository: LocalGameRepository
+    lateinit var drawDiceUseCase: DrawDiceUseCase
+    private val diceDrawables = listOf(
+        R.drawable.dice_1,
+        R.drawable.dice_2,
+        R.drawable.dice_3,
+        R.drawable.dice_4,
+        R.drawable.dice_5,
+        R.drawable.dice_6
     )
 
-    @Test
-    fun `there are more active special dice than visible dice`() {
-        val useCase = DrawDiceUseCase()
-
-        val ownedSpecialDice = listOf(
-            OwnedSpecialDice(
-                name = SpecialDiceName.ROYAL_DICE,
-                count = 4,
-                isSelected = listOf(false, false, true, false)
-            ),
-            OwnedSpecialDice(
-                name = SpecialDiceName.SPIDERS_DICE,
-                count = 5,
-                isSelected = listOf(true, true, false, true, true)
-            )
-        )
-        val usedSpecialDice = listOf(
-            SpecialDiceName.SPIDERS_DICE,
-        )
-        val isDiceVisible = listOf(false, false, false, false, false, true)
-
-        useCase.invoke(
-            ownedSpecialDice,
-            usedSpecialDice,
-            isDiceVisible,
-            false
-        )
+    @Before
+    fun setUp() {
+        repository = LocalGameRepository()
+        val calculatePointsUseCase = CalculatePointsUseCase(repository)
+        val checkForSkuchaUseCase = CheckForSkuchaUseCase(calculatePointsUseCase)
+        drawDiceUseCase = DrawDiceUseCase(repository, checkForSkuchaUseCase)
     }
 
     @Test
-    fun `simulate 2 throws of dice`() {
-        val useCase = DrawDiceUseCase()
+    fun `invoke with normal dice`() {
+        val diceSet = List(6) { Dice(value = 3, image = 0, specialDiceName = null) }
+        val result = drawDiceUseCase(diceSet)
 
-        val firstThrowResult = useCase.invoke(
-            ownedSpecialDices = ownedSpecialDice,
-            usedSpecialDice = listOf(),
-            isDiceVisible = List(6) { true },
-            isOpponentTurn = false
-        )
-
-        val secondThrowResult = useCase.invoke(
-            ownedSpecialDices = ownedSpecialDice,
-            usedSpecialDice = listOf(SpecialDiceName.ODD_DICE),
-            isDiceVisible = List(5) { true } + false,
-            isOpponentTurn = false
-        )
-
-        assert(firstThrowResult.all { it.specialDiceName != null })
-        assert(secondThrowResult.size == 6)
-        assert(secondThrowResult.count { it.specialDiceName == SpecialDiceName.ODD_DICE } == 2)
-        assert(secondThrowResult.count { it.specialDiceName == SpecialDiceName.ALFONSES_DICE } == 3)
-        assert(secondThrowResult.count { it.specialDiceName == null } == 1)
-        assert(secondThrowResult.find { it.specialDiceName == null }!!.value == 0)
+        assert(result.size == 6)
+        assert(result.all { it.value in 1..6 })
+        assert(result.all { it.image == diceDrawables[it.value - 1] })
+        assert(result.all { it.specialDiceName == null })
     }
 
     @Test
-    fun `4 specials and 2 regular dice`() {
-        val useCase = DrawDiceUseCase()
-        val fourSpecialDice = listOf(
-            OwnedSpecialDice(
-                name = SpecialDiceName.ODD_DICE,
-                count = 4,
-                isSelected = listOf(false, false, false, true)
-            ),
-            OwnedSpecialDice(
-                name = SpecialDiceName.ALFONSES_DICE,
-                count = 4,
-                isSelected = listOf(false, true, true, true)
-            )
-        )
+    fun `check repository value and returned value are equal`() {
+        val diceSet = List(6) { Dice(value = 3, image = 0, specialDiceName = null) }
 
-        val throwResult = useCase.invoke(
-            ownedSpecialDices = fourSpecialDice,
-            usedSpecialDice = emptyList(),
-            isDiceVisible = List(6) { true },
-            isOpponentTurn = false
-        )
+        StartNewGameUseCase(repository, drawDiceUseCase).invoke(0, emptyList())
+        val returnedDiceSet = drawDiceUseCase(diceSet)
 
-        assert(throwResult.count { it.specialDiceName == SpecialDiceName.ODD_DICE } == 1)
-        assert(throwResult.count { it.specialDiceName == SpecialDiceName.ALFONSES_DICE } == 3)
-        assert(throwResult.count { it.specialDiceName == null } == 2)
-        assert(throwResult.count { it.value == 0 } == 0)
+        assert(repository.gameState.value.players.isNotEmpty())
+        assertEquals(returnedDiceSet, repository.gameState.value.players[0].diceSet)
     }
 
     @Test
-    fun `check if opponent gets correct special dice`() {
-        val useCase = DrawDiceUseCase()
-        val userSpecialDice = listOf(
-            OwnedSpecialDice(
-                name = SpecialDiceName.ODD_DICE,
-                count = 4,
-                isSelected = listOf(true, false, false, true)
-            ),
-            OwnedSpecialDice(
-                name = SpecialDiceName.ALFONSES_DICE,
-                count = 4,
-                isSelected = listOf(false, true, true, true)
-            )
+    fun `useCase return values with proper probability`() {
+        val diceSet = List(6) { Dice(value = 3, image = 0, specialDiceName = SpecialDiceName.SPIDERS_DICE) }
+        val values = (1..10_000).flatMap { drawDiceUseCase(diceSet).map { it.value } }
+
+        assertProbability(values, 3, 0.455f)
+        assertProbability(values, 1, 0.182f)
+        assertProbability(values, 5, 0.045f)
+    }
+
+    private fun assertProbability(valueList: List<Int>, target: Int, expected: Float) {
+        val count = valueList.count { it == target }
+        val percent = count.toFloat() / valueList.size
+        assert(percent in (expected - 0.02f)..(expected + 0.02f)) {
+            "Value $target was $percent, expected around $expected"
+        }
+    }
+
+    @Test
+    fun `test that only value and image change`() {
+        val diceSet = listOf(
+            Dice(value = 3, image = 2, specialDiceName = null, isVisible = false),
+            Dice(value = 5, image = 4, specialDiceName = null),
+            Dice(value = 1, image = 0, specialDiceName = SpecialDiceName.ROYAL_DICE),
+            Dice(value = 1, image = 0, specialDiceName = null, isSelected = true),
+            Dice(value = 6, image = 5, specialDiceName = null),
+            Dice(value = 2, image = 1, specialDiceName = SpecialDiceName.ALFONSES_DICE),
         )
 
-        val throwResult = useCase.invoke(
-            ownedSpecialDices = userSpecialDice,
-            usedSpecialDice = emptyList(),
-            isDiceVisible = List(6) { true },
-            isOpponentTurn = false
-        )
+        val result = drawDiceUseCase(diceSet)
 
-        val opponentThrowResult = useCase.invoke(
-            ownedSpecialDices = userSpecialDice,
-            usedSpecialDice = emptyList(),
-            isDiceVisible = List(6) { true },
-            isOpponentTurn = true
-        )
-        val specialDiceName = opponentThrowResult.find { it.specialDiceName != null }?.specialDiceName
-        val usedSpecialDice = if (specialDiceName != null) listOf(specialDiceName) else emptyList()
-
-        val secondOpponentThrowResult = useCase.invoke(
-            ownedSpecialDices = userSpecialDice,
-            usedSpecialDice = usedSpecialDice,
-            isDiceVisible = List(2) { false } + List(4) { true },
-            isOpponentTurn = true
-        )
-
-        assert(throwResult.count { it.specialDiceName != null } != opponentThrowResult.count { it.specialDiceName != null })
-        assert(secondOpponentThrowResult.count { it.specialDiceName != null }  == opponentThrowResult.count { it.specialDiceName != null } - 1)
+        assert(result.count { it.isSelected == true } == 1)
+        assert(result.count { it.isVisible == false } == 1)
+        assert(result.count { it.specialDiceName == SpecialDiceName.ROYAL_DICE } == 1)
+        assert(result.count { it.specialDiceName == SpecialDiceName.ALFONSES_DICE } == 1)
     }
 }
