@@ -40,51 +40,20 @@ class LocalGameRepository: GameRepository {
     override fun savePoints(selectedPoints: Int) {
         _gameState.update { state ->
             val currentPlayerIndex = state.getCurrentPlayerIndex()
-            val playersWithUpdatedPoints = state.players.toMutableList().apply {
+            val updatedPoints = state.players.toMutableList().apply {
                 this[currentPlayerIndex] = this[currentPlayerIndex].copy(selectedPoints = selectedPoints)
             }
 
-            state.copy(players = playersWithUpdatedPoints)
+            state.copy(players = updatedPoints)
         }
     }
 
-
-    override fun sumRoundPoints() {
-        _gameState.update { state ->
-            val currentPlayerIndex = state.getCurrentPlayerIndex()
-            val roundPoints = state.players[currentPlayerIndex].roundPoints
-            val selectedPoints = state.players[currentPlayerIndex].selectedPoints
-
-            val playersWithUpdatedPoints = state.players.toMutableList().apply {
-                this[currentPlayerIndex] = this[currentPlayerIndex].copy(
-                    roundPoints = roundPoints + selectedPoints,
-                    selectedPoints = 0
-                )
-            }
-
-            state.copy(players = playersWithUpdatedPoints)
-        }
-    }
-
-    override fun hideSelectedDice() {
-        val currentPlayerIndex = _gameState.value.getCurrentPlayerIndex()
-        val currentPlayer = _gameState.value.players[currentPlayerIndex]
-
-        val updatedDiceList = currentPlayer.diceSet.map { dice ->
-            if (dice.isSelected) dice.copy(isVisible = false, isSelected = false)
-            else dice
-        }
-
-        val playersWithUpdatedDice = _gameState.value.players.toMutableList().apply {
-            this[currentPlayerIndex] = this[currentPlayerIndex].copy(diceSet = updatedDiceList)
-        }
-
-        _gameState.update { state ->
-            state.copy(players = playersWithUpdatedDice)
-        }
-    }
 
     override fun passTheRound() {
+        TODO("Not yet implemented")
+    }
+
+    override fun scoreAndRollAgain() {
         TODO("Not yet implemented")
     }
 }
