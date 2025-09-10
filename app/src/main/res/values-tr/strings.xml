@@ -25,7 +25,7 @@
     <string name="inventory">Envanter</string>
     <string name="buy_for">%1$s karşılığında satın al</string>
     <string name="select">Seç</string>
-    <string name="your_inventory_is_empty_buy_some_special_dice_in_shop">Envanterin boş, mağazadan özel zarlar satın al ve burada seç.</string>
+    <string name="your_inventory_is_empty_buy_some_special_dice_in_shop">Envanterin boş, mağazadan özel zarlar satın al!</string>
     <string name="not_enough_coins">Yeterli madeni para yok</string>
     <string name="successfully_purchased">%1$s başarıyla satın alındı</string>
     <string name="selected_text">Seçildi</string>
@@ -43,10 +43,4 @@
     <string name="settings">Ayarlar</string>
     <string name="tutorial">Kılavuz</string>
     <string name="select_dice_you_want_to_use_in_the_game">Oyunda kullanmak istediğin zarları seç</string>
-    <string name="here_you_can_read_the_rules">Burada kuralları okuyabilirsin.</string>
-    <string name="in_shop_you_buy_special_dice_that_gives_you_advantage">Mağazada sana avantaj sağlayan özel zarlar satın alırsın.</string>
-    <string name="in_inventory_you_select_dice_you_want_to_use_in_game">Envanterde oyunda kullanmak istediğin zarları seçersin.</string>
-    <string name="play_online">Çevrimiçi oyna</string>
-    <string name="create_lobby">Lobi oluştur</string>
-    <string name="join">Katıl</string>
 </resources>

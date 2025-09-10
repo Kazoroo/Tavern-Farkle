@@ -25,7 +25,7 @@
     <string name="inventory">Inventario</string>
     <string name="buy_for">Compra por %1$s</string>
     <string name="select">Selecciona</string>
-    <string name="your_inventory_is_empty_buy_some_special_dice_in_shop">Tu inventario está vacío, compra unos dados especiales en la tienda y selecciónalos aquí.</string>
+    <string name="your_inventory_is_empty_buy_some_special_dice_in_shop">Tu inventario está vacío, ¡compra algunos dados especiales en la tienda!</string>
     <string name="not_enough_coins">No tienes suficientes monedas</string>
     <string name="successfully_purchased">Has comprado %1$s con éxito</string>
     <string name="selected_text">Seleccionado</string>
@@ -43,10 +43,4 @@
     <string name="settings">Configuración</string>
     <string name="tutorial">Tutorial</string>
     <string name="select_dice_you_want_to_use_in_the_game">Elige los dados que quieres usar en el juego</string>
-    <string name="here_you_can_read_the_rules">Aquí puedes leer las reglas.</string>
-    <string name="in_shop_you_buy_special_dice_that_gives_you_advantage">En la tienda compras dados especiales que te dan ventaja.</string>
-    <string name="in_inventory_you_select_dice_you_want_to_use_in_game">En el inventario seleccionas los dados que quieres usar en la partida.</string>
-    <string name="play_online">Jugar en línea</string>
-    <string name="create_lobby">Crear sala</string>
-    <string name="join">Unirse</string>
 </resources>
