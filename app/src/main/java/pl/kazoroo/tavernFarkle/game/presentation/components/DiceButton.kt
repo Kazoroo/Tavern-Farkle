@@ -44,11 +44,12 @@ fun DiceButton(
     Button(
         onClick = buttonInfo.onClick,
         shape = RoundedCornerShape(dimensionResource(id = R.dimen.rounded_corner)),
-        modifier = modifier.border(
-            width = 1.dp,
-            color = Color.DarkGray,
-            shape = RoundedCornerShape(dimensionResource(id = R.dimen.rounded_corner)))
-            .dropShadow(
+        modifier = modifier
+            .border(
+                width = 1.dp,
+                color = Color.DarkGray,
+                shape = RoundedCornerShape(dimensionResource(id = R.dimen.rounded_corner))
+            ).dropShadow(
                 shape = RoundedCornerShape(dimensionResource(id = R.dimen.rounded_corner)),
                 shadow = Shadow(
                     color = Color(0x60000000),
@@ -67,7 +68,7 @@ fun DiceButton(
             Image(
                 painter = painterResource(id = R.drawable.glossy_button),
                 contentDescription = stringResource(R.string.score_and_roll_again),
-                contentScale = ContentScale.FillBounds,
+                contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .fillMaxSize()
                     .clip(RoundedCornerShape(dimensionResource(id = R.dimen.rounded_corner))),

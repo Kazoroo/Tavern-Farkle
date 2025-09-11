@@ -74,7 +74,9 @@ fun ShopScreen(
                 .systemBarsPadding()
         ) {
             Row(
-                modifier = Modifier.fillMaxWidth().align(Alignment.Start),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.Start),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -131,8 +133,8 @@ private fun RewardedVideoSection(
             }
         ),
         modifier = Modifier
-            .height(dimensionResource(R.dimen.game_button_height))
             .padding(dimensionResource(id = R.dimen.medium_padding))
+            .height(dimensionResource(R.dimen.menu_button_height))
     )
 
     Divider(
