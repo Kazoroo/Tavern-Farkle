@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
@@ -127,6 +128,16 @@ fun PointsTable(
                 }
             }
         }
+
+        Image(
+            painter = painterResource(id = R.drawable.light_gold_fancy_border),
+            contentDescription = "vintage frame",
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .fillMaxWidth()
+                .align(Alignment.BottomCenter)
+                .offset(0.dp, 25.dp)
+        )
     }
 }
 

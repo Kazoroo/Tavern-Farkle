@@ -52,9 +52,9 @@ fun DiceButton(
             ).dropShadow(
                 shape = RoundedCornerShape(dimensionResource(id = R.dimen.rounded_corner)),
                 shadow = Shadow(
-                    color = Color(0x60000000),
+                    color = Color(0x80000000),
                     radius = 10.dp,
-                    offset = DpOffset(10.dp, 15.dp)
+                    offset = DpOffset(10.dp, 18.dp)
                 ),
             ),
         enabled = buttonInfo.enabled,

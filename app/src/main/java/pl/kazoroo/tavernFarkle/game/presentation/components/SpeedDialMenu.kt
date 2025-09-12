@@ -59,7 +59,7 @@ fun SpeedDialMenu(
         modifier = modifier,
         fabBackgroundColor = Color.White,
         speedDialBackgroundColor = MaterialTheme.colorScheme.primary,
-        speedDialContentColor = Color.White,
+        speedDialContentColor = Color.Black,
         showLabels = true
     )
 }

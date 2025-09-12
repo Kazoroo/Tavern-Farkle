@@ -9,7 +9,7 @@ fun DicesTheme(
     content: @Composable () -> Unit,
 ) {
     val colorScheme = lightColorScheme(
-        primary = LightRed,
+        primary = Gold,
         secondary = LightRed,
         tertiary = Teal200
     )
