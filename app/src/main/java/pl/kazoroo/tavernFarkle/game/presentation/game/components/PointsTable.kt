@@ -54,7 +54,7 @@ fun PointsTable(
             .height(tableHeight)
     ) {
         Image(
-            painter = painterResource(id = R.drawable.old_paper_texture),
+            painter = painterResource(id = R.drawable.parchment_texture),
             contentDescription = "paper table background texture",
             contentScale = ContentScale.Crop,
             modifier = Modifier
