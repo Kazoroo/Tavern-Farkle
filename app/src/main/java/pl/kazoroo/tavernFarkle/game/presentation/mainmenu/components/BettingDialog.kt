@@ -45,7 +45,7 @@ fun BettingDialog(
     ) {
         Column(
             modifier = Modifier
-                .height(300.dp)
+                .height(350.dp)
                 .background(
                     color = Color.White,
                     shape = RoundedCornerShape(dimensionResource(R.dimen.medium_padding))

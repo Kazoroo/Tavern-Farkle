@@ -8,7 +8,7 @@
     <dimen name="xlarge_padding">220dp</dimen>
     <dimen name="game_button_height">160dp</dimen>
     <dimen name="rounded_corner">25dp</dimen>
-    <dimen name="medium_padding">20dp</dimen>
+    <dimen name="medium_padding">30dp</dimen>
     <dimen name="large_padding">40dp</dimen>
     <dimen name="small_padding">10dp</dimen>
     <dimen name="dice_size">130dp</dimen>
@@ -17,6 +17,6 @@
     <dimen name="dialog_text_field_width">130dp</dimen>
     <dimen name="coin_icon_size">36dp</dimen>
     <dimen name="dialog_height">250dp</dimen>
-    <dimen name="special_dice_card_height">250dp</dimen>
+    <dimen name="special_dice_card_height">290dp</dimen>
     <dimen name="special_dice_icon_size">125dp</dimen>
 </resources>

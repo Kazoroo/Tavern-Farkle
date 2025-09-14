@@ -29,6 +29,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import pl.kazoroo.tavernFarkle.R
@@ -113,10 +114,13 @@ fun SpecialDiceCard(
                     onClick = onClick,
                     modifier = Modifier
                         .padding(
-                            horizontal = dimensionResource(R.dimen.medium_padding),
-                            vertical = dimensionResource(R.dimen.medium_padding)
+                            start = dimensionResource(R.dimen.medium_padding),
+                            top = 0.dp,
+                            end = dimensionResource(R.dimen.medium_padding),
+                            bottom = dimensionResource(R.dimen.medium_padding)
                         )
                         .fillMaxWidth()
+                        .height(50.dp)
                         .dropShadow(
                             shape = RoundedCornerShape(dimensionResource(id = R.dimen.rounded_corner)),
                             shadow = Shadow(
@@ -137,7 +141,6 @@ fun SpecialDiceCard(
                             stringResource(R.string.buy_for, price)
                         },
                         textAlign = TextAlign.Center,
-                        modifier = Modifier.padding(vertical = dimensionResource(R.dimen.small_padding))
                     )
 
                     if(!isInventoryCard) {
@@ -152,5 +155,18 @@ fun SpecialDiceCard(
                 }
             }
         }
+    }
+}
+
+@Preview
+@Composable
+private fun x() {
+    Box {
+        SpecialDiceCard(
+            name = SpecialDiceName.SPIDERS_DICE,
+            image = R.drawable.spiders_dice_1,
+            chancesOfDrawingValue = listOf(12f, 12f, 12f, 12f, 12f, 12f),
+            price = 123
+        ) { }
     }
 }

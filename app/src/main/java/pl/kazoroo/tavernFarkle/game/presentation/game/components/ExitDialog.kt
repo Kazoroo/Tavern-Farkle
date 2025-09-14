@@ -23,7 +23,7 @@ fun ExitDialog(
             Button(
                 onClick = onQuitClick,
                 modifier = Modifier.padding(
-                    horizontal = dimensionResource(R.dimen.medium_padding)
+                    horizontal = dimensionResource(R.dimen.small_padding)
                 )
             ) {
                 Text(text = stringResource(R.string.leave))
@@ -33,7 +33,7 @@ fun ExitDialog(
             TextButton(
                 onClick = onDismissClick,
                 modifier = Modifier.padding(
-                    end = dimensionResource(R.dimen.medium_padding)
+                    horizontal = dimensionResource(R.dimen.small_padding)
                 )
             ) {
                 Text(text = stringResource(R.string.cancel))
