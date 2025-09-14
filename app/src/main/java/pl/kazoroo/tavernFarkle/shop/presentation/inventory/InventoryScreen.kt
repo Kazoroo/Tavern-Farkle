@@ -5,8 +5,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -127,24 +125,19 @@ private fun InventoryAdvice() {
             .height(100.dp)
             .padding(horizontal = dimensionResource(R.dimen.medium_padding))
             .clip(RoundedCornerShape(10.dp))
-            .border(1.dp, Color.DarkGray, RoundedCornerShape(10.dp))
+            .border(1.dp, Color.DarkGray, RoundedCornerShape(10.dp)),
+        contentAlignment = Alignment.Center
     ) {
         Image(
             painter = painterResource(id = R.drawable.paper_texture),
             contentDescription = null,
-            contentScale = ContentScale.FillBounds,
+            contentScale = ContentScale.Crop,
         )
 
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.fillMaxHeight()
-        ) {
-            Text(
-                text = stringResource(R.string.select_dice_you_want_to_use_in_the_game),
-                modifier = Modifier
-                    .padding(dimensionResource(R.dimen.medium_padding)),
-                textAlign = TextAlign.Center
-            )
-        }
+        Text(
+            text = stringResource(R.string.select_dice_you_want_to_use_in_the_game),
+            modifier = Modifier.padding(horizontal = dimensionResource(R.dimen.small_padding)),
+            textAlign = TextAlign.Center
+        )
     }
 }
