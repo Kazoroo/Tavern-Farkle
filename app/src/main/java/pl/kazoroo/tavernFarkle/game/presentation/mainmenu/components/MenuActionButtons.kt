@@ -64,10 +64,11 @@ fun BoxScope.MenuActionButtons(navController: NavController) {
 }
 
 @Composable
-private fun ActionIconButton(
+fun ActionIconButton(
+    modifier: Modifier = Modifier,
     icon: ImageVector? = null,
     painterIcon: Painter? = null,
-    onClick: () -> Unit
+    onClick: () -> Unit,
 ) {
     val size = dimensionResource(R.dimen.icon_button_size)
     val padding = dimensionResource(R.dimen.small_padding)
@@ -75,7 +76,7 @@ private fun ActionIconButton(
 
     IconButton(
         onClick = onClick,
-        modifier = Modifier
+        modifier = modifier
             .padding(end = padding, bottom = padding)
             .size(size)
             .dropShadow(

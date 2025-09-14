@@ -24,6 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavHostController
 import kotlinx.coroutines.delay
@@ -32,11 +33,12 @@ import pl.kazoroo.tavernFarkle.core.presentation.CoinsViewModel
 import pl.kazoroo.tavernFarkle.core.presentation.components.BackgroundImage
 import pl.kazoroo.tavernFarkle.game.domain.model.TableData
 import pl.kazoroo.tavernFarkle.game.presentation.components.ButtonInfo
-import pl.kazoroo.tavernFarkle.game.presentation.components.SpeedDialMenu
 import pl.kazoroo.tavernFarkle.game.presentation.game.components.ExitDialog
 import pl.kazoroo.tavernFarkle.game.presentation.game.components.GameButtons
 import pl.kazoroo.tavernFarkle.game.presentation.game.components.InteractiveDiceLayout
 import pl.kazoroo.tavernFarkle.game.presentation.game.components.PointsTable
+import pl.kazoroo.tavernFarkle.game.presentation.mainmenu.components.ActionIconButton
+import pl.kazoroo.tavernFarkle.game.presentation.mainmenu.components.HowToPlayDialog
 import pl.kazoroo.tavernFarkle.ui.theme.DarkRed
 
 @Composable
@@ -69,6 +71,13 @@ fun GameScreen(
         ),
     )
     val showExitDialog = remember { mutableStateOf(false) }
+    var isHelpDialogVisible by remember { mutableStateOf(false) }
+
+    if(isHelpDialogVisible) {
+        HowToPlayDialog(
+            onCloseClick = { isHelpDialogVisible = false }
+        )
+    }
 
     BackHandler {
         showExitDialog.value = true
@@ -104,14 +113,15 @@ fun GameScreen(
                     isOpponentTurn = isOpponentTurn
                 )
 
-                SpeedDialMenu(
+                ActionIconButton(
                     modifier = Modifier
                         .align(Alignment.TopStart)
                         .systemBarsPadding()
                         .padding(start = dimensionResource(R.dimen.small_padding)),
-                    navController = navController,
-                    restricted = true
-                )
+                    painterIcon = painterResource(R.drawable.help_outline_24),
+                ) {
+                    isHelpDialogVisible = !isHelpDialogVisible
+                }
             }
 
             InteractiveDiceLayout(
