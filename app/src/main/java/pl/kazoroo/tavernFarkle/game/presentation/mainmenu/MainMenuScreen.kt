@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.runtime.Composable
@@ -38,10 +37,10 @@ import pl.kazoroo.tavernFarkle.core.presentation.CoinsViewModel
 import pl.kazoroo.tavernFarkle.core.presentation.components.BackgroundImage
 import pl.kazoroo.tavernFarkle.core.presentation.components.CoinAmountIndicator
 import pl.kazoroo.tavernFarkle.core.presentation.navigation.Screen
-import pl.kazoroo.tavernFarkle.game.presentation.components.SpeedDialMenu
 import pl.kazoroo.tavernFarkle.game.presentation.mainmenu.components.AppTitleText
 import pl.kazoroo.tavernFarkle.game.presentation.mainmenu.components.BettingDialog
 import pl.kazoroo.tavernFarkle.game.presentation.mainmenu.components.CustomRhombusShadow
+import pl.kazoroo.tavernFarkle.game.presentation.mainmenu.components.MenuActionButtons
 import pl.kazoroo.tavernFarkle.game.presentation.mainmenu.components.MenuNavigationButtons
 import pl.kazoroo.tavernFarkle.game.presentation.mainmenu.components.RevealOverlayContent
 import pl.kazoroo.tavernFarkle.game.presentation.sound.SoundPlayer
@@ -162,7 +161,6 @@ private fun MainMenuContent(
                         contentDescription = "Dice",
                         modifier = Modifier.size(imageSize)
                     )
-
                 }
 
                 AppTitleText()
@@ -176,13 +174,7 @@ private fun MainMenuContent(
                 )
             }
 
-            SpeedDialMenu(
-                navController = navController,
-                modifier = Modifier
-                    .revealable(key = RevealableKeys.SpeedDialMenu)
-                    .align(Alignment.TopEnd)
-                    .padding(end = dimensionResource(R.dimen.small_padding))
-            )
+            MenuActionButtons(navController)
         }
     }
 }
