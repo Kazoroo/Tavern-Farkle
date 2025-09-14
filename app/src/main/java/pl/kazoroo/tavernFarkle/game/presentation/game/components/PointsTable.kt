@@ -62,7 +62,7 @@ fun PointsTable(
         )
 
         DataTable(
-            cellPadding = PaddingValues(horizontal = dimensionResource(id = R.dimen.medium_padding), vertical = dimensionResource(id = R.dimen.small_padding)),
+            cellPadding = PaddingValues(horizontal = dimensionResource(id = R.dimen.small_padding), vertical = dimensionResource(id = R.dimen.small_padding)),
             modifier = Modifier
                 .padding(top = dimensionResource(id = R.dimen.large_padding))
                 .systemBarsPadding(),
