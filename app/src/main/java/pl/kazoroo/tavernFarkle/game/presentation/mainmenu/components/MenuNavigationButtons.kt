@@ -44,15 +44,15 @@ fun RevealScope.MenuNavigationButtons(
             modifier = buttonsModifier
         )
 
-        /*    DiceButton(
-        buttonInfo = ButtonInfo(
-            text = stringResource(R.string.play_online),
+        DiceButton(
+            buttonInfo = ButtonInfo(
+                text = stringResource(R.string.play_online),
+                modifier = buttonsModifier
+                    .testTag("Play online button"),
+                onClick = playOnlineOnClick
+            ),
             modifier = buttonsModifier
-                .testTag("Play online button"),
-            onClick = playOnlineOnClick
-        ),
-        modifier = buttonsModifier
-    )*/
+        )
 
         DiceButton(
             buttonInfo = ButtonInfo(

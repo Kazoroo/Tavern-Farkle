@@ -17,6 +17,10 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
@@ -24,9 +28,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import pl.kazoroo.tavernFarkle.R
 import pl.kazoroo.tavernFarkle.core.presentation.components.BackgroundImage
 import pl.kazoroo.tavernFarkle.core.presentation.components.CoinAmountIndicator
+import pl.kazoroo.tavernFarkle.core.presentation.navigation.Screen
+import pl.kazoroo.tavernFarkle.game.presentation.mainmenu.components.BettingDialog
 
 data class Lobby(
     val lobbyId: String,
@@ -41,7 +48,12 @@ val lobbyList = listOf(
 )
 
 @Composable
-fun LobbyScreen(coinsAmount: String) {
+fun LobbyScreen(
+    coinsAmount: String,
+    navController: NavHostController
+) {
+    var isBettingDialogVisible by remember { mutableStateOf(false) }
+
     Box(modifier = Modifier.fillMaxSize()) {
         BackgroundImage()
 
@@ -64,7 +76,9 @@ fun LobbyScreen(coinsAmount: String) {
             }
 
             Button(
-                onClick = { /*TODO*/ },
+                onClick = {
+                    isBettingDialogVisible = true
+                },
                 modifier = Modifier
                     .padding(
                         horizontal = dimensionResource(R.dimen.medium_padding),
@@ -80,6 +94,18 @@ fun LobbyScreen(coinsAmount: String) {
                     fontWeight = FontWeight.W800
                 )
             }
+        }
+
+        if(isBettingDialogVisible) {
+            BettingDialog(
+                onCloseClick = {
+                    isBettingDialogVisible = false
+                },
+                onClick = { betAmount ->
+                    navController.navigate(Screen.GameScreen.withArgs(true))
+                },
+                coinsAmount = coinsAmount.toInt()
+            )
         }
     }
 }

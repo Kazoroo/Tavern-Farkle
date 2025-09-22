@@ -104,7 +104,7 @@ fun MainMenuScreen(
                     userSpecialDiceNames = inventoryViewModel.getSelectedSpecialDiceNames()
                 )
                 SoundPlayer.playSound(SoundType.CLICK)
-                navController.navigate(Screen.GameScreen.withArgs())
+                navController.navigate(Screen.GameScreen.withArgs(false))
                 coinsViewModel.setBetValue(betAmount)
             },
             coinsAmount = coinsViewModel.coinsAmount.collectAsState().value.toInt()

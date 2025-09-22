@@ -13,7 +13,7 @@ sealed class Screen(val route: String) {
      * @param args arguments that will be in the string route
      * @return string that is a route to the screen
      */
-    fun withArgs(vararg args: Array<Int>): String {
+    fun withArgs(vararg args: Boolean): String {
         return buildString {
             append(route)
             args.forEach { arg ->

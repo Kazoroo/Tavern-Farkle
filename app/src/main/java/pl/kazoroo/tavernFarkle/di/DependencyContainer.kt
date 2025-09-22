@@ -15,6 +15,7 @@ import pl.kazoroo.tavernFarkle.game.domain.usecase.DrawDiceUseCase
 import pl.kazoroo.tavernFarkle.game.domain.usecase.PlayOpponentTurnUseCase
 import pl.kazoroo.tavernFarkle.game.presentation.game.GameViewModel
 import pl.kazoroo.tavernFarkle.game.presentation.mainmenu.MainMenuViewModel
+import pl.kazoroo.tavernFarkle.multiplayer.data.repository.RemoteGameRepository
 import pl.kazoroo.tavernFarkle.settings.presentation.SettingsViewModel
 import pl.kazoroo.tavernFarkle.shop.domain.InventoryDataRepositoryImpl
 import pl.kazoroo.tavernFarkle.shop.presentation.inventory.InventoryViewModel
@@ -54,6 +55,9 @@ class DependencyContainer(
     val localGameRepository by lazy {
         LocalGameRepository()
     }
+    val remoteGameRepository by lazy {
+        RemoteGameRepository()
+    }
 
     val settingsViewModelFactory: ViewModelProvider.Factory
         get() = viewModelFactoryHelper {
@@ -83,10 +87,10 @@ class DependencyContainer(
                 drawDiceUseCase = drawDiceUseCase
             )
         }
-    val gameViewModelFactory: ViewModelProvider.Factory
-        get() = viewModelFactoryHelper {
+    fun gameViewModelFactory(isMultiplayer: Boolean): ViewModelProvider.Factory =
+        viewModelFactoryHelper {
             GameViewModel(
-                repository = localGameRepository,
+                repository = if (isMultiplayer) remoteGameRepository else localGameRepository,
                 calculatePointsUseCase = calculatePointsUseCase,
                 drawDiceUseCase = drawDiceUseCase,
                 playOpponentTurnUseCase = playOpponentTurnUseCase,
