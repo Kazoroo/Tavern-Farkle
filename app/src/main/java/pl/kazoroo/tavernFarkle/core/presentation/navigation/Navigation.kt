@@ -15,6 +15,7 @@ import pl.kazoroo.tavernFarkle.game.presentation.game.GameViewModel
 import pl.kazoroo.tavernFarkle.game.presentation.mainmenu.MainMenuScreen
 import pl.kazoroo.tavernFarkle.game.presentation.mainmenu.MainMenuViewModel
 import pl.kazoroo.tavernFarkle.multiplayer.presentation.LobbyScreen
+import pl.kazoroo.tavernFarkle.multiplayer.presentation.LobbyViewModel
 import pl.kazoroo.tavernFarkle.settings.presentation.SettingsScreen
 import pl.kazoroo.tavernFarkle.settings.presentation.SettingsViewModel
 import pl.kazoroo.tavernFarkle.shop.domain.usecase.BuySpecialDiceUseCase
@@ -29,6 +30,7 @@ fun Navigation(
     coinsViewModel: CoinsViewModel,
     inventoryViewModel: InventoryViewModel,
     settingsViewModel: SettingsViewModel,
+    lobbyViewModel: LobbyViewModel
 ) {
     val navController = rememberNavController()
 
@@ -69,7 +71,10 @@ fun Navigation(
         ) {
             LobbyScreen(
                 coinsAmount = coinsViewModel.coinsAmount.collectAsState().value,
-                navController = navController
+                navController = navController,
+                lobbyViewModel = lobbyViewModel,
+                inventoryViewModel = inventoryViewModel,
+                coinsViewModel = coinsViewModel
             )
         }
         composable(

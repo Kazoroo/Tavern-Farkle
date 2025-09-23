@@ -5,7 +5,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import pl.kazoroo.tavernFarkle.game.domain.model.Dice
 import pl.kazoroo.tavernFarkle.game.domain.model.GameState
-import pl.kazoroo.tavernFarkle.game.domain.model.Player
 import pl.kazoroo.tavernFarkle.game.domain.repository.GameRepository
 import java.util.UUID
 
@@ -16,15 +15,7 @@ class RemoteGameRepository : GameRepository {
             gameUuid = UUID.randomUUID(),
             isSkucha = false,
             currentPlayerUuid = UUID.randomUUID(),
-            players = List(2) {
-                Player(
-                    uuid = UUID.randomUUID(),
-                    diceSet = List(6) { Dice(image = 1, value = 1) },
-                    selectedPoints = 0,
-                    roundPoints = 0,
-                    totalPoints = 0
-                )
-            },
+            players = emptyList(),
         )
     )
     override val gameState: StateFlow<GameState> = _gameState.asStateFlow()
@@ -33,11 +24,11 @@ class RemoteGameRepository : GameRepository {
     override val myUuidState: StateFlow<UUID> = _myUuidState.asStateFlow()
 
     override fun setMyUuid(uuid: UUID) {
-        TODO("Not yet implemented")
+        _myUuidState.value = uuid
     }
 
     override fun saveGameState(gameState: GameState) {
-        TODO("Not yet implemented")
+        _gameState.value = gameState
     }
 
     override fun updateSelectedPoints(selectedPoints: Int) {

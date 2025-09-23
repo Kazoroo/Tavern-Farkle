@@ -30,10 +30,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import pl.kazoroo.tavernFarkle.R
+import pl.kazoroo.tavernFarkle.core.presentation.CoinsViewModel
 import pl.kazoroo.tavernFarkle.core.presentation.components.BackgroundImage
 import pl.kazoroo.tavernFarkle.core.presentation.components.CoinAmountIndicator
 import pl.kazoroo.tavernFarkle.core.presentation.navigation.Screen
 import pl.kazoroo.tavernFarkle.game.presentation.mainmenu.components.BettingDialog
+import pl.kazoroo.tavernFarkle.game.presentation.sound.SoundPlayer
+import pl.kazoroo.tavernFarkle.game.presentation.sound.SoundType
+import pl.kazoroo.tavernFarkle.shop.presentation.inventory.InventoryViewModel
 
 data class Lobby(
     val lobbyId: String,
@@ -50,7 +54,10 @@ val lobbyList = listOf(
 @Composable
 fun LobbyScreen(
     coinsAmount: String,
-    navController: NavHostController
+    navController: NavHostController,
+    lobbyViewModel: LobbyViewModel,
+    inventoryViewModel: InventoryViewModel,
+    coinsViewModel: CoinsViewModel
 ) {
     var isBettingDialogVisible by remember { mutableStateOf(false) }
 
@@ -102,7 +109,13 @@ fun LobbyScreen(
                     isBettingDialogVisible = false
                 },
                 onClick = { betAmount ->
+                    lobbyViewModel.startNewGame(
+                        betAmount.toInt(),
+                        inventoryViewModel.getSelectedSpecialDiceNames()
+                    )
+                    SoundPlayer.playSound(SoundType.CLICK)
                     navController.navigate(Screen.GameScreen.withArgs(true))
+                    coinsViewModel.setBetValue(betAmount)
                 },
                 coinsAmount = coinsAmount.toInt()
             )
