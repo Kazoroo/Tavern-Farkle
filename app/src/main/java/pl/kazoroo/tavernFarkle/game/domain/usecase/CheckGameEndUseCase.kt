@@ -12,10 +12,12 @@ import pl.kazoroo.tavernFarkle.game.presentation.sound.SoundPlayer
 import pl.kazoroo.tavernFarkle.game.presentation.sound.SoundType
 
 class CheckGameEndUseCase(
-    private val repository: GameRepository,
     private var navController: NavHostController?
 ) {
-    operator fun invoke(sumCoins: () -> Unit = {}): Boolean {
+    operator fun invoke(
+        repository: GameRepository,
+        sumCoins: () -> Unit = {},
+    ): Boolean {
         if(repository.gameState.value.players[repository.gameState.value.getCurrentPlayerIndex()].totalPoints >= 4000) {
             CoroutineScope(Dispatchers.Main).launch {
                 if (repository.gameState.value.currentPlayerUuid == repository.myUuidState.value) {

@@ -15,6 +15,7 @@ import pl.kazoroo.tavernFarkle.game.domain.usecase.DrawDiceUseCase
 import pl.kazoroo.tavernFarkle.game.domain.usecase.PlayOpponentTurnUseCase
 import pl.kazoroo.tavernFarkle.game.presentation.game.GameViewModel
 import pl.kazoroo.tavernFarkle.game.presentation.mainmenu.MainMenuViewModel
+import pl.kazoroo.tavernFarkle.multiplayer.data.remote.FirebaseDataSource
 import pl.kazoroo.tavernFarkle.multiplayer.data.repository.RemoteGameRepository
 import pl.kazoroo.tavernFarkle.multiplayer.presentation.LobbyViewModel
 import pl.kazoroo.tavernFarkle.settings.presentation.SettingsViewModel
@@ -39,25 +40,28 @@ class DependencyContainer(
         ReadUserDataUseCase(userDataRepository)
     }
     val calculatePointsUseCase by lazy {
-        CalculatePointsUseCase(localGameRepository)
+        CalculatePointsUseCase()
     }
     val checkForSkuchaUseCase by lazy {
         CheckForSkuchaUseCase(calculatePointsUseCase)
     }
     val drawDiceUseCase by lazy {
-        DrawDiceUseCase(localGameRepository, checkForSkuchaUseCase)
+        DrawDiceUseCase(checkForSkuchaUseCase)
     }
     val checkGameEndUseCase by lazy {
-        CheckGameEndUseCase(localGameRepository, null)
+        CheckGameEndUseCase(null)
     }
     val playOpponentTurnUseCase by lazy {
         PlayOpponentTurnUseCase(localGameRepository, drawDiceUseCase, calculatePointsUseCase, checkGameEndUseCase)
+    }
+    val firebaseDataSource by lazy {
+        FirebaseDataSource()
     }
     val localGameRepository by lazy {
         LocalGameRepository()
     }
     val remoteGameRepository by lazy {
-        RemoteGameRepository()
+        RemoteGameRepository(firebaseDataSource)
     }
 
     val settingsViewModelFactory: ViewModelProvider.Factory

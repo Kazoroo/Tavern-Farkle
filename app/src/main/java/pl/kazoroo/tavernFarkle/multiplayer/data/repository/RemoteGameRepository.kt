@@ -6,9 +6,12 @@ import kotlinx.coroutines.flow.asStateFlow
 import pl.kazoroo.tavernFarkle.game.domain.model.Dice
 import pl.kazoroo.tavernFarkle.game.domain.model.GameState
 import pl.kazoroo.tavernFarkle.game.domain.repository.GameRepository
+import pl.kazoroo.tavernFarkle.multiplayer.data.remote.FirebaseDataSource
 import java.util.UUID
 
-class RemoteGameRepository : GameRepository {
+class RemoteGameRepository(
+    private val firebaseDataSource: FirebaseDataSource
+) : GameRepository {
     private val _gameState = MutableStateFlow(
         GameState(
             betAmount = 0,
@@ -29,14 +32,15 @@ class RemoteGameRepository : GameRepository {
 
     override fun saveGameState(gameState: GameState) {
         _gameState.value = gameState
+
+        firebaseDataSource.setGameState(gameState)
     }
 
     override fun updateSelectedPoints(selectedPoints: Int) {
-        TODO("Not yet implemented")
     }
 
     override fun toggleDiceSelection(index: Int) {
-        println("RemoteGameRepository answer!")
+
     }
 
     override fun sumRoundPoints() {

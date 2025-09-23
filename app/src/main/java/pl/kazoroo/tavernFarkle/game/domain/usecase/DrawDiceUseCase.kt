@@ -7,7 +7,6 @@ import pl.kazoroo.tavernFarkle.game.domain.repository.GameRepository
 import kotlin.random.Random
 
 open class DrawDiceUseCase(
-    private val repository: GameRepository,
     private val checkForSkuchaUseCase: CheckForSkuchaUseCase
 ) {
     private val diceDrawables = listOf(
@@ -27,7 +26,10 @@ open class DrawDiceUseCase(
      * @param diceSet current dice set
      * @return shuffled dice set with new values
      */
-    open operator fun invoke(diceSet: List<Dice>): List<Dice> {
+    open operator fun invoke(
+        diceSet: List<Dice>,
+        repository: GameRepository
+    ): List<Dice> {
         val newDiceSet = diceSet.map { dice ->
             val specialDice = dice.specialDiceName
                 ?.let { name -> SpecialDiceList.specialDiceList.first { it.name == name } }
@@ -41,7 +43,10 @@ open class DrawDiceUseCase(
         val shuffledDiceSet = newDiceSet.shuffled()
 
         if(repository.gameState.value.players.isNotEmpty()) repository.updateDiceSet(shuffledDiceSet)
-        val skucha = checkForSkuchaUseCase.invoke(shuffledDiceSet)
+        val skucha = checkForSkuchaUseCase.invoke(
+            shuffledDiceSet,
+            repository = repository
+        )
         if(skucha) repository.toggleSkucha()
 
         return shuffledDiceSet

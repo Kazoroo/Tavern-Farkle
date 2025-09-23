@@ -3,9 +3,7 @@ package pl.kazoroo.tavernFarkle.game.domain.usecase
 import pl.kazoroo.tavernFarkle.game.domain.model.Dice
 import pl.kazoroo.tavernFarkle.game.domain.repository.GameRepository
 
-class CalculatePointsUseCase(
-    private val repository: GameRepository,
-) {
+class CalculatePointsUseCase() {
     /**
      * Calculates selected points and update state. Includes sequences and single dice values.
      *
@@ -16,8 +14,10 @@ class CalculatePointsUseCase(
      */
     operator fun invoke(
         diceList: List<Dice>,
-        isCheckingForSkucha: Boolean = false
-    ): Int {
+        isCheckingForSkucha: Boolean = false,
+        repository: GameRepository,
+
+        ): Int {
         val valuesOfSelectedDicesList: List<Int> = diceList.map { dice ->
             if (dice.isSelected) dice.value else 0
         }.filter { it > 0 }

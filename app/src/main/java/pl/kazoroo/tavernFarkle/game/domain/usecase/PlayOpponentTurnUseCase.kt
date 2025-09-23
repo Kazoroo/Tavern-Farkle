@@ -23,7 +23,10 @@ class PlayOpponentTurnUseCase(
 
             indexesOfDiceGivingPoints.forEach {
                 repository.toggleDiceSelection(it)
-                calculatePointsUseCase(repository.gameState.value.players[1].diceSet)
+                calculatePointsUseCase(
+                    repository.gameState.value.players[1].diceSet,
+                    repository = repository
+                )
                 delay((1200L..1600L).random())
             }
 
@@ -31,7 +34,10 @@ class PlayOpponentTurnUseCase(
                 scoreAndRollAgain(triggerDiceRowAnimation)
                 numberOfVisibleDice = repository.gameState.value.players[1].diceSet.count { it.isVisible }
             } else {
-                passRound(triggerDiceRowAnimation)
+                passRound(
+                    triggerDiceRowAnimation,
+                    repository
+                )
                 break
             }
         }
@@ -54,10 +60,13 @@ class PlayOpponentTurnUseCase(
         return indexesOfDiceGivingPoints
     }
 
-    private suspend fun passRound(triggerDiceRowAnimation: suspend () -> Unit) {
+    private suspend fun passRound(
+        triggerDiceRowAnimation: suspend () -> Unit,
+        repository: GameRepository
+    ) {
         repository.sumTotalPoints()
 
-        if(checkGameEndUseCase()) return
+        if(checkGameEndUseCase(repository = repository)) return
 
         triggerDiceRowAnimation()
         repository.resetDiceState()
@@ -66,7 +75,10 @@ class PlayOpponentTurnUseCase(
         val state = repository.gameState.value
         val currentPlayer = state.players[state.getCurrentPlayerIndex()]
 
-        drawDiceUseCase(currentPlayer.diceSet)
+        drawDiceUseCase(
+            currentPlayer.diceSet,
+            repository = repository
+        )
     }
 
     private suspend fun scoreAndRollAgain(triggerDiceRowAnimation: suspend () -> Unit) {
@@ -81,6 +93,9 @@ class PlayOpponentTurnUseCase(
         val state = repository.gameState.value
         val currentPlayer = state.players[state.getCurrentPlayerIndex()]
 
-        drawDiceUseCase(currentPlayer.diceSet)
+        drawDiceUseCase(
+            currentPlayer.diceSet,
+            repository = repository
+        )
     }
 }

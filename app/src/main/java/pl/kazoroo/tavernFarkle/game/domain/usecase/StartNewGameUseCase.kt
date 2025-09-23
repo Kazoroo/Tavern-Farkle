@@ -43,9 +43,12 @@ class StartNewGameUseCase(
 
 
     private fun createDiceSet(specialDiceNames: List<SpecialDiceName?>) =
-        drawDiceUseCase(List(6) {
-            index -> Dice(value = 0, image = 0, specialDiceName = specialDiceNames[index])
-        })
+        drawDiceUseCase(
+            List(6) { index ->
+                Dice(value = 0, image = 0, specialDiceName = specialDiceNames[index])
+            },
+            repository = gameRepository
+        )
 
 
     private fun List<SpecialDiceName?>.padWithNullsToSix(): List<SpecialDiceName?> =

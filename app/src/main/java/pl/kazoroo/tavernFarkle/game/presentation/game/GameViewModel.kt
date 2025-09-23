@@ -59,7 +59,10 @@ class GameViewModel(
     fun toggleDiceSelection(index: Int) {
         repository.toggleDiceSelection(index)
         val currentPlayerDiceSet = gameState.value.players[gameState.value.getCurrentPlayerIndex()].diceSet
-        calculatePointsUseCase(currentPlayerDiceSet)
+        calculatePointsUseCase(
+            diceList = currentPlayerDiceSet,
+            repository = repository
+        )
     }
 
     fun onPass(navController: NavHostController) {
@@ -67,14 +70,17 @@ class GameViewModel(
 
         checkGameEndUseCase.initializeNavController(navController)
 
-        if(checkGameEndUseCase { internalCoinsViewModel!!.addBetCoinsToTotalCoinsAmount() }) return
+        if(checkGameEndUseCase(repository = repository) { internalCoinsViewModel!!.addBetCoinsToTotalCoinsAmount() }) return
 
 
         scope.launch {
             triggerDiceRowAnimation()
             repository.resetDiceState()
             repository.changeCurrentPlayer()
-            drawDiceUseCase(repository.gameState.value.players[gameState.value.getCurrentPlayerIndex()].diceSet)
+            drawDiceUseCase(
+                repository.gameState.value.players[gameState.value.getCurrentPlayerIndex()].diceSet,
+                repository = repository
+            )
 
             if(repository.gameState.value.currentPlayerUuid != repository.myUuidState.value) {
                 playOpponentTurnUseCase(
@@ -96,7 +102,10 @@ class GameViewModel(
                 repository.resetDiceState()
             }
 
-            drawDiceUseCase(repository.gameState.value.players[gameState.value.getCurrentPlayerIndex()].diceSet)
+            drawDiceUseCase(
+                repository.gameState.value.players[gameState.value.getCurrentPlayerIndex()].diceSet,
+                repository = repository
+            )
         }
     }
 
@@ -120,7 +129,10 @@ class GameViewModel(
                             repository.resetDiceState()
                             repository.changeCurrentPlayer()
 
-                            drawDiceUseCase(repository.gameState.value.players[gameState.value.getCurrentPlayerIndex()].diceSet)
+                            drawDiceUseCase(
+                                repository.gameState.value.players[gameState.value.getCurrentPlayerIndex()].diceSet,
+                                repository = repository
+                            )
 
                             if(repository.gameState.value.currentPlayerUuid != repository.myUuidState.value) {
                                 playOpponentTurnUseCase(

@@ -1,6 +1,7 @@
 package pl.kazoroo.tavernFarkle.game.domain.usecase
 
 import pl.kazoroo.tavernFarkle.game.domain.model.Dice
+import pl.kazoroo.tavernFarkle.game.domain.repository.GameRepository
 
 class CheckForSkuchaUseCase(
     private val calculatePointsUseCase: CalculatePointsUseCase
@@ -12,7 +13,8 @@ class CheckForSkuchaUseCase(
      * @return true if there is skucha
      */
     operator fun invoke(
-        diceList: List<Dice>
+        diceList: List<Dice>,
+        repository: GameRepository
     ): Boolean {
         val diceListWithVisibleSelected = diceList.map {
             if(it.isVisible) it.copy(isSelected = true)
@@ -21,7 +23,8 @@ class CheckForSkuchaUseCase(
 
         val points = calculatePointsUseCase(
             diceList = diceListWithVisibleSelected,
-            isCheckingForSkucha = true
+            isCheckingForSkucha = true,
+            repository = repository
         )
 
         return points == 0
