@@ -50,7 +50,7 @@ object SoundPlayer {
 
         val soundsIncorrectlyInitialized = state && soundMap.values.flatten().all { it == 0 } && context != null
         if (soundsIncorrectlyInitialized) {
-            initialize(context!!)
+            initialize(context)
         }
     }
 

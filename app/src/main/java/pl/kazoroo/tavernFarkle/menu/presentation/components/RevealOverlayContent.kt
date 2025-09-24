@@ -44,7 +44,7 @@ fun RevealOverlayScope.RevealOverlayContent(key: Key) {
 }
 
 @Composable
-private fun RevealOverlayScope.OverlayItem(alignModifier: Modifier, text: String) {
+private fun OverlayItem(alignModifier: Modifier, text: String) {
     Surface(
         modifier = alignModifier
             .padding(8.dp),

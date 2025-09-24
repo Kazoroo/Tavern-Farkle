@@ -3,6 +3,7 @@ package pl.kazoroo.tavernFarkle.di
 import android.content.Context
 import androidx.lifecycle.ViewModelProvider
 import pl.kazoroo.tavernFarkle.core.data.local.repository.UserDataRepository
+import pl.kazoroo.tavernFarkle.core.domain.GameStateUpdater
 import pl.kazoroo.tavernFarkle.core.domain.usecase.game.CalculatePointsUseCase
 import pl.kazoroo.tavernFarkle.core.domain.usecase.game.CheckForSkuchaUseCase
 import pl.kazoroo.tavernFarkle.core.domain.usecase.game.CheckGameEndUseCase
@@ -57,11 +58,14 @@ class DependencyContainer(
     val firebaseDataSource by lazy {
         FirebaseDataSource()
     }
+    val gameStateUpdater by lazy {
+        GameStateUpdater()
+    }
     val localGameRepository by lazy {
-        LocalGameRepository()
+        LocalGameRepository(gameStateUpdater)
     }
     val remoteGameRepository by lazy {
-        RemoteGameRepository(firebaseDataSource)
+        RemoteGameRepository(firebaseDataSource, gameStateUpdater)
     }
 
     val settingsViewModelFactory: ViewModelProvider.Factory

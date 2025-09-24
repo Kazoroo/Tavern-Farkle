@@ -5,6 +5,7 @@ import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
+import pl.kazoroo.tavernFarkle.core.domain.GameStateUpdater
 import pl.kazoroo.tavernFarkle.core.domain.model.Dice
 import pl.kazoroo.tavernFarkle.core.domain.model.GameState
 import pl.kazoroo.tavernFarkle.core.domain.model.Player
@@ -55,7 +56,7 @@ class LocalGameRepositoryTest {
 
     @Before
     fun init() {
-        repository = LocalGameRepository()
+        repository = LocalGameRepository(GameStateUpdater())
 
         repository.saveGameState(gameState)
     }
