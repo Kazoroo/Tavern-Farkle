@@ -10,6 +10,6 @@ class FirebaseDataSource {
     fun setGameState(gameState: GameState) {
         val myRef = database.getReference(gameState.gameUuid.toString())
 
-        myRef.setValue(gameState)
+        myRef.setValue(gameState.toDto())
     }
 }
