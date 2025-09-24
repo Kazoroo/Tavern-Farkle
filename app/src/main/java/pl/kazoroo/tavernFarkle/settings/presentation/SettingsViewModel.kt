@@ -7,10 +7,10 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import pl.kazoroo.tavernFarkle.core.data.local.UserDataKey
 import pl.kazoroo.tavernFarkle.core.data.local.repository.UserDataRepository
-import pl.kazoroo.tavernFarkle.core.domain.ReadUserDataUseCase
-import pl.kazoroo.tavernFarkle.core.domain.SaveUserDataUseCase
-import pl.kazoroo.tavernFarkle.game.presentation.sound.SoundPlayer
-import pl.kazoroo.tavernFarkle.game.service.MusicService
+import pl.kazoroo.tavernFarkle.core.domain.usecase.userdata.ReadUserDataUseCase
+import pl.kazoroo.tavernFarkle.core.domain.usecase.userdata.SaveUserDataUseCase
+import pl.kazoroo.tavernFarkle.menu.sound.MusicService
+import pl.kazoroo.tavernFarkle.menu.sound.SoundPlayer
 import java.lang.ref.WeakReference
 
 class SettingsViewModel(

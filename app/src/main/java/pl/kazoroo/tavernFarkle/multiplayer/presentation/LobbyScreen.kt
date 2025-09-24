@@ -32,11 +32,11 @@ import androidx.navigation.NavHostController
 import pl.kazoroo.tavernFarkle.R
 import pl.kazoroo.tavernFarkle.core.presentation.CoinsViewModel
 import pl.kazoroo.tavernFarkle.core.presentation.components.BackgroundImage
+import pl.kazoroo.tavernFarkle.core.presentation.components.BettingDialog
 import pl.kazoroo.tavernFarkle.core.presentation.components.CoinAmountIndicator
 import pl.kazoroo.tavernFarkle.core.presentation.navigation.Screen
-import pl.kazoroo.tavernFarkle.game.presentation.mainmenu.components.BettingDialog
-import pl.kazoroo.tavernFarkle.game.presentation.sound.SoundPlayer
-import pl.kazoroo.tavernFarkle.game.presentation.sound.SoundType
+import pl.kazoroo.tavernFarkle.menu.sound.SoundPlayer
+import pl.kazoroo.tavernFarkle.menu.sound.SoundType
 import pl.kazoroo.tavernFarkle.shop.presentation.inventory.InventoryViewModel
 
 data class Lobby(

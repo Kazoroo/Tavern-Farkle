@@ -3,9 +3,9 @@ package pl.kazoroo.tavernFarkle.multiplayer.data.repository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import pl.kazoroo.tavernFarkle.game.domain.model.Dice
-import pl.kazoroo.tavernFarkle.game.domain.model.GameState
-import pl.kazoroo.tavernFarkle.game.domain.repository.GameRepository
+import pl.kazoroo.tavernFarkle.core.domain.model.Dice
+import pl.kazoroo.tavernFarkle.core.domain.model.GameState
+import pl.kazoroo.tavernFarkle.core.domain.repository.GameRepository
 import pl.kazoroo.tavernFarkle.multiplayer.data.remote.FirebaseDataSource
 import java.util.UUID
 

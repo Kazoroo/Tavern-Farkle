@@ -1,6 +1,6 @@
 package pl.kazoroo.tavernFarkle.multiplayer.data.model
 
-import pl.kazoroo.tavernFarkle.game.domain.model.GameState
+import pl.kazoroo.tavernFarkle.core.domain.model.GameState
 import java.util.UUID
 
 data class GameStateDto(

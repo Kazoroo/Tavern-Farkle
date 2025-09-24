@@ -2,7 +2,7 @@ package pl.kazoroo.tavernFarkle.multiplayer.data.remote
 
 import com.google.firebase.Firebase
 import com.google.firebase.database.database
-import pl.kazoroo.tavernFarkle.game.domain.model.GameState
+import pl.kazoroo.tavernFarkle.core.domain.model.GameState
 
 class FirebaseDataSource {
     val database = Firebase.database

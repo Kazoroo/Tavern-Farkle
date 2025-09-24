@@ -16,14 +16,14 @@ import org.junit.After
 import org.junit.Assert.assertFalse
 import org.junit.Before
 import org.junit.Test
+import pl.kazoroo.tavernFarkle.core.domain.usecase.game.CalculatePointsUseCase
+import pl.kazoroo.tavernFarkle.core.domain.usecase.game.CheckGameEndUseCase
+import pl.kazoroo.tavernFarkle.core.domain.usecase.game.StartNewGameUseCase
 import pl.kazoroo.tavernFarkle.domain.usecase.FakeDrawDiceUseCase
-import pl.kazoroo.tavernFarkle.game.data.repository.LocalGameRepository
-import pl.kazoroo.tavernFarkle.game.domain.usecase.CalculatePointsUseCase
-import pl.kazoroo.tavernFarkle.game.domain.usecase.CheckGameEndUseCase
-import pl.kazoroo.tavernFarkle.game.domain.usecase.PlayOpponentTurnUseCase
-import pl.kazoroo.tavernFarkle.game.domain.usecase.StartNewGameUseCase
-import pl.kazoroo.tavernFarkle.game.presentation.game.GameViewModel
-import pl.kazoroo.tavernFarkle.game.presentation.sound.SoundPlayer
+import pl.kazoroo.tavernFarkle.menu.sound.SoundPlayer
+import pl.kazoroo.tavernFarkle.singleplayer.data.repository.LocalGameRepository
+import pl.kazoroo.tavernFarkle.singleplayer.domain.usecase.PlayOpponentTurnUseCase
+import pl.kazoroo.tavernFarkle.singleplayer.presentation.GameViewModel
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 

@@ -3,12 +3,12 @@ package pl.kazoroo.tavernFarkle.domain.usecase
 import org.junit.Before
 import org.junit.Test
 import pl.kazoroo.tavernFarkle.R
-import pl.kazoroo.tavernFarkle.game.data.repository.LocalGameRepository
-import pl.kazoroo.tavernFarkle.game.domain.model.Dice
-import pl.kazoroo.tavernFarkle.game.domain.model.GameState
-import pl.kazoroo.tavernFarkle.game.domain.model.Player
-import pl.kazoroo.tavernFarkle.game.domain.usecase.CalculatePointsUseCase
-import pl.kazoroo.tavernFarkle.game.domain.usecase.CheckForSkuchaUseCase
+import pl.kazoroo.tavernFarkle.core.domain.model.Dice
+import pl.kazoroo.tavernFarkle.core.domain.model.GameState
+import pl.kazoroo.tavernFarkle.core.domain.model.Player
+import pl.kazoroo.tavernFarkle.core.domain.usecase.game.CalculatePointsUseCase
+import pl.kazoroo.tavernFarkle.core.domain.usecase.game.CheckForSkuchaUseCase
+import pl.kazoroo.tavernFarkle.singleplayer.data.repository.LocalGameRepository
 import java.util.UUID
 import kotlin.random.Random
 

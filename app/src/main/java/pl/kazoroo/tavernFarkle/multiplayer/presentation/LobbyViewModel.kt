@@ -1,9 +1,9 @@
 package pl.kazoroo.tavernFarkle.multiplayer.presentation
 
 import androidx.lifecycle.ViewModel
-import pl.kazoroo.tavernFarkle.game.domain.repository.GameRepository
-import pl.kazoroo.tavernFarkle.game.domain.usecase.DrawDiceUseCase
-import pl.kazoroo.tavernFarkle.game.domain.usecase.StartNewGameUseCase
+import pl.kazoroo.tavernFarkle.core.domain.repository.GameRepository
+import pl.kazoroo.tavernFarkle.core.domain.usecase.game.DrawDiceUseCase
+import pl.kazoroo.tavernFarkle.core.domain.usecase.game.StartNewGameUseCase
 import pl.kazoroo.tavernFarkle.shop.domain.model.SpecialDiceName
 
 class LobbyViewModel(

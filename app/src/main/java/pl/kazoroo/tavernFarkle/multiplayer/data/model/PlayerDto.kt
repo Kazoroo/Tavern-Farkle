@@ -1,7 +1,7 @@
 package pl.kazoroo.tavernFarkle.multiplayer.data.model
 
-import pl.kazoroo.tavernFarkle.game.domain.model.Dice
-import pl.kazoroo.tavernFarkle.game.domain.model.Player
+import pl.kazoroo.tavernFarkle.core.domain.model.Dice
+import pl.kazoroo.tavernFarkle.core.domain.model.Player
 import java.util.UUID
 
 data class PlayerDto(

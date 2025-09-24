@@ -1,10 +1,10 @@
 package pl.kazoroo.tavernFarkle.domain.usecase
 
-import pl.kazoroo.tavernFarkle.game.domain.model.Dice
-import pl.kazoroo.tavernFarkle.game.domain.repository.GameRepository
-import pl.kazoroo.tavernFarkle.game.domain.usecase.CalculatePointsUseCase
-import pl.kazoroo.tavernFarkle.game.domain.usecase.CheckForSkuchaUseCase
-import pl.kazoroo.tavernFarkle.game.domain.usecase.DrawDiceUseCase
+import pl.kazoroo.tavernFarkle.core.domain.model.Dice
+import pl.kazoroo.tavernFarkle.core.domain.repository.GameRepository
+import pl.kazoroo.tavernFarkle.core.domain.usecase.game.CalculatePointsUseCase
+import pl.kazoroo.tavernFarkle.core.domain.usecase.game.CheckForSkuchaUseCase
+import pl.kazoroo.tavernFarkle.core.domain.usecase.game.DrawDiceUseCase
 
 class FakeDrawDiceUseCase(private val repository: GameRepository) : DrawDiceUseCase(
     repository,

@@ -35,11 +35,11 @@ import pl.kazoroo.tavernFarkle.core.presentation.CoinsViewModel
 import pl.kazoroo.tavernFarkle.core.presentation.components.BackgroundImage
 import pl.kazoroo.tavernFarkle.core.presentation.components.CoinAmountIndicator
 import pl.kazoroo.tavernFarkle.core.presentation.components.NavigateBackButton
-import pl.kazoroo.tavernFarkle.game.presentation.components.ButtonInfo
-import pl.kazoroo.tavernFarkle.game.presentation.components.DiceButton
 import pl.kazoroo.tavernFarkle.shop.domain.usecase.BuySpecialDiceUseCase
 import pl.kazoroo.tavernFarkle.shop.presentation.AdViewModel
 import pl.kazoroo.tavernFarkle.shop.presentation.components.SpecialDiceCard
+import pl.kazoroo.tavernFarkle.singleplayer.presentation.components.ButtonInfo
+import pl.kazoroo.tavernFarkle.singleplayer.presentation.components.DiceButton
 
 @Composable
 fun ShopScreen(

@@ -3,13 +3,13 @@ package pl.kazoroo.tavernFarkle.domain.usecase
 import org.junit.Before
 import org.junit.Test
 import pl.kazoroo.tavernFarkle.R
-import pl.kazoroo.tavernFarkle.game.data.repository.LocalGameRepository
-import pl.kazoroo.tavernFarkle.game.domain.model.Dice
-import pl.kazoroo.tavernFarkle.game.domain.usecase.CalculatePointsUseCase
-import pl.kazoroo.tavernFarkle.game.domain.usecase.CheckForSkuchaUseCase
-import pl.kazoroo.tavernFarkle.game.domain.usecase.DrawDiceUseCase
-import pl.kazoroo.tavernFarkle.game.domain.usecase.StartNewGameUseCase
+import pl.kazoroo.tavernFarkle.core.domain.model.Dice
+import pl.kazoroo.tavernFarkle.core.domain.usecase.game.CalculatePointsUseCase
+import pl.kazoroo.tavernFarkle.core.domain.usecase.game.CheckForSkuchaUseCase
+import pl.kazoroo.tavernFarkle.core.domain.usecase.game.DrawDiceUseCase
+import pl.kazoroo.tavernFarkle.core.domain.usecase.game.StartNewGameUseCase
 import pl.kazoroo.tavernFarkle.shop.domain.model.SpecialDiceName
+import pl.kazoroo.tavernFarkle.singleplayer.data.repository.LocalGameRepository
 import kotlin.test.assertEquals
 
 class DrawDiceUseCaseTest {
