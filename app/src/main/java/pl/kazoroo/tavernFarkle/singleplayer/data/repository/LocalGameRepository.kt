@@ -7,7 +7,6 @@ import kotlinx.coroutines.flow.update
 import pl.kazoroo.tavernFarkle.core.domain.GameStateUpdater
 import pl.kazoroo.tavernFarkle.core.domain.model.Dice
 import pl.kazoroo.tavernFarkle.core.domain.model.GameState
-import pl.kazoroo.tavernFarkle.core.domain.model.Player
 import pl.kazoroo.tavernFarkle.core.domain.repository.GameRepository
 import java.util.UUID
 
@@ -28,12 +27,6 @@ class LocalGameRepository(
 
     private val _myUuidState = MutableStateFlow(UUID.randomUUID())
     override val myUuidState: StateFlow<UUID> = _myUuidState.asStateFlow()
-
-    val currentPlayerIndex: Int
-        get() = _gameState.value.getCurrentPlayerIndex()
-
-    val currentPlayer: Player
-        get() = _gameState.value.players[currentPlayerIndex]
 
     override fun setMyUuid(uuid: UUID) {
         _myUuidState.value = uuid

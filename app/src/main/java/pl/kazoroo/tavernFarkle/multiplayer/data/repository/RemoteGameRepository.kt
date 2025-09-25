@@ -41,6 +41,13 @@ class RemoteGameRepository(
 
     override fun toggleDiceSelection(index: Int) {
         _gameState.update { updater.toggleDiceSelection(it, index) }
+
+        firebaseDataSource.updateDiceSelection(
+            gameUuid = gameState.value.gameUuid,
+            playerIndex = gameState.value.getCurrentPlayerIndex(),
+            index = index,
+            value = gameState.value.getCurrentPlayer().diceSet[index].isSelected
+        )
     }
 
     override fun updateSelectedPoints(selectedPoints: Int) {

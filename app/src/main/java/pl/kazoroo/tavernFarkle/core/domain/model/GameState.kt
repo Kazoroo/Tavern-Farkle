@@ -11,9 +11,8 @@ data class GameState(
     val isGameEnd: Boolean = false,
     val players: List<Player>
 ) {
-    fun getCurrentPlayerIndex(): Int {
-        return players.indexOfFirst { it.uuid == currentPlayerUuid }
-    }
+    fun getCurrentPlayerIndex(): Int =players.indexOfFirst { it.uuid == currentPlayerUuid }
+    fun getCurrentPlayer(): Player = players[getCurrentPlayerIndex()]
 
     fun toDto() = GameStateDto(
         gameUuid = gameUuid.toString(),
