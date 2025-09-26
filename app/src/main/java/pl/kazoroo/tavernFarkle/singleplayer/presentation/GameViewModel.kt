@@ -41,7 +41,7 @@ class GameViewModel(
             state.currentPlayerUuid != repository.myUuidState.value
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(1000L, 0), false)
 
-    val _isDiceAnimating = MutableStateFlow(false)
+    private val _isDiceAnimating = MutableStateFlow(false)
     val isDiceAnimating: StateFlow<Boolean> = _isDiceAnimating
 
     private var internalNavController: NavHostController? = null

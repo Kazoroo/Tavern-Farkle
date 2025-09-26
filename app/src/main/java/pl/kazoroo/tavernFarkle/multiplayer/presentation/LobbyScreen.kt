@@ -17,6 +17,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -37,19 +38,8 @@ import pl.kazoroo.tavernFarkle.core.presentation.components.CoinAmountIndicator
 import pl.kazoroo.tavernFarkle.core.presentation.navigation.Screen
 import pl.kazoroo.tavernFarkle.menu.sound.SoundPlayer
 import pl.kazoroo.tavernFarkle.menu.sound.SoundType
+import pl.kazoroo.tavernFarkle.multiplayer.data.model.Lobby
 import pl.kazoroo.tavernFarkle.shop.presentation.inventory.InventoryViewModel
-
-data class Lobby(
-    val lobbyId: String,
-    val bet: Int
-)
-
-val lobbyList = listOf(
-    Lobby("1", 100),
-    Lobby("2", 200),
-    Lobby("3", 300),
-    Lobby("4", 400),
-)
 
 @Composable
 fun LobbyScreen(
@@ -60,6 +50,7 @@ fun LobbyScreen(
     coinsViewModel: CoinsViewModel
 ) {
     var isBettingDialogVisible by remember { mutableStateOf(false) }
+    val lobbyList = lobbyViewModel.lobbyList.collectAsState().value
 
     Box(modifier = Modifier.fillMaxSize()) {
         BackgroundImage()
@@ -135,7 +126,7 @@ private fun LobbyCard(lobbyData: Lobby) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = "Bet: ${lobbyData.bet}",
+                text = "Bet: ${lobbyData.betAmount}",
                 modifier = Modifier.padding(
                     start = dimensionResource(R.dimen.medium_padding)
                 )
