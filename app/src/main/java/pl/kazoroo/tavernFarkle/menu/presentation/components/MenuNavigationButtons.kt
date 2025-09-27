@@ -41,7 +41,7 @@ fun RevealScope.MenuNavigationButtons(
                     .testTag("Play with AI button"),
                 onClick = playWithComputerOnClick
             ),
-            modifier = buttonsModifier
+            modifier = buttonsModifier.revealable(key = RevealableKeys.SinglePlayer)
         )
 
         DiceButton(
@@ -51,7 +51,7 @@ fun RevealScope.MenuNavigationButtons(
                     .testTag("Play online button"),
                 onClick = playOnlineOnClick
             ),
-            modifier = buttonsModifier
+            modifier = buttonsModifier.revealable(key = RevealableKeys.MultiPlayer)
         )
 
         DiceButton(

@@ -30,15 +30,20 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.svenjacobs.reveal.RevealState
+import com.svenjacobs.reveal.revealable
 import pl.kazoroo.tavernFarkle.R
 import pl.kazoroo.tavernFarkle.core.presentation.navigation.Screen
+import pl.kazoroo.tavernFarkle.menu.presentation.RevealableKeys
 import pl.kazoroo.tavernFarkle.menu.sound.SoundPlayer
 import pl.kazoroo.tavernFarkle.menu.sound.SoundType
 
 @Composable
-fun BoxScope.MenuActionButtons(navController: NavController) {
+fun BoxScope.MenuActionButtons(
+    navController: NavController,
+    revealState: RevealState
+) {
     var isHelpDialogVisible by remember { mutableStateOf(false) }
-
     if (isHelpDialogVisible) {
         HowToPlayDialog(onCloseClick = { isHelpDialogVisible = false })
     }
@@ -58,7 +63,9 @@ fun BoxScope.MenuActionButtons(navController: NavController) {
 
         ActionIconButton(
             painterIcon = painterResource(R.drawable.help_outline_24),
-            onClick = { isHelpDialogVisible = !isHelpDialogVisible }
+            onClick = { isHelpDialogVisible = !isHelpDialogVisible },
+            modifier = Modifier
+                .revealable(key = RevealableKeys.HowToPlay, state = revealState)
         )
     }
 }
@@ -76,7 +83,7 @@ fun ActionIconButton(
 
     IconButton(
         onClick = onClick,
-        modifier = modifier
+        modifier = Modifier
             .padding(end = padding, bottom = padding)
             .size(size)
             .dropShadow(
@@ -90,7 +97,7 @@ fun ActionIconButton(
     ) {
         Box(
             contentAlignment = Alignment.Center,
-            modifier = Modifier
+            modifier = modifier
                 .fillMaxSize()
                 .border(1.dp, Color.DarkGray, RoundedCornerShape(100))
         ) {

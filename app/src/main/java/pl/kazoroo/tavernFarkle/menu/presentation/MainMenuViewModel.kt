@@ -20,7 +20,7 @@ class MainMenuViewModel(
     private val gameRepository: GameRepository,
     private val drawDiceUseCase: DrawDiceUseCase
 ): ViewModel() {
-    private val _onboardingStage = MutableStateFlow(RevealableKeys.SpeedDialMenu.ordinal)
+    private val _onboardingStage = MutableStateFlow(RevealableKeys.Welcome.ordinal)
     val onboardingStage: StateFlow<Int> = _onboardingStage.asStateFlow()
 
     private val _isFirstLaunch = MutableStateFlow<Boolean>(readUserDataUseCase(UserDataKey.IS_FIRST_LAUNCH))

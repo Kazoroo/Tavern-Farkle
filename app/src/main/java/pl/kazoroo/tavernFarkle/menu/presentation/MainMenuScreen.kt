@@ -65,12 +65,28 @@ fun MainMenuScreen(
     LaunchedEffect(key1 = onboardingStage) {
         if(isFirstLaunch) {
             when(onboardingStage) {
-                RevealableKeys.SpeedDialMenu.ordinal -> {
+                RevealableKeys.Welcome.ordinal -> {
                     delay(ONBOARDING_INITIAL_DELAY_MS)
-                    revealState.reveal(RevealableKeys.SpeedDialMenu)
+                    revealState.reveal(RevealableKeys.Welcome)
                 }
-                RevealableKeys.ShopButton.ordinal -> revealState.reveal(RevealableKeys.ShopButton)
-                RevealableKeys.InventoryButton.ordinal -> revealState.reveal(RevealableKeys.InventoryButton)
+                RevealableKeys.Skucha.ordinal -> {
+                    revealState.reveal(RevealableKeys.Skucha)
+                }
+                RevealableKeys.SinglePlayer.ordinal -> {
+                    revealState.reveal(RevealableKeys.SinglePlayer)
+                }
+                RevealableKeys.MultiPlayer.ordinal -> {
+                    revealState.reveal(RevealableKeys.MultiPlayer)
+                }
+                RevealableKeys.HowToPlay.ordinal -> {
+                    revealState.reveal(RevealableKeys.HowToPlay)
+                }
+                RevealableKeys.ShopButton.ordinal -> {
+                    revealState.reveal(RevealableKeys.ShopButton)
+                }
+                RevealableKeys.InventoryButton.ordinal -> {
+                    revealState.reveal(RevealableKeys.InventoryButton)
+                }
                 RevealableKeys.Hide.ordinal -> {
                     revealState.hide()
                     mainMenuViewModel.finishOnboarding()
@@ -163,7 +179,7 @@ private fun MainMenuContent(
                     )
                 }
 
-                AppTitleText()
+                AppTitleText(revealState)
 
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.large_padding)))
 
@@ -174,7 +190,7 @@ private fun MainMenuContent(
                 )
             }
 
-            MenuActionButtons(navController)
+            MenuActionButtons(navController, revealState)
         }
     }
 }

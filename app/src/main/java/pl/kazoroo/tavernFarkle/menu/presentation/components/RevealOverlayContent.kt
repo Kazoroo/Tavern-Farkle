@@ -8,7 +8,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.svenjacobs.reveal.Key
@@ -20,24 +19,52 @@ import pl.kazoroo.tavernFarkle.menu.presentation.RevealableKeys
 @Composable
 fun RevealOverlayScope.RevealOverlayContent(key: Key) {
     when (key) {
-        RevealableKeys.SpeedDialMenu -> {
+        RevealableKeys.Welcome -> {
+            OverlayItem(
+                alignModifier = Modifier.align(verticalArrangement = RevealOverlayArrangement.Top),
+                text = "Welcome to Tavern Farkle!\n Roll the dice, score as many points as you can, and stay ahead of your opponent."
+            )
+        }
+
+        RevealableKeys.Skucha -> {
+            OverlayItem(
+                alignModifier = Modifier.align(verticalArrangement = RevealOverlayArrangement.Bottom),
+                text = "But be careful! If you roll and score nothing, you get skucha and lose your points for the round."
+            )
+        }
+
+        RevealableKeys.SinglePlayer -> {
+            OverlayItem(
+                alignModifier = Modifier.align(verticalArrangement = RevealOverlayArrangement.Top),
+                text = "Play solo against the computer. Tap here to start a game and place your bet."
+            )
+        }
+
+        RevealableKeys.MultiPlayer -> {
+            OverlayItem(
+                alignModifier = Modifier.align(verticalArrangement = RevealOverlayArrangement.Top),
+                text = "Multiplayer lets you play with real players, such as your friends. Join a lobby or create your own."
+            )
+        }
+
+        RevealableKeys.HowToPlay -> {
             OverlayItem(
                 alignModifier = Modifier.align(horizontalArrangement = RevealOverlayArrangement.Start),
-                text = stringResource(R.string.here_you_can_read_the_rules)
+                text = "Not sure how to play Farkle? Click here to learn the rules. You can also check them anytime while playing."
             )
         }
 
         RevealableKeys.ShopButton -> {
             OverlayItem(
                 alignModifier = Modifier.align(verticalArrangement = RevealOverlayArrangement.Top),
-                text = stringResource(R.string.in_shop_you_buy_special_dice_that_gives_you_advantage)
+                text = "A good strategy starts with choosing the right dice. Tap here to open the shop and buy special dice."
             )
         }
 
         RevealableKeys.InventoryButton -> {
             OverlayItem(
-                alignModifier = Modifier.align(verticalArrangement = RevealOverlayArrangement.Bottom),
-                text = stringResource(R.string.in_inventory_you_select_dice_you_want_to_use_in_game)
+                alignModifier = Modifier.align(verticalArrangement = RevealOverlayArrangement.Top),
+                text = "After buying special dice, don’t forget to select them in your Inventory. You can choose up to 6 special dice."
             )
         }
     }

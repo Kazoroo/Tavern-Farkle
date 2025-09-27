@@ -1,3 +1,12 @@
 package pl.kazoroo.tavernFarkle.menu.presentation
 
-enum class RevealableKeys { SpeedDialMenu, ShopButton, InventoryButton, Hide }
+enum class RevealableKeys {
+    Welcome,
+    Skucha,
+    SinglePlayer,
+    MultiPlayer,
+    HowToPlay,
+    ShopButton,
+    InventoryButton,
+    Hide
+}

@@ -8,6 +8,7 @@ import pl.kazoroo.tavernFarkle.core.domain.GameStateUpdater
 import pl.kazoroo.tavernFarkle.core.domain.model.Dice
 import pl.kazoroo.tavernFarkle.core.domain.model.GameState
 import pl.kazoroo.tavernFarkle.core.domain.repository.GameRepository
+import pl.kazoroo.tavernFarkle.multiplayer.data.model.Lobby
 import pl.kazoroo.tavernFarkle.multiplayer.data.remote.FirebaseDataSource
 import java.util.UUID
 
@@ -28,6 +29,9 @@ class RemoteGameRepository(
 
     private val _myUuidState = MutableStateFlow<UUID>(UUID.randomUUID())
     override val myUuidState: StateFlow<UUID> = _myUuidState.asStateFlow()
+
+    private val _lobbyList = MutableStateFlow<List<Lobby>>(emptyList())
+    val lobbyList: StateFlow<List<Lobby>> = _lobbyList.asStateFlow()
 
     override fun setMyUuid(uuid: UUID) {
         _myUuidState.value = uuid
@@ -88,5 +92,11 @@ class RemoteGameRepository(
 
     override fun toggleGameEnd() {
         _gameState.update { updater.toggleGameEnd(it) }
+    }
+
+    fun observeLobbyList() {
+        firebaseDataSource.observeLobbyList { lobbies ->
+            _lobbyList.value = lobbies
+        }
     }
 }
