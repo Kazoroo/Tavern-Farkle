@@ -23,6 +23,11 @@ class LobbyViewModel(
     }
 
     fun startNewGame(bet: Int, selectedSpecialDiceNames: List<SpecialDiceName>) {
-        StartNewGameUseCase(remoteGameRepository, drawDiceUseCase).invoke(bet, selectedSpecialDiceNames)
+        StartNewGameUseCase(remoteGameRepository, drawDiceUseCase)
+            .invoke(
+                bet,
+                selectedSpecialDiceNames,
+                isMultiplayer = true
+            )
     }
 }

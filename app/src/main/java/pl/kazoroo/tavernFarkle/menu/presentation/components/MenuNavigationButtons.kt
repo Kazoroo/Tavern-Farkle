@@ -46,7 +46,7 @@ fun RevealScope.MenuNavigationButtons(
             modifier = buttonsModifier.revealable(key = RevealableKeys.SinglePlayer)
         )
 
-/*        DiceButton(
+        DiceButton(
             buttonInfo = ButtonInfo(
                 text = stringResource(R.string.play_online),
                 modifier = buttonsModifier
@@ -54,7 +54,7 @@ fun RevealScope.MenuNavigationButtons(
                 onClick = playOnlineOnClick
             ),
             modifier = buttonsModifier.revealable(key = RevealableKeys.MultiPlayer)
-        )*/
+        )
 
         DiceButton(
             buttonInfo = ButtonInfo(

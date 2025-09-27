@@ -57,17 +57,17 @@ fun GameScreen(
         TableData(
             pointsType = stringResource(R.string.total),
             yourPoints = state.players[0].totalPoints.toString(),
-            opponentPoints = state.players[1].totalPoints.toString()
+            opponentPoints = state.players.getOrNull(1)?.totalPoints?.toString() ?: "-"
         ),
         TableData(
             pointsType = stringResource(R.string.round),
             yourPoints = state.players[0].roundPoints.toString(),
-            opponentPoints = state.players[1].roundPoints.toString()
+            opponentPoints = state.players.getOrNull(1)?.roundPoints?.toString() ?: "-"
         ),
         TableData(
             pointsType = stringResource(R.string.selected_forDices),
             yourPoints = selectedPoints.toString(),
-            opponentPoints = state.players[1].selectedPoints.toString()
+            opponentPoints = state.players.getOrNull(1)?.selectedPoints?.toString() ?: "-"
         ),
     )
     val showExitDialog = remember { mutableStateOf(false) }

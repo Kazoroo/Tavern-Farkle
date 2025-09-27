@@ -11,22 +11,29 @@ class StartNewGameUseCase(
     private val gameRepository: GameRepository,
     private val drawDiceUseCase: DrawDiceUseCase
 ) {
-    operator fun invoke(betAmount: Int, userDiceNames: List<SpecialDiceName>) {
+    operator fun invoke(
+        betAmount: Int,
+        userDiceNames: List<SpecialDiceName>,
+        isMultiplayer: Boolean
+    ) {
         val currentPlayerId = UUID.randomUUID()
         val paddedUserDiceNames = userDiceNames.padWithNullsToSix()
-
-        val opponentDiceNames: List<SpecialDiceName?> = List(
-            (userDiceNames.size..userDiceNames.size + 1).random()
-        ) {
-            SpecialDiceName.entries.toTypedArray().random()
-        }.padWithNullsToSix()
         val userDiceSet = createDiceSet(paddedUserDiceNames)
-        val currentSkuchaStatus = gameRepository.gameState.value.isSkucha
+        val players = if(isMultiplayer) {
+            listOf(Player(currentPlayerId, diceSet = userDiceSet))
+        } else {
+            val opponentDiceNames: List<SpecialDiceName?> = List(
+                (userDiceNames.size..userDiceNames.size + 1).random()
+            ) {
+                SpecialDiceName.entries.toTypedArray().random()
+            }.padWithNullsToSix()
 
-        val players = listOf(
-            Player(currentPlayerId, diceSet = userDiceSet),
-            Player(UUID.randomUUID(), diceSet = createDiceSet(opponentDiceNames))
-        )
+            listOf(
+                Player(currentPlayerId, diceSet = userDiceSet),
+                Player(UUID.randomUUID(), diceSet = createDiceSet(opponentDiceNames))
+            )
+        }
+        val currentSkuchaStatus = gameRepository.gameState.value.isSkucha
 
         val gameState = GameState(
             betAmount = betAmount,
