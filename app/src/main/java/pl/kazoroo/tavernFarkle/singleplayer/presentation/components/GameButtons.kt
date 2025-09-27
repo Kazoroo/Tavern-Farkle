@@ -8,12 +8,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.unit.dp
 import pl.kazoroo.tavernFarkle.R
 
 @Composable
 fun GameButtons(buttonsInfo: List<ButtonInfo>) {
     Row(
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = 15.dp)
     ) {
         buttonsInfo.forEach { buttonInfo ->
             DiceButton(

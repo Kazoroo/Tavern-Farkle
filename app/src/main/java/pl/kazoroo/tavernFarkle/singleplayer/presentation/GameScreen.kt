@@ -117,7 +117,7 @@ fun GameScreen(
                     modifier = Modifier
                         .align(Alignment.TopStart)
                         .systemBarsPadding()
-                        .padding(start = dimensionResource(R.dimen.small_padding)),
+                        .padding(start = dimensionResource(R.dimen.medium_padding)),
                     painterIcon = painterResource(R.drawable.help_outline_24),
                 ) {
                     isHelpDialogVisible = !isHelpDialogVisible

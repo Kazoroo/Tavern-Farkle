@@ -5,7 +5,9 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -53,18 +55,24 @@ fun BoxScope.MenuActionButtons(
             .align(Alignment.TopEnd)
             .padding(dimensionResource(R.dimen.small_padding))
     ) {
+        val padding = dimensionResource(R.dimen.small_padding)
+
         ActionIconButton(
             icon = Icons.Default.Settings,
             onClick = {
                 navController.navigate(Screen.SettingsScreen.route)
                 SoundPlayer.playSound(SoundType.CLICK)
-            }
+            },
+            modifier = Modifier
         )
+
+        Spacer(Modifier.height(15.dp))
 
         ActionIconButton(
             painterIcon = painterResource(R.drawable.help_outline_24),
             onClick = { isHelpDialogVisible = !isHelpDialogVisible },
             modifier = Modifier
+                .padding(end = padding, bottom = padding)
                 .revealable(key = RevealableKeys.HowToPlay, state = revealState)
         )
     }
@@ -78,13 +86,11 @@ fun ActionIconButton(
     onClick: () -> Unit,
 ) {
     val size = dimensionResource(R.dimen.icon_button_size)
-    val padding = dimensionResource(R.dimen.small_padding)
     val corner = dimensionResource(R.dimen.rounded_corner)
 
     IconButton(
         onClick = onClick,
-        modifier = Modifier
-            .padding(end = padding, bottom = padding)
+        modifier = modifier
             .size(size)
             .dropShadow(
                 shape = RoundedCornerShape(corner),
@@ -97,7 +103,7 @@ fun ActionIconButton(
     ) {
         Box(
             contentAlignment = Alignment.Center,
-            modifier = modifier
+            modifier = Modifier
                 .fillMaxSize()
                 .border(1.dp, Color.DarkGray, RoundedCornerShape(100))
         ) {
