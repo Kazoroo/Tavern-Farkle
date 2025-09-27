@@ -21,8 +21,8 @@ android {
         applicationId "pl.kazoroo.tavernFarkle"
         minSdk 28
         targetSdk 35
-        versionCode 27
-        versionName "2.4.0"
+        versionCode 28
+        versionName "2.4.1"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {

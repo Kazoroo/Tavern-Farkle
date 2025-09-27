@@ -72,9 +72,9 @@ fun MainMenuScreen(
                 RevealableKeys.SinglePlayer.ordinal -> {
                     revealState.reveal(RevealableKeys.SinglePlayer)
                 }
-                RevealableKeys.MultiPlayer.ordinal -> {
+/*                RevealableKeys.MultiPlayer.ordinal -> {
                     revealState.reveal(RevealableKeys.MultiPlayer)
-                }
+                }*/ // TODO: Uncomment when implemented
                 RevealableKeys.HowToPlay.ordinal -> {
                     revealState.reveal(RevealableKeys.HowToPlay)
                 }
