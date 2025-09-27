@@ -1,12 +1,12 @@
 package pl.kazoroo.tavernFarkle.menu.presentation.components
 
-import androidx.activity.compose.LocalActivity
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.dimensionResource
@@ -27,13 +27,15 @@ fun RevealScope.MenuNavigationButtons(
     playWithComputerOnClick: () -> Unit,
     playOnlineOnClick: () -> Unit
 ) {
-    val activity = LocalActivity.current
     val buttonsModifier: Modifier = Modifier
-        .padding(bottom = dimensionResource(R.dimen.medium_padding))
         .height(dimensionResource(R.dimen.menu_button_height))
         .width(dimensionResource(R.dimen.menu_button_width))
 
-    Column {
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.SpaceEvenly,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
         DiceButton(
             buttonInfo = ButtonInfo(
                 text = stringResource(R.string.play_with_computer),
@@ -78,20 +80,6 @@ fun RevealScope.MenuNavigationButtons(
                 }
             ),
             modifier = buttonsModifier.revealable(key = RevealableKeys.InventoryButton)
-        )
-
-        Spacer(Modifier.weight(1f))
-
-        DiceButton(
-            buttonInfo = ButtonInfo(
-                text = stringResource(R.string.exit),
-                onClick = {
-                    activity?.finish()
-                    SoundPlayer.playSound(SoundType.CLICK)
-                }
-            ),
-            modifier = buttonsModifier
-                .testTag("Exit button")
         )
     }
 }
