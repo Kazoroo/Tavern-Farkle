@@ -43,7 +43,7 @@ class MainMenuViewModel(
             .invoke(
                 betAmount,
                 userSpecialDiceNames,
-                isMultiplayer = true
+                isMultiplayer = false
             )
     }
 }

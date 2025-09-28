@@ -136,20 +136,21 @@ fun GameScreen(
             )
             Spacer(modifier = Modifier.weight(1f))
 
+            val isActionAllowed = selectedPoints != 0 && !isOpponentTurn && !state.isGameEnd && state.players.size == 2
             val buttonsInfo = listOf(
                 ButtonInfo(
                     text = stringResource(id = R.string.score_and_roll_again),
                     onClick = {
                         viewModel.onScoreAndRollAgain()
                     },
-                    enabled = (selectedPoints != 0 && !isOpponentTurn) && !state.isGameEnd
+                    enabled = isActionAllowed
                 ),
                 ButtonInfo(
                     text = stringResource(id = R.string.pass),
                     onClick = {
                         viewModel.onPass(navController)
                     },
-                    enabled = (selectedPoints != 0 && !isOpponentTurn) && !state.isGameEnd
+                    enabled = isActionAllowed
                 ),
             )
 
