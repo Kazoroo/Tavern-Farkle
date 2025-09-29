@@ -7,7 +7,10 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.database
+import kotlinx.coroutines.tasks.await
 import pl.kazoroo.tavernFarkle.core.domain.model.GameState
+import pl.kazoroo.tavernFarkle.core.domain.model.Player
+import pl.kazoroo.tavernFarkle.multiplayer.data.model.GameStateDto
 import pl.kazoroo.tavernFarkle.multiplayer.data.model.Lobby
 import java.util.UUID
 
@@ -44,5 +47,17 @@ class FirebaseDataSource {
                 FirebaseCrashlytics.getInstance().recordException(error.toException())
             }
         })
+    }
+
+    fun addPlayerToLobby(gameUuid: String, playerData: Player) {
+        val ref = database.getReference("$gameUuid/players/1")
+
+        ref.setValue(playerData.toDto())
+    }
+
+    suspend fun readGameData(gameUuid: String): GameStateDto? {
+        val ref = database.getReference(gameUuid)
+        val snapshot = ref.get().await()
+        return snapshot.getValue(GameStateDto::class.java)
     }
 }

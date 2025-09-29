@@ -36,8 +36,6 @@ import pl.kazoroo.tavernFarkle.core.presentation.components.BackgroundImage
 import pl.kazoroo.tavernFarkle.core.presentation.components.BettingDialog
 import pl.kazoroo.tavernFarkle.core.presentation.components.CoinAmountIndicator
 import pl.kazoroo.tavernFarkle.core.presentation.navigation.Screen
-import pl.kazoroo.tavernFarkle.menu.sound.SoundPlayer
-import pl.kazoroo.tavernFarkle.menu.sound.SoundType
 import pl.kazoroo.tavernFarkle.multiplayer.data.model.Lobby
 import pl.kazoroo.tavernFarkle.shop.presentation.inventory.InventoryViewModel
 
@@ -68,7 +66,20 @@ fun LobbyScreen(
 
                 LazyColumn {
                     items(lobbyList.size) { index ->
-                        LobbyCard(lobbyList[index])
+                        LobbyCard(
+                            lobbyData = lobbyList[index],
+                            onJoinClick = {
+                                lobbyViewModel.joinLobby(
+                                    gameUuid = lobbyList[index].gameUuid,
+                                    selectedSpecialDiceNames = inventoryViewModel.getSelectedSpecialDiceNames(),
+                                    onNavigate = { navController.navigate(Screen.GameScreen.withArgs(true)) },
+                                    bet = lobbyList[index].betAmount,
+                                    setBetValue = { bet ->
+                                        coinsViewModel.setBetValue(bet)
+                                    }
+                                )
+                            }
+                        )
                     }
                 }
             }
@@ -102,11 +113,12 @@ fun LobbyScreen(
                 onClick = { betAmount ->
                     lobbyViewModel.startNewGame(
                         betAmount.toInt(),
-                        inventoryViewModel.getSelectedSpecialDiceNames()
+                        inventoryViewModel.getSelectedSpecialDiceNames(),
+                        onNavigate = { navController.navigate(Screen.GameScreen.withArgs(true)) },
+                        setBetValue = { bet ->
+                            coinsViewModel.setBetValue(bet)
+                        }
                     )
-                    SoundPlayer.playSound(SoundType.CLICK)
-                    navController.navigate(Screen.GameScreen.withArgs(true))
-                    coinsViewModel.setBetValue(betAmount)
                 },
                 coinsAmount = coinsAmount.toInt()
             )
@@ -115,7 +127,7 @@ fun LobbyScreen(
 }
 
 @Composable
-private fun LobbyCard(lobbyData: Lobby) {
+private fun LobbyCard(lobbyData: Lobby, onJoinClick: () -> Unit) {
     Card(
         modifier = Modifier.padding(
             horizontal = dimensionResource(R.dimen.medium_padding),
@@ -143,7 +155,7 @@ private fun LobbyCard(lobbyData: Lobby) {
             Spacer(modifier = Modifier.weight(1f))
 
             Button(
-                onClick = {},
+                onClick = onJoinClick,
                 modifier = Modifier.padding(dimensionResource(R.dimen.medium_padding)),
                 shape = RoundedCornerShape(10.dp)
             ) {

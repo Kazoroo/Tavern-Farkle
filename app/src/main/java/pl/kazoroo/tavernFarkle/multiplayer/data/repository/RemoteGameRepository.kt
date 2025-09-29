@@ -13,7 +13,7 @@ import pl.kazoroo.tavernFarkle.multiplayer.data.remote.FirebaseDataSource
 import java.util.UUID
 
 class RemoteGameRepository(
-    private val firebaseDataSource: FirebaseDataSource,
+    val firebaseDataSource: FirebaseDataSource,
     private val updater: GameStateUpdater
 ) : GameRepository {
     private val _gameState = MutableStateFlow(
@@ -39,7 +39,9 @@ class RemoteGameRepository(
 
     override fun saveGameState(gameState: GameState) {
         _gameState.value = updater.saveGameState(gameState)
+    }
 
+    fun saveGameDataToDatabase(gameState: GameState) {
         firebaseDataSource.setGameState(gameState)
     }
 

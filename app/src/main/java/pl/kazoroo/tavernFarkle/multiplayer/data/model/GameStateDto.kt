@@ -4,12 +4,12 @@ import pl.kazoroo.tavernFarkle.core.domain.model.GameState
 import java.util.UUID
 
 data class GameStateDto(
-    val gameUuid: String,
-    val betAmount: Int,
+    val gameUuid: String = "",
+    val betAmount: Int = 0,
     val isSkucha: Boolean = false,
-    val currentPlayerUuid: String,
+    val currentPlayerUuid: String = "",
     val isGameEnd: Boolean = false,
-    val players: List<PlayerDto>
+    val players: List<PlayerDto> = emptyList()
 ) {
     fun getCurrentPlayerIndex(): Int {
         return players.indexOfFirst { it.uuid == currentPlayerUuid }

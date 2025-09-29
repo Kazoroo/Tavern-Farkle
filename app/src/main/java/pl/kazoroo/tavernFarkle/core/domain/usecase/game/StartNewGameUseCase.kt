@@ -18,7 +18,8 @@ class StartNewGameUseCase(
     ) {
         val currentPlayerId = UUID.randomUUID()
         val paddedUserDiceNames = userDiceNames.padWithNullsToSix()
-        val userDiceSet = createDiceSet(paddedUserDiceNames)
+        val userDiceSet = createDiceSet(paddedUserDiceNames, gameRepository, drawDiceUseCase)
+
         val players = if(isMultiplayer) {
             listOf(Player(currentPlayerId, diceSet = userDiceSet))
         } else {
@@ -30,11 +31,11 @@ class StartNewGameUseCase(
 
             listOf(
                 Player(currentPlayerId, diceSet = userDiceSet),
-                Player(UUID.randomUUID(), diceSet = createDiceSet(opponentDiceNames))
+                Player(UUID.randomUUID(), diceSet = createDiceSet(opponentDiceNames, gameRepository, drawDiceUseCase))
             )
         }
-        val currentSkuchaStatus = gameRepository.gameState.value.isSkucha
 
+        val currentSkuchaStatus = gameRepository.gameState.value.isSkucha
         val gameState = GameState(
             betAmount = betAmount,
             gameUuid = UUID.randomUUID(),
@@ -47,17 +48,16 @@ class StartNewGameUseCase(
         gameRepository.saveGameState(gameState)
         gameRepository.setMyUuid(currentPlayerId)
     }
-
-
-    private fun createDiceSet(specialDiceNames: List<SpecialDiceName?>) =
-        drawDiceUseCase(
-            List(6) { index ->
-                Dice(value = 0, image = 0, specialDiceName = specialDiceNames[index])
-            },
-            repository = gameRepository
-        )
-
-
-    private fun List<SpecialDiceName?>.padWithNullsToSix(): List<SpecialDiceName?> =
-        take(6) + List((6 - size).coerceAtLeast(0)) { null }
 }
+
+fun createDiceSet(specialDiceNames: List<SpecialDiceName?>, gameRepository: GameRepository, drawDiceUseCase: DrawDiceUseCase) =
+    drawDiceUseCase(
+        List(6) { index ->
+            Dice(value = 0, image = 0, specialDiceName = specialDiceNames[index])
+        },
+        repository = gameRepository
+    )
+
+
+fun List<SpecialDiceName?>.padWithNullsToSix(): List<SpecialDiceName?> =
+    take(6) + List((6 - size).coerceAtLeast(0)) { null }

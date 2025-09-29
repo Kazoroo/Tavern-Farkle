@@ -5,16 +5,12 @@ import pl.kazoroo.tavernFarkle.core.domain.model.Player
 import java.util.UUID
 
 data class PlayerDto(
-    val uuid: String,
+    val uuid: String = "",
     val totalPoints: Int = 0,
     val roundPoints: Int = 0,
     val selectedPoints: Int = 0,
-    val diceSet: List<Dice>
+    val diceSet: List<Dice> = emptyList()
 ) {
-    init {
-        require(diceSet.size == 6) { "Game rules enforce diceSet to have exactly 6 dice" }
-    }
-
     fun toDomain() = Player(
         uuid = UUID.fromString(uuid),
         totalPoints = totalPoints,
