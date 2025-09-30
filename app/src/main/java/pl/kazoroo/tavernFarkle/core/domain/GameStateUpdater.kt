@@ -2,6 +2,7 @@ package pl.kazoroo.tavernFarkle.core.domain
 
 import pl.kazoroo.tavernFarkle.core.domain.model.Dice
 import pl.kazoroo.tavernFarkle.core.domain.model.GameState
+import pl.kazoroo.tavernFarkle.core.domain.model.Player
 
 class GameStateUpdater {
 
@@ -148,5 +149,9 @@ class GameStateUpdater {
      */
     fun toggleGameEnd(state: GameState): GameState {
         return state.copy(isGameEnd = !state.isGameEnd)
+    }
+
+    fun updatePlayers(state: GameState, players: List<Player>): GameState {
+        return state.copy(players = players)
     }
 }

@@ -19,6 +19,6 @@ data class Player(
         totalPoints = totalPoints,
         roundPoints = roundPoints,
         selectedPoints = selectedPoints,
-        diceSet = diceSet
+        diceSet = diceSet.map { it.toDto() }
     )
 }

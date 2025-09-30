@@ -58,6 +58,8 @@ class LobbyViewModel(
                 selectedSpecialDiceNames,
                 gameUuid
             )
+
+            remoteGameRepository.observeGameData(gameState = remoteGameRepository.gameState.value)
         }
 
         SoundPlayer.playSound(SoundType.CLICK)

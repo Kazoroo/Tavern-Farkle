@@ -11,10 +11,6 @@ data class GameStateDto(
     val isGameEnd: Boolean = false,
     val players: List<PlayerDto> = emptyList()
 ) {
-    fun getCurrentPlayerIndex(): Int {
-        return players.indexOfFirst { it.uuid == currentPlayerUuid }
-    }
-
     fun toDomain() = GameState(
         gameUuid = UUID.fromString(gameUuid),
         betAmount = betAmount,

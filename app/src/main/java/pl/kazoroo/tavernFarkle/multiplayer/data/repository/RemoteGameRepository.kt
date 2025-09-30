@@ -49,7 +49,7 @@ class RemoteGameRepository(
         _gameState.update { updater.toggleDiceSelection(it, index) }
 
         firebaseDataSource.updateDiceSelection(
-            gameUuid = gameState.value.gameUuid,
+            gameUuid = gameState.value.gameUuid.toString(),
             playerIndex = gameState.value.getCurrentPlayerIndex(),
             index = index,
             value = gameState.value.getCurrentPlayer().diceSet[index].isSelected
@@ -99,6 +99,12 @@ class RemoteGameRepository(
     fun observeLobbyList() {
         firebaseDataSource.observeLobbyList { lobbies ->
             _lobbyList.value = lobbies
+        }
+    }
+
+    fun observeGameData(gameState: GameState) {
+        firebaseDataSource.observeGameData(gameState.gameUuid.toString()) { players ->
+            _gameState.update { updater.updatePlayers(gameState, players) }
         }
     }
 }
