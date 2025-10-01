@@ -21,8 +21,8 @@ android {
         applicationId "pl.kazoroo.tavernFarkle"
         minSdk 28
         targetSdk 35
-        versionCode 27
-        versionName "2.4.0"
+        versionCode 29
+        versionName "2.4.2"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -103,10 +103,11 @@ dependencies {
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.14'
 
     //Firebase and related
-    implementation platform('com.google.firebase:firebase-bom:34.2.0')
+    implementation platform('com.google.firebase:firebase-bom:34.3.0')
     implementation ("com.google.firebase:firebase-analytics")
     implementation("com.google.firebase:firebase-crashlytics")
     implementation("com.google.android.gms:play-services-ads:24.6.0")
+    implementation("com.google.firebase:firebase-database")
 
     //Reveal
     implementation("com.svenjacobs.reveal:reveal-core:4.0.0")

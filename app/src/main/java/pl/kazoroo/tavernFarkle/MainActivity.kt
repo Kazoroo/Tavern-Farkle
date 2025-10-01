@@ -25,11 +25,11 @@ import pl.kazoroo.tavernFarkle.core.presentation.CoinsViewModel
 import pl.kazoroo.tavernFarkle.core.presentation.navigation.Navigation
 import pl.kazoroo.tavernFarkle.di.DependencyContainer
 import pl.kazoroo.tavernFarkle.di.TavernFarkleApp
-import pl.kazoroo.tavernFarkle.game.presentation.game.GameViewModel
-import pl.kazoroo.tavernFarkle.game.presentation.mainmenu.MainMenuViewModel
-import pl.kazoroo.tavernFarkle.game.presentation.sound.SoundPlayer
-import pl.kazoroo.tavernFarkle.game.presentation.splashscreen.StartingScreenViewModel
-import pl.kazoroo.tavernFarkle.game.service.MusicService
+import pl.kazoroo.tavernFarkle.menu.presentation.MainMenuViewModel
+import pl.kazoroo.tavernFarkle.menu.sound.MusicService
+import pl.kazoroo.tavernFarkle.menu.sound.SoundPlayer
+import pl.kazoroo.tavernFarkle.menu.splashscreen.StartingScreenViewModel
+import pl.kazoroo.tavernFarkle.multiplayer.presentation.LobbyViewModel
 import pl.kazoroo.tavernFarkle.settings.presentation.SettingsViewModel
 import pl.kazoroo.tavernFarkle.shop.domain.AdManager
 import pl.kazoroo.tavernFarkle.shop.presentation.inventory.InventoryViewModel
@@ -98,8 +98,8 @@ class MainActivity : ComponentActivity() {
             val inventoryViewModel = viewModel<InventoryViewModel>(
                 factory = dependencyContainer.inventoryViewModelFactory
             )
-            val gameViewModel = viewModel<GameViewModel>(
-                factory = dependencyContainer.gameViewModelFactory
+            val lobbyViewModel = viewModel<LobbyViewModel>(
+                factory = dependencyContainer.lobbyViewModelFactory
             )
 
             DicesTheme {
@@ -122,7 +122,7 @@ class MainActivity : ComponentActivity() {
                         inventoryViewModel = inventoryViewModel,
                         settingsViewModel = settingsViewModel,
                         dependencyContainer = dependencyContainer,
-                        gameViewModel = gameViewModel
+                        lobbyViewModel = lobbyViewModel
                     )
                 }
             }

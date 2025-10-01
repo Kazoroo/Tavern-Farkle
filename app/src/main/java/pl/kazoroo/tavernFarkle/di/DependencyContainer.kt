@@ -3,21 +3,25 @@ package pl.kazoroo.tavernFarkle.di
 import android.content.Context
 import androidx.lifecycle.ViewModelProvider
 import pl.kazoroo.tavernFarkle.core.data.local.repository.UserDataRepository
-import pl.kazoroo.tavernFarkle.core.domain.ReadUserDataUseCase
-import pl.kazoroo.tavernFarkle.core.domain.SaveUserDataUseCase
+import pl.kazoroo.tavernFarkle.core.domain.GameStateUpdater
+import pl.kazoroo.tavernFarkle.core.domain.usecase.game.CalculatePointsUseCase
+import pl.kazoroo.tavernFarkle.core.domain.usecase.game.CheckForSkuchaUseCase
+import pl.kazoroo.tavernFarkle.core.domain.usecase.game.CheckGameEndUseCase
+import pl.kazoroo.tavernFarkle.core.domain.usecase.game.DrawDiceUseCase
+import pl.kazoroo.tavernFarkle.core.domain.usecase.userdata.ReadUserDataUseCase
+import pl.kazoroo.tavernFarkle.core.domain.usecase.userdata.SaveUserDataUseCase
 import pl.kazoroo.tavernFarkle.core.presentation.CoinsViewModel
 import pl.kazoroo.tavernFarkle.core.presentation.viewModelFactoryHelper
-import pl.kazoroo.tavernFarkle.game.data.repository.LocalGameRepository
-import pl.kazoroo.tavernFarkle.game.domain.usecase.CalculatePointsUseCase
-import pl.kazoroo.tavernFarkle.game.domain.usecase.CheckForSkuchaUseCase
-import pl.kazoroo.tavernFarkle.game.domain.usecase.CheckGameEndUseCase
-import pl.kazoroo.tavernFarkle.game.domain.usecase.DrawDiceUseCase
-import pl.kazoroo.tavernFarkle.game.domain.usecase.PlayOpponentTurnUseCase
-import pl.kazoroo.tavernFarkle.game.presentation.game.GameViewModel
-import pl.kazoroo.tavernFarkle.game.presentation.mainmenu.MainMenuViewModel
+import pl.kazoroo.tavernFarkle.menu.presentation.MainMenuViewModel
+import pl.kazoroo.tavernFarkle.multiplayer.data.remote.FirebaseDataSource
+import pl.kazoroo.tavernFarkle.multiplayer.data.repository.RemoteGameRepository
+import pl.kazoroo.tavernFarkle.multiplayer.presentation.LobbyViewModel
 import pl.kazoroo.tavernFarkle.settings.presentation.SettingsViewModel
 import pl.kazoroo.tavernFarkle.shop.domain.InventoryDataRepositoryImpl
 import pl.kazoroo.tavernFarkle.shop.presentation.inventory.InventoryViewModel
+import pl.kazoroo.tavernFarkle.singleplayer.data.repository.LocalGameRepository
+import pl.kazoroo.tavernFarkle.singleplayer.domain.usecase.PlayOpponentTurnUseCase
+import pl.kazoroo.tavernFarkle.singleplayer.presentation.GameViewModel
 
 class DependencyContainer(
     context: Context
@@ -37,22 +41,31 @@ class DependencyContainer(
         ReadUserDataUseCase(userDataRepository)
     }
     val calculatePointsUseCase by lazy {
-        CalculatePointsUseCase(localGameRepository)
+        CalculatePointsUseCase()
     }
     val checkForSkuchaUseCase by lazy {
         CheckForSkuchaUseCase(calculatePointsUseCase)
     }
     val drawDiceUseCase by lazy {
-        DrawDiceUseCase(localGameRepository, checkForSkuchaUseCase)
+        DrawDiceUseCase(checkForSkuchaUseCase)
     }
     val checkGameEndUseCase by lazy {
-        CheckGameEndUseCase(localGameRepository, null)
+        CheckGameEndUseCase(null)
     }
     val playOpponentTurnUseCase by lazy {
         PlayOpponentTurnUseCase(localGameRepository, drawDiceUseCase, calculatePointsUseCase, checkGameEndUseCase)
     }
+    val firebaseDataSource by lazy {
+        FirebaseDataSource()
+    }
+    val gameStateUpdater by lazy {
+        GameStateUpdater()
+    }
     val localGameRepository by lazy {
-        LocalGameRepository()
+        LocalGameRepository(gameStateUpdater)
+    }
+    val remoteGameRepository by lazy {
+        RemoteGameRepository(firebaseDataSource, gameStateUpdater)
     }
 
     val settingsViewModelFactory: ViewModelProvider.Factory
@@ -83,10 +96,18 @@ class DependencyContainer(
                 drawDiceUseCase = drawDiceUseCase
             )
         }
-    val gameViewModelFactory: ViewModelProvider.Factory
+    val lobbyViewModelFactory: ViewModelProvider.Factory
         get() = viewModelFactoryHelper {
+            LobbyViewModel(
+                remoteGameRepository = remoteGameRepository,
+                drawDiceUseCase = drawDiceUseCase
+            )
+        }
+
+    fun gameViewModelFactory(isMultiplayer: Boolean): ViewModelProvider.Factory =
+        viewModelFactoryHelper {
             GameViewModel(
-                repository = localGameRepository,
+                repository = if (isMultiplayer) remoteGameRepository else localGameRepository,
                 calculatePointsUseCase = calculatePointsUseCase,
                 drawDiceUseCase = drawDiceUseCase,
                 playOpponentTurnUseCase = playOpponentTurnUseCase,

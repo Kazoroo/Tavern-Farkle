@@ -5,10 +5,11 @@ import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
-import pl.kazoroo.tavernFarkle.game.data.repository.LocalGameRepository
-import pl.kazoroo.tavernFarkle.game.domain.model.Dice
-import pl.kazoroo.tavernFarkle.game.domain.model.GameState
-import pl.kazoroo.tavernFarkle.game.domain.model.Player
+import pl.kazoroo.tavernFarkle.core.domain.GameStateUpdater
+import pl.kazoroo.tavernFarkle.core.domain.model.Dice
+import pl.kazoroo.tavernFarkle.core.domain.model.GameState
+import pl.kazoroo.tavernFarkle.core.domain.model.Player
+import pl.kazoroo.tavernFarkle.singleplayer.data.repository.LocalGameRepository
 import java.util.UUID
 import kotlin.test.assertNotEquals
 
@@ -55,7 +56,7 @@ class LocalGameRepositoryTest {
 
     @Before
     fun init() {
-        repository = LocalGameRepository()
+        repository = LocalGameRepository(GameStateUpdater())
 
         repository.saveGameState(gameState)
     }

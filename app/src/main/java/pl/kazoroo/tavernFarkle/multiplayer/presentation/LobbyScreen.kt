@@ -17,6 +17,11 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
@@ -24,24 +29,29 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import pl.kazoroo.tavernFarkle.R
+import pl.kazoroo.tavernFarkle.core.presentation.CoinsViewModel
 import pl.kazoroo.tavernFarkle.core.presentation.components.BackgroundImage
+import pl.kazoroo.tavernFarkle.core.presentation.components.BettingDialog
 import pl.kazoroo.tavernFarkle.core.presentation.components.CoinAmountIndicator
-
-data class Lobby(
-    val lobbyId: String,
-    val bet: Int
-)
-
-val lobbyList = listOf(
-    Lobby("1", 100),
-    Lobby("2", 200),
-    Lobby("3", 300),
-    Lobby("4", 400),
-)
+import pl.kazoroo.tavernFarkle.core.presentation.navigation.Screen
+import pl.kazoroo.tavernFarkle.menu.sound.SoundPlayer
+import pl.kazoroo.tavernFarkle.menu.sound.SoundType
+import pl.kazoroo.tavernFarkle.multiplayer.data.model.Lobby
+import pl.kazoroo.tavernFarkle.shop.presentation.inventory.InventoryViewModel
 
 @Composable
-fun LobbyScreen(coinsAmount: String) {
+fun LobbyScreen(
+    coinsAmount: String,
+    navController: NavHostController,
+    lobbyViewModel: LobbyViewModel,
+    inventoryViewModel: InventoryViewModel,
+    coinsViewModel: CoinsViewModel
+) {
+    var isBettingDialogVisible by remember { mutableStateOf(false) }
+    val lobbyList = lobbyViewModel.lobbyList.collectAsState().value
+
     Box(modifier = Modifier.fillMaxSize()) {
         BackgroundImage()
 
@@ -64,7 +74,9 @@ fun LobbyScreen(coinsAmount: String) {
             }
 
             Button(
-                onClick = { /*TODO*/ },
+                onClick = {
+                    isBettingDialogVisible = true
+                },
                 modifier = Modifier
                     .padding(
                         horizontal = dimensionResource(R.dimen.medium_padding),
@@ -81,6 +93,24 @@ fun LobbyScreen(coinsAmount: String) {
                 )
             }
         }
+
+        if(isBettingDialogVisible) {
+            BettingDialog(
+                onCloseClick = {
+                    isBettingDialogVisible = false
+                },
+                onClick = { betAmount ->
+                    lobbyViewModel.startNewGame(
+                        betAmount.toInt(),
+                        inventoryViewModel.getSelectedSpecialDiceNames()
+                    )
+                    SoundPlayer.playSound(SoundType.CLICK)
+                    navController.navigate(Screen.GameScreen.withArgs(true))
+                    coinsViewModel.setBetValue(betAmount)
+                },
+                coinsAmount = coinsAmount.toInt()
+            )
+        }
     }
 }
 
@@ -96,7 +126,7 @@ private fun LobbyCard(lobbyData: Lobby) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = "Bet: ${lobbyData.bet}",
+                text = "Bet: ${lobbyData.betAmount}",
                 modifier = Modifier.padding(
                     start = dimensionResource(R.dimen.medium_padding)
                 )

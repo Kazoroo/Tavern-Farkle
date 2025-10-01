@@ -30,6 +30,6 @@
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
-        <service android:name=".game.service.MusicService" />
+        <service android:name=".menu.sound.MusicService" />
     </application>
 </manifest>

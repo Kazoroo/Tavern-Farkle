@@ -6,8 +6,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import pl.kazoroo.tavernFarkle.core.data.local.UserDataKey
-import pl.kazoroo.tavernFarkle.core.domain.ReadUserDataUseCase
-import pl.kazoroo.tavernFarkle.core.domain.SaveUserDataUseCase
+import pl.kazoroo.tavernFarkle.core.domain.usecase.userdata.ReadUserDataUseCase
+import pl.kazoroo.tavernFarkle.core.domain.usecase.userdata.SaveUserDataUseCase
 
 class CoinsViewModel(
     private val saveUserDataUseCase: SaveUserDataUseCase,
