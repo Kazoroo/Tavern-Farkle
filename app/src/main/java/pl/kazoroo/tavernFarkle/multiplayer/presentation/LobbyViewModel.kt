@@ -40,6 +40,7 @@ class LobbyViewModel(
             )
 
         remoteGameRepository.saveGameDataToDatabase(gameState = remoteGameRepository.gameState.value)
+        remoteGameRepository.observeGameData(gameState = remoteGameRepository.gameState.value)
 
         SoundPlayer.playSound(SoundType.CLICK)
         onNavigate()

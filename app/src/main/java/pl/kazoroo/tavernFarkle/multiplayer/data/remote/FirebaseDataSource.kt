@@ -86,4 +86,10 @@ class FirebaseDataSource {
         val snapshot = ref.get().await()
         return snapshot.getValue(GameStateDto::class.java)
     }
+
+    fun updateSelectedPoints(gameUuid: String, playerIndex: Int, value: Int) {
+        val ref = database.getReference("$gameUuid/players/$playerIndex/selectedPoints")
+
+        ref.setValue(value)
+    }
 }

@@ -58,6 +58,12 @@ class RemoteGameRepository(
 
     override fun updateSelectedPoints(selectedPoints: Int) {
         _gameState.update { updater.updateSelectedPoints(it, selectedPoints) }
+
+        firebaseDataSource.updateSelectedPoints(
+            gameUuid = gameState.value.gameUuid.toString(),
+            playerIndex = gameState.value.getCurrentPlayerIndex(),
+            value = gameState.value.getCurrentPlayer().selectedPoints
+        )
     }
 
     override fun sumRoundPoints() {
