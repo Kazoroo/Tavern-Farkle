@@ -124,7 +124,8 @@ class DependencyContainer(
                 calculatePointsUseCase = calculatePointsUseCase,
                 drawDiceUseCase = drawDiceUseCase,
                 playOpponentTurnUseCase = playOpponentTurnUseCase,
-                checkGameEndUseCase = checkGameEndUseCase
+                checkGameEndUseCase = checkGameEndUseCase,
+                isMultiplayer = isMultiplayer
             )
         }
 }

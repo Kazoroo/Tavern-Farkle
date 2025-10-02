@@ -31,7 +31,8 @@ class GameViewModel(
     private val drawDiceUseCase: DrawDiceUseCase,
     private val playOpponentTurnUseCase: PlayOpponentTurnUseCase,
     private val checkGameEndUseCase: CheckGameEndUseCase,
-    dispatcher: CoroutineDispatcher = Dispatchers.Main
+    dispatcher: CoroutineDispatcher = Dispatchers.Main,
+    private val isMultiplayer: Boolean
 ): ViewModel() {
     private val scope = CoroutineScope(dispatcher + SupervisorJob())
     val gameState: StateFlow<GameState> = repository.gameState
@@ -82,7 +83,9 @@ class GameViewModel(
                 repository = repository
             )
 
-            if(repository.gameState.value.currentPlayerUuid != repository.myUuidState.value) {
+            val isOpponentTurn = repository.gameState.value.currentPlayerUuid != repository.myUuidState.value
+
+            if(isOpponentTurn && !isMultiplayer) {
                 playOpponentTurnUseCase(
                     triggerDiceRowAnimation = { triggerDiceRowAnimation() }
                 )
@@ -134,7 +137,9 @@ class GameViewModel(
                                 repository = repository
                             )
 
-                            if(repository.gameState.value.currentPlayerUuid != repository.myUuidState.value) {
+                            val isOpponentTurn = repository.gameState.value.currentPlayerUuid != repository.myUuidState.value
+
+                            if(isOpponentTurn && !isMultiplayer) {
                                 playOpponentTurnUseCase(
                                     triggerDiceRowAnimation = { triggerDiceRowAnimation() }
                                 )
