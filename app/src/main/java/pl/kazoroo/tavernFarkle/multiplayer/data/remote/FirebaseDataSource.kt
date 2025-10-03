@@ -7,9 +7,9 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.database
+import com.google.firebase.database.getValue
 import kotlinx.coroutines.tasks.await
 import pl.kazoroo.tavernFarkle.core.domain.model.GameState
-import pl.kazoroo.tavernFarkle.core.domain.model.Player
 import pl.kazoroo.tavernFarkle.multiplayer.data.model.GameStateDto
 import pl.kazoroo.tavernFarkle.multiplayer.data.model.Lobby
 import pl.kazoroo.tavernFarkle.multiplayer.data.model.PlayerDto
@@ -19,21 +19,14 @@ class FirebaseDataSource {
 
     fun observeGameData(
         gameUuid: String,
-        onUpdated: (List<Player>) -> Unit
+        onUpdate: (GameStateDto?) -> Unit
     ) {
-        val ref = database.getReference(
-            gameUuid.plus("/players")
-        )
+        val playersRef = database.getReference(gameUuid)
 
-        ref.addValueEventListener(object : ValueEventListener {
+        playersRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                val players = snapshot.children.mapNotNull {
-                    it.getValue(PlayerDto::class.java)
-                }
-
-                if(snapshot.exists()) {
-                    onUpdated(players.map { it.toDomain() })
-                }
+                val newGameState = snapshot.getValue<GameStateDto>()
+                onUpdate(newGameState)
             }
 
             override fun onCancelled(error: DatabaseError) {
@@ -75,10 +68,10 @@ class FirebaseDataSource {
         })
     }
 
-    fun addPlayerToLobby(gameUuid: String, playerData: Player) {
+    fun addPlayerToLobby(gameUuid: String, playerData: PlayerDto) {
         val ref = database.getReference("$gameUuid/players/1")
 
-        ref.setValue(playerData.toDto())
+        ref.setValue(playerData)
     }
 
     suspend fun readGameData(gameUuid: String): GameStateDto? {
@@ -89,6 +82,18 @@ class FirebaseDataSource {
 
     fun updateSelectedPoints(gameUuid: String, playerIndex: Int, value: Int) {
         val ref = database.getReference("$gameUuid/players/$playerIndex/selectedPoints")
+
+        ref.setValue(value)
+    }
+
+    fun updatePlayers(gameUuid: String, playerIndex: Int, value: PlayerDto) {
+        val ref = database.getReference("$gameUuid/players/$playerIndex")
+
+        ref.setValue(value)
+    }
+
+    fun updateCurrentPlayerUuid(gameUuid: String, value: String) {
+        val ref = database.getReference("$gameUuid/currentPlayerUuid")
 
         ref.setValue(value)
     }

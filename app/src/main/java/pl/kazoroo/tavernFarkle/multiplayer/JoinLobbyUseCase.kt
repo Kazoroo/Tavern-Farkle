@@ -22,7 +22,7 @@ class JoinLobbyUseCase(
         val paddedUserDiceNames = userDiceNames.padWithNullsToSix()
         val userDiceSet = createDiceSet(paddedUserDiceNames, gameRepository, drawDiceUseCase)
         val player = Player(currentPlayerId, diceSet = userDiceSet)
-        firebaseDataSource.addPlayerToLobby(gameUuid, player)
+        firebaseDataSource.addPlayerToLobby(gameUuid, player.toDto())
 
         val gameState = firebaseDataSource.readGameData(gameUuid)?.toDomain() ?: throw Exception("Game state is null")
 

@@ -68,26 +68,61 @@ class RemoteGameRepository(
 
     override fun sumRoundPoints() {
         _gameState.update { updater.sumRoundPoints(it) }
+
+        firebaseDataSource.updatePlayers(
+            gameUuid = gameState.value.gameUuid.toString(),
+            playerIndex = gameState.value.getCurrentPlayerIndex(),
+            value = gameState.value.getCurrentPlayer().toDto()
+        )
     }
 
     override fun hideSelectedDice() {
         _gameState.update { updater.hideSelectedDice(it) }
+
+        firebaseDataSource.updatePlayers(
+            gameUuid = gameState.value.gameUuid.toString(),
+            playerIndex = gameState.value.getCurrentPlayerIndex(),
+            value = gameState.value.getCurrentPlayer().toDto()
+        )
     }
 
     override fun updateDiceSet(newDice: List<Dice>) {
         _gameState.update { updater.updateDiceSet(it, newDice) }
+
+        firebaseDataSource.updatePlayers(
+            gameUuid = gameState.value.gameUuid.toString(),
+            playerIndex = gameState.value.getCurrentPlayerIndex(),
+            value = gameState.value.getCurrentPlayer().toDto()
+        )
     }
 
     override fun sumTotalPoints() {
         _gameState.update { updater.sumTotalPoints(it) }
+
+        firebaseDataSource.updatePlayers(
+            gameUuid = gameState.value.gameUuid.toString(),
+            playerIndex = gameState.value.getCurrentPlayerIndex(),
+            value = gameState.value.getCurrentPlayer().toDto()
+        )
     }
 
     override fun resetDiceState() {
         _gameState.update { updater.resetDiceState(it) }
+
+        firebaseDataSource.updatePlayers(
+            gameUuid = gameState.value.gameUuid.toString(),
+            playerIndex = gameState.value.getCurrentPlayerIndex(),
+            value = gameState.value.getCurrentPlayer().toDto()
+        )
     }
 
     override fun changeCurrentPlayer() {
         _gameState.update { updater.changeCurrentPlayer(it) }
+
+        firebaseDataSource.updateCurrentPlayerUuid(
+            gameUuid = gameState.value.gameUuid.toString(),
+            value = gameState.value.currentPlayerUuid.toString()
+        )
     }
 
     override fun resetRoundAndSelectedPoints() {
@@ -109,8 +144,13 @@ class RemoteGameRepository(
     }
 
     fun observeGameData(gameState: GameState) {
-        firebaseDataSource.observeGameData(gameState.gameUuid.toString()) { players ->
-            _gameState.update { updater.updatePlayers(gameState, players) }
-        }
+        firebaseDataSource.observeGameData(
+            gameUuid = gameState.gameUuid.toString(),
+            onUpdate = { players ->
+                _gameState.update {
+                    players?.toDomain() ?: throw IllegalStateException()
+                }
+            }
+        )
     }
 }

@@ -73,7 +73,6 @@ class GameViewModel(
 
         if(checkGameEndUseCase(repository = repository) { internalCoinsViewModel!!.addBetCoinsToTotalCoinsAmount() }) return
 
-
         scope.launch {
             triggerDiceRowAnimation()
             repository.resetDiceState()
