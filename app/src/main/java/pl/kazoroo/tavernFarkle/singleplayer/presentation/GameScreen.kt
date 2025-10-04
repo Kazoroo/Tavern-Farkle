@@ -49,25 +49,27 @@ fun GameScreen(
 ) {
     val state by viewModel.gameState.collectAsState()
 
+    val myPlayerIndex = viewModel.myPlayerIndex
+    val opponentPlayerIndex = viewModel.opponentPlayerIndex.collectAsState().value
     val currentPlayerIndex = state.getCurrentPlayerIndex()
     val isOpponentTurn = viewModel.isOpponentTurn.collectAsState().value
-    val selectedPoints = state.players[0].selectedPoints
+    val selectedPoints = state.players[myPlayerIndex].selectedPoints
 
     val tableData = listOf(
         TableData(
             pointsType = stringResource(R.string.total),
-            yourPoints = state.players[0].totalPoints.toString(),
-            opponentPoints = state.players.getOrNull(1)?.totalPoints?.toString() ?: "-"
+            yourPoints = state.players[myPlayerIndex].totalPoints.toString(),
+            opponentPoints = opponentPlayerIndex?.let { state.players[it].totalPoints.toString() } ?: "-"
         ),
         TableData(
             pointsType = stringResource(R.string.round),
-            yourPoints = state.players[0].roundPoints.toString(),
-            opponentPoints = state.players.getOrNull(1)?.roundPoints?.toString() ?: "-"
+            yourPoints = state.players[myPlayerIndex].roundPoints.toString(),
+            opponentPoints = opponentPlayerIndex?.let { state.players[it].roundPoints.toString() } ?: "-"
         ),
         TableData(
             pointsType = stringResource(R.string.selected_forDices),
             yourPoints = selectedPoints.toString(),
-            opponentPoints = state.players.getOrNull(1)?.selectedPoints?.toString() ?: "-"
+            opponentPoints = opponentPlayerIndex?.let { state.players[it].selectedPoints.toString() } ?: "-"
         ),
     )
     val showExitDialog = remember { mutableStateOf(false) }

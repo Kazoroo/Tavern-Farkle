@@ -1,8 +1,10 @@
 package pl.kazoroo.tavernFarkle.singleplayer.data.repository
 
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.update
 import pl.kazoroo.tavernFarkle.core.domain.GameStateUpdater
 import pl.kazoroo.tavernFarkle.core.domain.model.Dice
@@ -27,6 +29,14 @@ class LocalGameRepository(
 
     private val _myUuidState = MutableStateFlow(UUID.randomUUID())
     override val myUuidState: StateFlow<UUID> = _myUuidState.asStateFlow()
+
+    override fun getMyPlayerIndex(): Int {
+        return 0
+    }
+
+    override fun getOpponentPlayerIndex(): Flow<Int?> {
+        return flowOf(1)
+    }
 
     override fun setMyUuid(uuid: UUID) {
         _myUuidState.value = uuid

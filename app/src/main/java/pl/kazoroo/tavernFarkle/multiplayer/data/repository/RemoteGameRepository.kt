@@ -1,8 +1,10 @@
 package pl.kazoroo.tavernFarkle.multiplayer.data.repository
 
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import pl.kazoroo.tavernFarkle.core.domain.GameStateUpdater
 import pl.kazoroo.tavernFarkle.core.domain.model.Dice
@@ -32,6 +34,29 @@ class RemoteGameRepository(
 
     private val _lobbyList = MutableStateFlow<List<Lobby>>(emptyList())
     val lobbyList: StateFlow<List<Lobby>> = _lobbyList.asStateFlow()
+
+    /**
+     * Return an index of the player that is assigned to this client
+     *
+     * @return index of the player in the current game state that matches this client's UUID or `null` if not found
+     */
+    override fun getMyPlayerIndex(): Int =
+        _gameState.value.players.indexOfFirst { it.uuid == myUuidState.value }
+            .takeIf { it >= 0 } ?: 0
+
+    /**
+     * Returns a [Flow] that emits the index of the opponent player relative to this client.
+     * The value updates reactively whenever the players list changes.
+     *
+     * @return a [Flow] emitting the index of the opponent player, or `null` if no opponent is found
+     */
+
+    override fun getOpponentPlayerIndex(): Flow<Int?> =
+        _gameState.map { state ->
+            state.players.indexOfFirst { it.uuid != myUuidState.value }
+                .takeIf { it >= 0 }
+        }
+
 
     override fun setMyUuid(uuid: UUID) {
         _myUuidState.value = uuid

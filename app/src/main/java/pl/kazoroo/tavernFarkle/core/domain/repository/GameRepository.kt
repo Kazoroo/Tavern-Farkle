@@ -1,5 +1,6 @@
 package pl.kazoroo.tavernFarkle.core.domain.repository
 
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 import pl.kazoroo.tavernFarkle.core.domain.model.Dice
 import pl.kazoroo.tavernFarkle.core.domain.model.GameState
@@ -21,4 +22,6 @@ interface GameRepository {
     fun resetRoundAndSelectedPoints()
     fun toggleSkucha()
     fun toggleGameEnd()
+    fun getMyPlayerIndex(): Int
+    fun getOpponentPlayerIndex(): Flow<Int?>
 }

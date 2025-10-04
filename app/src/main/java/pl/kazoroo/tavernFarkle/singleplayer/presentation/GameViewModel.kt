@@ -45,6 +45,11 @@ class GameViewModel(
     private val _isDiceAnimating = MutableStateFlow(false)
     val isDiceAnimating: StateFlow<Boolean> = _isDiceAnimating
 
+    val myPlayerIndex = repository.getMyPlayerIndex()
+    val opponentPlayerIndex: StateFlow<Int?> =
+        repository.getOpponentPlayerIndex()
+            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(1000L), null)
+
     private var internalNavController: NavHostController? = null
     private var internalCoinsViewModel: CoinsViewModel? = null
 
