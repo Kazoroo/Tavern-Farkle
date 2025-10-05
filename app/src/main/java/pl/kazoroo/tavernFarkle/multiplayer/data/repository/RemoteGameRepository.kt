@@ -163,7 +163,7 @@ class RemoteGameRepository(
 
     fun observeLobbyList() {
         firebaseDataSource.observeLobbyList { lobbies ->
-            _lobbyList.value = lobbies
+            _lobbyList.value = lobbies.sortedBy { it.playerCount }
         }
     }
 

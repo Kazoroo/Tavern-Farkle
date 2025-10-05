@@ -1,11 +1,12 @@
 package pl.kazoroo.tavernFarkle.multiplayer.presentation
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -15,6 +16,7 @@ import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -169,34 +171,48 @@ private fun LobbyCard(lobbyData: Lobby, onJoinClick: () -> Unit) {
         modifier = Modifier.padding(
             horizontal = dimensionResource(R.dimen.medium_padding),
             vertical = dimensionResource(R.dimen.small_padding),
-        )
+        ).fillMaxWidth().height(120.dp)
     ) {
         Row(
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            modifier = Modifier.fillMaxSize()
         ) {
-            Text(
-                text = "Bet: ${lobbyData.betAmount}",
-                modifier = Modifier.padding(
-                    start = dimensionResource(R.dimen.medium_padding)
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "Bet: ${lobbyData.betAmount}",
                 )
-            )
 
-            Image(
-                painter = painterResource(R.drawable.coin),
-                contentDescription = "Coin icon",
+                Image(
+                    painter = painterResource(R.drawable.coin),
+                    contentDescription = "Coin icon",
+                    modifier = Modifier
+                        .size(dimensionResource(R.dimen.coin_icon_size))
+                        .padding(start = dimensionResource(R.dimen.small_padding))
+                )
+            }
+
+            Text(
+                text = "${lobbyData.playerCount} / 2\nplayers",
+                textAlign = TextAlign.Center,
                 modifier = Modifier
-                    .size(dimensionResource(R.dimen.coin_icon_size))
-                    .padding(start = dimensionResource(R.dimen.small_padding))
+                    .border(1.dp, Color.LightGray, RoundedCornerShape(5.dp))
+                    .padding(dimensionResource(R.dimen.small_padding))
             )
-
-            Spacer(modifier = Modifier.weight(1f))
 
             Button(
                 onClick = onJoinClick,
-                modifier = Modifier.padding(dimensionResource(R.dimen.medium_padding)),
-                shape = RoundedCornerShape(10.dp)
+                shape = RoundedCornerShape(12.dp),
+                enabled = lobbyData.playerCount == 1,
+                elevation = ButtonDefaults.buttonElevation(defaultElevation = 12.dp)
             ) {
-                Text(stringResource(R.string.join))
+                Text(
+                    text = stringResource(R.string.join),
+                    fontWeight = FontWeight.W700,
+                    modifier = Modifier.padding(5.dp)
+                )
             }
         }
     }
