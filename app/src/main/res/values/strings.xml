@@ -48,4 +48,5 @@
     <string name="play_online">Play online</string>
     <string name="create_lobby">Create lobby</string>
     <string name="join">Join</string>
+    <string name="no_lobbies_available_you_can_wait_or_create_one">No lobbies available.\n You can wait or create one.</string>
 </resources>

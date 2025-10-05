@@ -50,13 +50,12 @@ class RemoteGameRepository(
      *
      * @return a [Flow] emitting the index of the opponent player, or `null` if no opponent is found
      */
-
-    override fun getOpponentPlayerIndex(): Flow<Int?> =
-        _gameState.map { state ->
+    override fun getOpponentPlayerIndex(): Flow<Int?> {
+        return _gameState.map { state ->
             state.players.indexOfFirst { it.uuid != myUuidState.value }
                 .takeIf { it >= 0 }
         }
-
+    }
 
     override fun setMyUuid(uuid: UUID) {
         _myUuidState.value = uuid

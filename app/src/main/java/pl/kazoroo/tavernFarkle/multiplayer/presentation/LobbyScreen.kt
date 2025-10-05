@@ -2,6 +2,7 @@ package pl.kazoroo.tavernFarkle.multiplayer.presentation
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -24,10 +25,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import pl.kazoroo.tavernFarkle.R
@@ -53,7 +56,9 @@ fun LobbyScreen(
     Box(modifier = Modifier.fillMaxSize()) {
         BackgroundImage()
 
-        Box(modifier = Modifier.fillMaxSize().systemBarsPadding()) {
+        Box(modifier = Modifier
+            .fillMaxSize()
+            .systemBarsPadding()) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -64,44 +69,33 @@ fun LobbyScreen(
                     modifier = Modifier.align(Alignment.Start)
                 )
 
-                LazyColumn {
-                    items(lobbyList.size) { index ->
-                        LobbyCard(
-                            lobbyData = lobbyList[index],
-                            onJoinClick = {
-                                lobbyViewModel.joinLobby(
-                                    gameUuid = lobbyList[index].gameUuid,
-                                    selectedSpecialDiceNames = inventoryViewModel.getSelectedSpecialDiceNames(),
-                                    onNavigate = { navController.navigate(Screen.GameScreen.withArgs(true)) },
-                                    bet = lobbyList[index].betAmount,
-                                    setBetValue = { bet ->
-                                        coinsViewModel.setBetValue(bet)
-                                    }
-                                )
-                            }
-                        )
-                    }
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxWidth(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    LobbyList(lobbyList, lobbyViewModel, inventoryViewModel, navController, coinsViewModel)
                 }
-            }
 
-            Button(
-                onClick = {
-                    isBettingDialogVisible = true
-                },
-                modifier = Modifier
-                    .padding(
-                        horizontal = dimensionResource(R.dimen.medium_padding),
-                        vertical = dimensionResource(R.dimen.medium_padding),
+                Button(
+                    onClick = {
+                        isBettingDialogVisible = true
+                    },
+                    modifier = Modifier
+                        .padding(
+                            horizontal = dimensionResource(R.dimen.medium_padding),
+                            vertical = dimensionResource(R.dimen.medium_padding),
+                        )
+                        .fillMaxWidth()
+                        .height(dimensionResource(R.dimen.menu_button_height)),
+                    shape = RoundedCornerShape(20.dp)
+                ) {
+                    Text(
+                        text = stringResource(R.string.create_lobby),
+                        fontWeight = FontWeight.W800
                     )
-                    .fillMaxWidth()
-                    .height(dimensionResource(R.dimen.menu_button_height))
-                    .align(Alignment.BottomCenter),
-                shape = RoundedCornerShape(20.dp)
-            ) {
-                Text(
-                    text = stringResource(R.string.create_lobby),
-                    fontWeight = FontWeight.W800
-                )
+                }
             }
         }
 
@@ -122,6 +116,49 @@ fun LobbyScreen(
                 },
                 coinsAmount = coinsAmount.toInt()
             )
+        }
+    }
+}
+
+@Composable
+private fun BoxScope.LobbyList(
+    lobbyList: List<Lobby>,
+    lobbyViewModel: LobbyViewModel,
+    inventoryViewModel: InventoryViewModel,
+    navController: NavHostController,
+    coinsViewModel: CoinsViewModel
+) {
+    if (lobbyList.isEmpty()) {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = stringResource(R.string.no_lobbies_available_you_can_wait_or_create_one),
+                color = Color.White,
+                textAlign = TextAlign.Center
+            )
+        }
+    } else {
+        LazyColumn(
+            modifier = Modifier.align(Alignment.TopCenter)
+        ) {
+            items(lobbyList.size) { index ->
+                LobbyCard(
+                    lobbyData = lobbyList[index],
+                    onJoinClick = {
+                        lobbyViewModel.joinLobby(
+                            gameUuid = lobbyList[index].gameUuid,
+                            selectedSpecialDiceNames = inventoryViewModel.getSelectedSpecialDiceNames(),
+                            onNavigate = { navController.navigate(Screen.GameScreen.withArgs(true)) },
+                            bet = lobbyList[index].betAmount,
+                            setBetValue = { bet ->
+                                coinsViewModel.setBetValue(bet)
+                            }
+                        )
+                    }
+                )
+            }
         }
     }
 }
