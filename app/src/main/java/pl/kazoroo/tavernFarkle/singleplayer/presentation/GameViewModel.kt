@@ -21,6 +21,7 @@ import pl.kazoroo.tavernFarkle.core.domain.usecase.game.CalculatePointsUseCase
 import pl.kazoroo.tavernFarkle.core.domain.usecase.game.CheckGameEndUseCase
 import pl.kazoroo.tavernFarkle.core.domain.usecase.game.DrawDiceUseCase
 import pl.kazoroo.tavernFarkle.core.presentation.CoinsViewModel
+import pl.kazoroo.tavernFarkle.core.presentation.navigation.Screen
 import pl.kazoroo.tavernFarkle.menu.sound.SoundPlayer
 import pl.kazoroo.tavernFarkle.menu.sound.SoundType
 import pl.kazoroo.tavernFarkle.singleplayer.domain.usecase.PlayOpponentTurnUseCase
@@ -45,6 +46,9 @@ class GameViewModel(
     private val _isDiceAnimating = MutableStateFlow(false)
     val isDiceAnimating: StateFlow<Boolean> = _isDiceAnimating
 
+    private val _showGameEndDialog = MutableStateFlow(false)
+    val showGameEndDialog: StateFlow<Boolean> = _showGameEndDialog
+
     val myPlayerIndex = repository.getMyPlayerIndex()
     val opponentPlayerIndex: StateFlow<Int?> =
         repository.getOpponentPlayerIndex()
@@ -55,6 +59,27 @@ class GameViewModel(
 
     init {
         observeSkucha()
+    }
+
+    fun onGameEnd(navController: NavHostController) {
+        viewModelScope.launch {
+            repository.gameState.collect { game ->
+                if (game.isGameEnd) {
+                    viewModelScope.launch {
+                        delay(1000L)
+                        _showGameEndDialog.value = true
+                        delay(3000L)
+                        _showGameEndDialog.value = false
+
+                        navController.navigate(Screen.MainScreen.withArgs()) {
+                            popUpTo(Screen.GameScreen.withArgs()) { inclusive = true }
+                        }
+
+                        repository.removeLobbyNode()
+                    }
+                }
+            }
+        }
     }
 
     fun initializeNavController(navController: NavHostController, coinsViewModel: CoinsViewModel) {

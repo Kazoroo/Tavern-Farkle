@@ -157,8 +157,9 @@ class RemoteGameRepository(
         _gameState.update { updater.toggleSkucha(it) }
     }
 
-    override fun toggleGameEnd() {
-        _gameState.update { updater.toggleGameEnd(it) }
+    override fun setGameEnd(gameEnd: Boolean) {
+        _gameState.update { updater.setGameEnd(it, gameEnd) }
+        firebaseDataSource.setGameState(_gameState.value)
     }
 
     fun observeLobbyList() {
@@ -170,11 +171,16 @@ class RemoteGameRepository(
     fun observeGameData(gameState: GameState) {
         firebaseDataSource.observeGameData(
             gameUuid = gameState.gameUuid.toString(),
-            onUpdate = { players ->
-                _gameState.update {
-                    players?.toDomain() ?: throw IllegalStateException()
-                }
+            onUpdate = { gameStateDto ->
+                val newState = gameStateDto?.toDomain() ?: return@observeGameData
+                _gameState.value = newState
             }
+        )
+    }
+
+    override fun removeLobbyNode() {
+        firebaseDataSource.removeLobbyNode(
+            gameUuid = gameState.value.gameUuid.toString()
         )
     }
 }

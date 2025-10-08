@@ -17,9 +17,9 @@ data class GameState(
     fun toDto() = GameStateDto(
         gameUuid = gameUuid.toString(),
         betAmount = betAmount,
-        isSkucha = isSkucha,
+        skucha = isSkucha,
         currentPlayerUuid = currentPlayerUuid.toString(),
-        isGameEnd = isGameEnd,
+        gameEnd = isGameEnd,
         players = players.map { it.toDto() }
     )
 }

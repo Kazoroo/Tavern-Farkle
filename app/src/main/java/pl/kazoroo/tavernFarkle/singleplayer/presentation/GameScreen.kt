@@ -54,6 +54,7 @@ fun GameScreen(
     val currentPlayerIndex = state.getCurrentPlayerIndex()
     val isOpponentTurn = viewModel.isOpponentTurn.collectAsState().value
     val selectedPoints = state.players[myPlayerIndex].selectedPoints
+    val isGameResultDialogVisible = viewModel.showGameEndDialog.collectAsState().value
 
     val tableData = listOf(
         TableData(
@@ -87,6 +88,7 @@ fun GameScreen(
 
     LaunchedEffect(true) {
         viewModel.initializeNavController(navController, coinsViewModel)
+        viewModel.onGameEnd(navController)
     }
 
     if(showExitDialog.value) {
@@ -198,14 +200,7 @@ fun GameScreen(
             }
         }
 
-        var isGameResultDialogVisible by remember { mutableStateOf(false) }
         var isSkuchaDialogVisible by remember { mutableStateOf(false) }
-
-        LaunchedEffect(state.isGameEnd) {
-            delay(1000L)
-
-            isGameResultDialogVisible = state.isGameEnd
-        }
 
         LaunchedEffect(state.isSkucha) {
             delay(1000L)

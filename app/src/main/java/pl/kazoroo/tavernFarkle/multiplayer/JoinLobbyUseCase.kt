@@ -26,8 +26,6 @@ class JoinLobbyUseCase(
 
         val gameState = firebaseDataSource.readGameData(gameUuid)?.toDomain() ?: throw Exception("Game state is null")
 
-        println("game state: $gameState")
-
         gameRepository.saveGameState(gameState)
         gameRepository.setMyUuid(currentPlayerId)
     }

@@ -105,4 +105,10 @@ class FirebaseDataSource {
 
         ref.setValue(value)
     }
+
+    fun removeLobbyNode(gameUuid: String) {
+        val ref = database.getReference(gameUuid)
+
+        ref.removeValue()
+    }
 }

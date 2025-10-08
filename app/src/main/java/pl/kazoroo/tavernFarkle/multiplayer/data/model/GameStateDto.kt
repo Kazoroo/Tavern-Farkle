@@ -6,17 +6,17 @@ import java.util.UUID
 data class GameStateDto(
     val gameUuid: String = "",
     val betAmount: Int = 0,
-    val isSkucha: Boolean = false,
+    val skucha: Boolean = false,
     val currentPlayerUuid: String = "",
-    val isGameEnd: Boolean = false,
+    val gameEnd: Boolean = false,
     val players: List<PlayerDto> = emptyList()
 ) {
     fun toDomain() = GameState(
         gameUuid = UUID.fromString(gameUuid),
         betAmount = betAmount,
-        isSkucha = isSkucha,
+        isSkucha = skucha,
         currentPlayerUuid = UUID.fromString(currentPlayerUuid),
-        isGameEnd = isGameEnd,
+        isGameEnd = gameEnd,
         players = players.map { it.toDomain() }
     )
 }

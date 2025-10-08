@@ -146,7 +146,7 @@ class GameStateUpdater {
     /**
      * Toggles the game end state.
      */
-    fun toggleGameEnd(state: GameState): GameState {
-        return state.copy(isGameEnd = !state.isGameEnd)
+    fun setGameEnd(state: GameState, gameEnd: Boolean): GameState {
+        return state.copy(isGameEnd = gameEnd)
     }
 }

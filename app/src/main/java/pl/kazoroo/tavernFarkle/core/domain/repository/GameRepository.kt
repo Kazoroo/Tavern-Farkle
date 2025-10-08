@@ -21,7 +21,8 @@ interface GameRepository {
     fun changeCurrentPlayer()
     fun resetRoundAndSelectedPoints()
     fun toggleSkucha()
-    fun toggleGameEnd()
+    fun setGameEnd(gameEnd: Boolean)
     fun getMyPlayerIndex(): Int
     fun getOpponentPlayerIndex(): Flow<Int?>
+    fun removeLobbyNode()
 }
