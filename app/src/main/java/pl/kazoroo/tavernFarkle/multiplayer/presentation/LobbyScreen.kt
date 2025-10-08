@@ -18,6 +18,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -27,12 +28,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.dropShadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.shadow.Shadow
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import pl.kazoroo.tavernFarkle.R
@@ -40,6 +44,7 @@ import pl.kazoroo.tavernFarkle.core.presentation.CoinsViewModel
 import pl.kazoroo.tavernFarkle.core.presentation.components.BackgroundImage
 import pl.kazoroo.tavernFarkle.core.presentation.components.BettingDialog
 import pl.kazoroo.tavernFarkle.core.presentation.components.CoinAmountIndicator
+import pl.kazoroo.tavernFarkle.core.presentation.components.NavigateBackButton
 import pl.kazoroo.tavernFarkle.core.presentation.navigation.Screen
 import pl.kazoroo.tavernFarkle.multiplayer.data.model.Lobby
 import pl.kazoroo.tavernFarkle.shop.presentation.inventory.InventoryViewModel
@@ -66,10 +71,21 @@ fun LobbyScreen(
                     .fillMaxSize()
                     .systemBarsPadding()
             ) {
-                CoinAmountIndicator(
-                    coinsAmount = coinsAmount,
-                    modifier = Modifier.align(Alignment.Start)
-                )
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .align(Alignment.Start),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    NavigateBackButton {
+                        navController.navigateUp()
+                    }
+
+                    CoinAmountIndicator(
+                        coinsAmount = coinsAmount
+                    )
+                }
 
                 Box(
                     modifier = Modifier
@@ -90,7 +106,15 @@ fun LobbyScreen(
                             vertical = dimensionResource(R.dimen.medium_padding),
                         )
                         .fillMaxWidth()
-                        .height(dimensionResource(R.dimen.menu_button_height)),
+                        .height(dimensionResource(R.dimen.menu_button_height))
+                        .dropShadow(
+                            shape = RoundedCornerShape(dimensionResource(R.dimen.rounded_corner)),
+                            shadow = Shadow(
+                                color = Color(0x80000000),
+                                radius = 10.dp,
+                                offset = DpOffset(5.dp, 12.dp)
+                            )
+                        ),
                     shape = RoundedCornerShape(20.dp)
                 ) {
                     Text(
@@ -131,12 +155,20 @@ private fun BoxScope.LobbyList(
     coinsViewModel: CoinsViewModel
 ) {
     if (lobbyList.isEmpty()) {
-        Box(
+        Column(
             modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
         ) {
             Text(
-                text = stringResource(R.string.no_lobbies_available_you_can_wait_or_create_one),
+                text = stringResource(R.string.no_lobbies_available),
+                fontWeight = FontWeight.W700,
+                fontSize = MaterialTheme.typography.displayMedium.fontSize,
+                color = Color.White,
+                textAlign = TextAlign.Center
+            )
+            Text(
+                text = stringResource(R.string.you_can_wait_or_create_one),
                 color = Color.White,
                 textAlign = TextAlign.Center
             )
