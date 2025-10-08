@@ -87,7 +87,6 @@ fun GameScreen(
     }
 
     LaunchedEffect(true) {
-        viewModel.initializeNavController(navController, coinsViewModel)
         viewModel.onGameEnd(navController)
     }
 
@@ -152,7 +151,7 @@ fun GameScreen(
                 ButtonInfo(
                     text = stringResource(id = R.string.pass),
                     onClick = {
-                        viewModel.onPass(navController)
+                        viewModel.onPass { coinsViewModel.addBetCoinsToTotalCoinsAmount() }
                     },
                     enabled = isActionAllowed
                 ),

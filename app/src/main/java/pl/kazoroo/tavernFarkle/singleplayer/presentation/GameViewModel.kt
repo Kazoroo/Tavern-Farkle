@@ -20,7 +20,6 @@ import pl.kazoroo.tavernFarkle.core.domain.repository.GameRepository
 import pl.kazoroo.tavernFarkle.core.domain.usecase.game.CalculatePointsUseCase
 import pl.kazoroo.tavernFarkle.core.domain.usecase.game.CheckGameEndUseCase
 import pl.kazoroo.tavernFarkle.core.domain.usecase.game.DrawDiceUseCase
-import pl.kazoroo.tavernFarkle.core.presentation.CoinsViewModel
 import pl.kazoroo.tavernFarkle.core.presentation.navigation.Screen
 import pl.kazoroo.tavernFarkle.menu.sound.SoundPlayer
 import pl.kazoroo.tavernFarkle.menu.sound.SoundType
@@ -54,9 +53,6 @@ class GameViewModel(
         repository.getOpponentPlayerIndex()
             .stateIn(viewModelScope, SharingStarted.WhileSubscribed(1000L), null)
 
-    private var internalNavController: NavHostController? = null
-    private var internalCoinsViewModel: CoinsViewModel? = null
-
     init {
         observeSkucha()
     }
@@ -82,11 +78,6 @@ class GameViewModel(
         }
     }
 
-    fun initializeNavController(navController: NavHostController, coinsViewModel: CoinsViewModel) {
-        this.internalNavController = navController
-        this.internalCoinsViewModel = coinsViewModel
-    }
-
     fun toggleDiceSelection(index: Int) {
         repository.toggleDiceSelection(index)
         val currentPlayerDiceSet = gameState.value.players[gameState.value.getCurrentPlayerIndex()].diceSet
@@ -96,12 +87,10 @@ class GameViewModel(
         )
     }
 
-    fun onPass(navController: NavHostController) {
+    fun onPass(addBetCoinsToTotalCoins: () -> Unit) {
         repository.sumTotalPoints()
 
-        checkGameEndUseCase.initializeNavController(navController)
-
-        if(checkGameEndUseCase(repository = repository) { internalCoinsViewModel!!.addBetCoinsToTotalCoinsAmount() }) return
+        if(checkGameEndUseCase(repository = repository, sumCoins = addBetCoinsToTotalCoins)) return
 
         scope.launch {
             triggerDiceRowAnimation()
