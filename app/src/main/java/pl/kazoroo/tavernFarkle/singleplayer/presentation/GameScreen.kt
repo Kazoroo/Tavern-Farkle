@@ -6,9 +6,9 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -21,11 +21,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shadow
+import androidx.compose.ui.graphics.StrokeJoin
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.navigation.NavHostController
 import kotlinx.coroutines.delay
 import pl.kazoroo.tavernFarkle.R
@@ -162,43 +167,6 @@ fun GameScreen(
             )
         }
 
-        @Composable
-        fun gameResultAndSkuchaDialog(text: String, extraText: String?, textColor: Color) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                Column(
-                    modifier = Modifier
-                        .wrapContentSize()
-                        .background(
-                            color = Color(26, 26, 26, 220),
-                            shape = RoundedCornerShape(dimensionResource(id = R.dimen.rounded_corner))
-                        ),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text(
-                        text = text,
-                        color = textColor,
-                        style = MaterialTheme.typography.displayLarge,
-                        modifier = Modifier
-                            .padding(dimensionResource(id = R.dimen.medium_padding))
-                    )
-
-                    if(extraText != null) {
-                        Text(
-                            text = extraText,
-                            color = Color.White,
-                            style = MaterialTheme.typography.displayMedium,
-                            modifier = Modifier
-                                .padding(dimensionResource(id = R.dimen.medium_padding))
-                        )
-                    }
-                }
-            }
-        }
-
         var isSkuchaDialogVisible by remember { mutableStateOf(false) }
 
         LaunchedEffect(state.isSkucha) {
@@ -208,22 +176,79 @@ fun GameScreen(
         }
 
         if(isSkuchaDialogVisible) {
-            gameResultAndSkuchaDialog(
+            GameResultAndSkuchaDialog(
                 text = "Skucha!", textColor = Color(212, 212, 212),
                 extraText = null
             )
         }
 
         if(isGameResultDialogVisible && isOpponentTurn) {
-            gameResultAndSkuchaDialog(
+            GameResultAndSkuchaDialog(
                 text = "Defeat", textColor = DarkRed,
                 extraText = "Next time will be better!"
             )
         } else if(isGameResultDialogVisible) {
-            gameResultAndSkuchaDialog(
+            GameResultAndSkuchaDialog(
                 text = "Win!", textColor = Color.Green,
                 extraText = "You are the champion!"
             )
+        }
+    }
+}
+
+@Composable
+fun GameResultAndSkuchaDialog(text: String, extraText: String?, textColor: Color) {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth(0.80f)
+                .background(
+                    color = Color(26, 26, 26, 220),
+                    shape = RoundedCornerShape(dimensionResource(id = R.dimen.rounded_corner))
+                ),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Box {
+                Text(
+                    text = text,
+                    style = MaterialTheme.typography.titleLarge.copy(
+                        drawStyle = Stroke(
+                            width = 14f,
+                            join = StrokeJoin.Round,
+                            miter = 10f
+                        )
+                    ),
+                    color = Color.Black,
+                    textAlign = TextAlign.Center
+                )
+
+                Text(
+                    text = text,
+                    style = MaterialTheme.typography.titleLarge.copy(
+                        shadow = Shadow(
+                            color = Color.Black,
+                            offset = Offset(-20f, 15f),
+                            blurRadius = 20f
+                        )
+                    ),
+                    color = textColor,
+                    textAlign = TextAlign.Center
+                )
+            }
+
+            if(extraText != null) {
+                Text(
+                    text = extraText,
+                    textAlign = TextAlign.Center,
+                    color = Color.White,
+                    style = MaterialTheme.typography.displayMedium,
+                    modifier = Modifier
+                        .padding(dimensionResource(id = R.dimen.medium_padding))
+                )
+            }
         }
     }
 }
