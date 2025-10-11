@@ -180,7 +180,6 @@ private fun MainMenuContent(
 
                 MenuNavigationButtons(
                     playWithComputerOnClick = playWithComputerOnClick,
-                    playOnlineOnClick = { navController.navigate(Screen.LobbyScreen.route) },
                     navController = navController
                 )
             }
