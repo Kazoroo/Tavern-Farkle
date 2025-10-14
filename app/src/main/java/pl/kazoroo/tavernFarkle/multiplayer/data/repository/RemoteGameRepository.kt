@@ -151,10 +151,17 @@ class RemoteGameRepository(
 
     override fun resetRoundAndSelectedPoints() {
         _gameState.update { updater.resetRoundAndSelectedPoints(it) }
+
+        firebaseDataSource.updatePlayers(
+            gameUuid = gameState.value.gameUuid.toString(),
+            playerIndex = gameState.value.getCurrentPlayerIndex(),
+            value = gameState.value.getCurrentPlayer().toDto()
+        )
     }
 
     override fun toggleSkucha() {
         _gameState.update { updater.toggleSkucha(it) }
+        firebaseDataSource.setGameState(_gameState.value)
     }
 
     override fun setGameEnd(gameEnd: Boolean) {

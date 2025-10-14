@@ -32,7 +32,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.navigation.NavHostController
-import kotlinx.coroutines.delay
 import pl.kazoroo.tavernFarkle.R
 import pl.kazoroo.tavernFarkle.core.domain.model.TableData
 import pl.kazoroo.tavernFarkle.core.presentation.CoinsViewModel
@@ -60,6 +59,7 @@ fun GameScreen(
     val isOpponentTurn = viewModel.isOpponentTurn.collectAsState().value
     val selectedPoints = state.players[myPlayerIndex].selectedPoints
     val isGameResultDialogVisible = viewModel.showGameEndDialog.collectAsState().value
+    val isSkuchaDialogVisible = viewModel.showSkuchaDialog.collectAsState().value
 
     val tableData = listOf(
         TableData(
@@ -165,14 +165,6 @@ fun GameScreen(
             GameButtons(
                 buttonsInfo = buttonsInfo,
             )
-        }
-
-        var isSkuchaDialogVisible by remember { mutableStateOf(false) }
-
-        LaunchedEffect(state.isSkucha) {
-            delay(1000L)
-
-            isSkuchaDialogVisible = state.isSkucha
         }
 
         if(isSkuchaDialogVisible) {

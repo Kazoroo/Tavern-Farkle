@@ -87,6 +87,7 @@ class PlayOpponentTurnUseCase(
     private suspend fun scoreAndRollAgain(triggerDiceRowAnimation: suspend () -> Unit) {
         repository.sumRoundPoints()
         repository.hideSelectedDice()
+        delay(200L)
         triggerDiceRowAnimation()
 
         if(repository.gameState.value.players[repository.gameState.value.getCurrentPlayerIndex()].diceSet.all { !it.isVisible }) {

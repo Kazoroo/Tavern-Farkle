@@ -48,6 +48,9 @@ class GameViewModel(
     private val _showGameEndDialog = MutableStateFlow(false)
     val showGameEndDialog: StateFlow<Boolean> = _showGameEndDialog
 
+    private val _showSkuchaDialog = MutableStateFlow(false)
+    val showSkuchaDialog: StateFlow<Boolean> = _showSkuchaDialog
+
     val myPlayerIndex = repository.getMyPlayerIndex()
     val opponentPlayerIndex: StateFlow<Int?> =
         repository.getOpponentPlayerIndex()
@@ -140,20 +143,27 @@ class GameViewModel(
                         launch {
                             delay(1000L)
                             SoundPlayer.playSound(SoundType.SKUCHA)
+                            _showSkuchaDialog.value = true
                             delay(2000L)
+                            _showSkuchaDialog.value = false
 
-                            repository.toggleSkucha()
-                            repository.resetRoundAndSelectedPoints()
+                            val isHost = gameState.value.players[0].uuid == repository.myUuidState.value
+                            if(isHost) {
+                                repository.toggleSkucha()
+                                repository.resetRoundAndSelectedPoints()
+                            }
 
                             triggerDiceRowAnimation()
 
-                            repository.resetDiceState()
-                            repository.changeCurrentPlayer()
+                            if(isHost) {
+                                repository.resetDiceState()
+                                repository.changeCurrentPlayer()
 
-                            drawDiceUseCase(
-                                repository.gameState.value.players[gameState.value.getCurrentPlayerIndex()].diceSet,
-                                repository = repository
-                            )
+                                drawDiceUseCase(
+                                    repository.gameState.value.players[gameState.value.getCurrentPlayerIndex()].diceSet,
+                                    repository = repository
+                                )
+                            }
 
                             val isOpponentTurn = repository.gameState.value.currentPlayerUuid != repository.myUuidState.value
 
