@@ -1,5 +1,7 @@
 package pl.kazoroo.tavernFarkle.multiplayer.presentation
 
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -21,6 +23,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -31,6 +34,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.dropShadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.shadow.Shadow
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -39,6 +43,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import kotlinx.coroutines.flow.collectLatest
 import pl.kazoroo.tavernFarkle.R
 import pl.kazoroo.tavernFarkle.core.presentation.CoinsViewModel
 import pl.kazoroo.tavernFarkle.core.presentation.components.BackgroundImage
@@ -59,6 +64,13 @@ fun LobbyScreen(
 ) {
     var isBettingDialogVisible by remember { mutableStateOf(false) }
     val lobbyList = lobbyViewModel.lobbyList.collectAsState().value
+    val context = LocalContext.current
+
+    LaunchedEffect(lobbyViewModel.toastMessage) {
+        lobbyViewModel.toastMessage.collectLatest { message ->
+            Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+        }
+    }
 
     Box(modifier = Modifier.fillMaxSize()) {
         BackgroundImage()
@@ -93,7 +105,7 @@ fun LobbyScreen(
                         .fillMaxWidth(),
                     contentAlignment = Alignment.Center
                 ) {
-                    LobbyList(lobbyList, lobbyViewModel, inventoryViewModel, navController, coinsViewModel)
+                    LobbyList(lobbyList, lobbyViewModel, inventoryViewModel, navController, coinsViewModel, context)
                 }
 
                 Button(
@@ -137,7 +149,7 @@ fun LobbyScreen(
                         onNavigate = { navController.navigate(Screen.GameScreen.withArgs(true)) },
                         setBetValue = { bet ->
                             coinsViewModel.setBetValue(bet)
-                        }
+                        },
                     )
                 },
                 coinsAmount = coinsAmount.toInt()
@@ -152,7 +164,8 @@ private fun BoxScope.LobbyList(
     lobbyViewModel: LobbyViewModel,
     inventoryViewModel: InventoryViewModel,
     navController: NavHostController,
-    coinsViewModel: CoinsViewModel
+    coinsViewModel: CoinsViewModel,
+    context: Context
 ) {
     if (lobbyList.isEmpty()) {
         Column(
@@ -188,7 +201,9 @@ private fun BoxScope.LobbyList(
                             bet = lobbyList[index].betAmount,
                             setBetValue = { bet ->
                                 coinsViewModel.setBetValue(bet)
-                            }
+                            },
+                            context = context,
+                            coinsAmount = coinsViewModel.coinsAmount.value.toInt()
                         )
                     }
                 )
