@@ -1,27 +1,33 @@
 package pl.kazoroo.tavernFarkle.core.domain.usecase.game
 
+import com.google.firebase.auth.FirebaseAuth
 import pl.kazoroo.tavernFarkle.core.domain.model.Dice
 import pl.kazoroo.tavernFarkle.core.domain.model.GameState
 import pl.kazoroo.tavernFarkle.core.domain.model.Player
 import pl.kazoroo.tavernFarkle.core.domain.repository.GameRepository
 import pl.kazoroo.tavernFarkle.shop.domain.model.SpecialDiceName
 import java.util.UUID
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
+import kotlin.coroutines.suspendCoroutine
 
 class StartNewGameUseCase(
     private val gameRepository: GameRepository,
     private val drawDiceUseCase: DrawDiceUseCase
 ) {
-    operator fun invoke(
+    suspend operator fun invoke(
         betAmount: Int,
         userDiceNames: List<SpecialDiceName>,
         isMultiplayer: Boolean
     ) {
-        val currentPlayerId = UUID.randomUUID()
         val paddedUserDiceNames = userDiceNames.padWithNullsToSix()
         val userDiceSet = createDiceSet(paddedUserDiceNames, gameRepository, drawDiceUseCase)
 
         val players = if(isMultiplayer) {
-            listOf(Player(currentPlayerId, diceSet = userDiceSet))
+            listOf(Player(
+                uuid = signInAnonymouslyOrGetExistingUid(),
+                diceSet = userDiceSet
+            ))
         } else {
             val opponentDiceNames: List<SpecialDiceName?> = List(
                 (userDiceNames.size..userDiceNames.size + 1).random()
@@ -30,8 +36,8 @@ class StartNewGameUseCase(
             }.padWithNullsToSix()
 
             listOf(
-                Player(currentPlayerId, diceSet = userDiceSet),
-                Player(UUID.randomUUID(), diceSet = createDiceSet(opponentDiceNames, gameRepository, drawDiceUseCase))
+                Player(uuid = UUID.randomUUID().toString(), diceSet = userDiceSet),
+                Player(uuid = UUID.randomUUID().toString(), diceSet = createDiceSet(opponentDiceNames, gameRepository, drawDiceUseCase))
             )
         }
 
@@ -40,15 +46,33 @@ class StartNewGameUseCase(
             betAmount = betAmount,
             gameUuid = UUID.randomUUID(),
             isSkucha = currentSkuchaStatus,
-            currentPlayerUuid = currentPlayerId,
+            currentPlayerUuid = players.first().uuid,
             players = players,
             isGameEnd = false,
         )
 
         gameRepository.saveGameState(gameState)
-        gameRepository.setMyUuid(currentPlayerId)
+        gameRepository.setMyUuid(players.first().uuid)
     }
 }
+
+suspend fun signInAnonymouslyOrGetExistingUid(): String = suspendCoroutine { cont ->
+    val auth = FirebaseAuth.getInstance()
+
+    auth.currentUser?.uid?.let {
+        cont.resume(it)
+        return@suspendCoroutine
+    }
+
+    auth.signInAnonymously()
+        .addOnSuccessListener { result ->
+            cont.resume(result.user?.uid ?: error("No UID"))
+        }
+        .addOnFailureListener { exception ->
+            cont.resumeWithException(exception)
+        }
+}
+
 
 fun createDiceSet(specialDiceNames: List<SpecialDiceName?>, gameRepository: GameRepository, drawDiceUseCase: DrawDiceUseCase) =
     drawDiceUseCase(

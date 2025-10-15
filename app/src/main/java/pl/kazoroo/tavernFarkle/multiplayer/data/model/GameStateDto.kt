@@ -15,7 +15,7 @@ data class GameStateDto(
         gameUuid = UUID.fromString(gameUuid),
         betAmount = betAmount,
         isSkucha = skucha,
-        currentPlayerUuid = UUID.fromString(currentPlayerUuid),
+        currentPlayerUuid = currentPlayerUuid,
         isGameEnd = gameEnd,
         players = players.map { it.toDomain() }
     )

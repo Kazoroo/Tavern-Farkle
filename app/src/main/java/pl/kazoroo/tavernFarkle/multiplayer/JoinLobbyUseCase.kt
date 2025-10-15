@@ -4,10 +4,10 @@ import pl.kazoroo.tavernFarkle.core.domain.model.Player
 import pl.kazoroo.tavernFarkle.core.domain.usecase.game.DrawDiceUseCase
 import pl.kazoroo.tavernFarkle.core.domain.usecase.game.createDiceSet
 import pl.kazoroo.tavernFarkle.core.domain.usecase.game.padWithNullsToSix
+import pl.kazoroo.tavernFarkle.core.domain.usecase.game.signInAnonymouslyOrGetExistingUid
 import pl.kazoroo.tavernFarkle.multiplayer.data.remote.FirebaseDataSource
 import pl.kazoroo.tavernFarkle.multiplayer.data.repository.RemoteGameRepository
 import pl.kazoroo.tavernFarkle.shop.domain.model.SpecialDiceName
-import java.util.UUID
 
 class JoinLobbyUseCase(
     private val gameRepository: RemoteGameRepository,
@@ -18,7 +18,7 @@ class JoinLobbyUseCase(
         userDiceNames: List<SpecialDiceName>,
         gameUuid: String
     ) {
-        val currentPlayerId = UUID.randomUUID()
+        val currentPlayerId = signInAnonymouslyOrGetExistingUid()
         val paddedUserDiceNames = userDiceNames.padWithNullsToSix()
         val userDiceSet = createDiceSet(paddedUserDiceNames, gameRepository, drawDiceUseCase)
         val player = Player(currentPlayerId, diceSet = userDiceSet)

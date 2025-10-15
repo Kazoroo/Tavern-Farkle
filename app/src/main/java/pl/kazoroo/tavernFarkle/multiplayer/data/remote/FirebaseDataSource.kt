@@ -30,7 +30,7 @@ class FirebaseDataSource {
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Log.e("Firebase", "Error occurred during fetching lobby list: $error")
+                Log.e("Firebase", "Error occurred when trying to fetch game data: $error")
                 FirebaseCrashlytics.getInstance().recordException(error.toException())
             }
         })

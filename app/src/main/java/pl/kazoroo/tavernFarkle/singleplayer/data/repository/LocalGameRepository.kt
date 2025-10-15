@@ -21,14 +21,14 @@ class LocalGameRepository(
             betAmount = 0,
             gameUuid = UUID.randomUUID(),
             isSkucha = false,
-            currentPlayerUuid = UUID.randomUUID(),
+            currentPlayerUuid = "",
             players = emptyList(),
         )
     )
     override val gameState: StateFlow<GameState> = _gameState.asStateFlow()
 
-    private val _myUuidState = MutableStateFlow(UUID.randomUUID())
-    override val myUuidState: StateFlow<UUID> = _myUuidState.asStateFlow()
+    private val _myUuidState = MutableStateFlow("")
+    override val myUuidState: StateFlow<String> = _myUuidState.asStateFlow()
 
     override fun getMyPlayerIndex(): Int = 0
 
@@ -36,7 +36,7 @@ class LocalGameRepository(
 
     override fun removeLobbyNode() {}
 
-    override fun setMyUuid(uuid: UUID) {
+    override fun setMyUuid(uuid: String) {
         _myUuidState.value = uuid
     }
 

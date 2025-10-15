@@ -1,10 +1,9 @@
 package pl.kazoroo.tavernFarkle.core.domain.model
 
 import pl.kazoroo.tavernFarkle.multiplayer.data.model.PlayerDto
-import java.util.UUID
 
 data class Player(
-    val uuid: UUID,
+    val uuid: String,
     val totalPoints: Int = 0,
     val roundPoints: Int = 0,
     val selectedPoints: Int = 0,
@@ -15,7 +14,7 @@ data class Player(
     }
 
     fun toDto() = PlayerDto(
-        uuid = uuid.toString(),
+        uuid = uuid,
         totalPoints = totalPoints,
         roundPoints = roundPoints,
         selectedPoints = selectedPoints,
