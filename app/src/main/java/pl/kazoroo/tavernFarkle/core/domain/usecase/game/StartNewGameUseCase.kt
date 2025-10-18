@@ -45,6 +45,7 @@ class StartNewGameUseCase(
         val gameState = GameState(
             betAmount = betAmount,
             gameUuid = UUID.randomUUID(),
+            isAnimating = false,
             isSkucha = currentSkuchaStatus,
             currentPlayerUuid = players.first().uuid,
             players = players,

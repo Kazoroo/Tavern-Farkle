@@ -42,7 +42,7 @@ class GameViewModel(
             state.currentPlayerUuid != repository.myUuidState.value
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(1000L, 0), false)
 
-    private val _isDiceAnimating = MutableStateFlow(false)
+    private val _isDiceAnimating = MutableStateFlow(true)
     val isDiceAnimating: StateFlow<Boolean> = _isDiceAnimating
 
     private val _showGameEndDialog = MutableStateFlow(false)
@@ -58,6 +58,7 @@ class GameViewModel(
 
     init {
         observeSkucha()
+        observeDiceAnimation()
     }
 
     fun onGameEnd(navController: NavHostController) {
@@ -96,7 +97,8 @@ class GameViewModel(
         if(checkGameEndUseCase(repository = repository, sumCoins = addBetCoinsToTotalCoins)) return
 
         scope.launch {
-            triggerDiceRowAnimation()
+            repository.toggleDiceRowAnimation()
+            delay(600L)
             repository.resetDiceState()
             repository.changeCurrentPlayer()
             drawDiceUseCase(
@@ -107,9 +109,7 @@ class GameViewModel(
             val isOpponentTurn = repository.gameState.value.currentPlayerUuid != repository.myUuidState.value
 
             if(isOpponentTurn && !isMultiplayer) {
-                playOpponentTurnUseCase(
-                    triggerDiceRowAnimation = { triggerDiceRowAnimation() }
-                )
+                playOpponentTurnUseCase()
             }
         }
     }
@@ -119,8 +119,8 @@ class GameViewModel(
 
         scope.launch {
             repository.hideSelectedDice()
-            delay(200L)
-            triggerDiceRowAnimation()
+            repository.toggleDiceRowAnimation()
+            delay(600L)
 
             if(repository.gameState.value.players[gameState.value.getCurrentPlayerIndex()].diceSet.all { !it.isVisible }) {
                 repository.resetDiceState()
@@ -153,7 +153,8 @@ class GameViewModel(
                                 repository.resetRoundAndSelectedPoints()
                             }
 
-                            triggerDiceRowAnimation()
+                            repository.toggleDiceRowAnimation()
+                            delay(600L)
 
                             if(isHost) {
                                 repository.resetDiceState()
@@ -168,9 +169,7 @@ class GameViewModel(
                             val isOpponentTurn = repository.gameState.value.currentPlayerUuid != repository.myUuidState.value
 
                             if(isOpponentTurn && !isMultiplayer) {
-                                playOpponentTurnUseCase(
-                                    triggerDiceRowAnimation = { triggerDiceRowAnimation() }
-                                )
+                                playOpponentTurnUseCase()
                             }
                         }
                     }
@@ -178,12 +177,19 @@ class GameViewModel(
         }
     }
 
-    private suspend fun triggerDiceRowAnimation() {
-        delay(200L)
-        _isDiceAnimating.value = true
-        delay(500L)
-        SoundPlayer.playSound(SoundType.DICE_ROLLING)
-        delay(500L)
-        _isDiceAnimating.value = false
+    private fun observeDiceAnimation() {
+        scope.launch {
+            repository.gameState
+                .map { it.isAnimating }
+                .distinctUntilChanged()
+                .collect {
+                    delay(200L)
+                    _isDiceAnimating.value = true
+                    delay(500L)
+                    SoundPlayer.playSound(SoundType.DICE_ROLLING)
+                    delay(500L)
+                    _isDiceAnimating.value = false
+                }
+        }
     }
 }

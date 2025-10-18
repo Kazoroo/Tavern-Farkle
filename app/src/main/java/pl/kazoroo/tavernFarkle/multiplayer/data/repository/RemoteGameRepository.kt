@@ -190,4 +190,9 @@ class RemoteGameRepository(
             gameUuid = gameState.value.gameUuid.toString()
         )
     }
+
+    override fun toggleDiceRowAnimation() {
+        _gameState.update { updater.toggleDiceRowAnimation(it) }
+        firebaseDataSource.updateIsAnimating(gameState.value.gameUuid.toString(), gameState.value.isAnimating)
+    }
 }

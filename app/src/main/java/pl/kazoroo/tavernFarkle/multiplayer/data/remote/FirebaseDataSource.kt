@@ -111,4 +111,10 @@ class FirebaseDataSource {
 
         ref.removeValue()
     }
+
+    fun updateIsAnimating(gameUuid: String, value: Boolean) {
+        val ref = database.getReference("$gameUuid/animating")
+
+        ref.setValue(value)
+    }
 }

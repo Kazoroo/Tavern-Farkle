@@ -24,4 +24,5 @@ interface GameRepository {
     fun getMyPlayerIndex(): Int
     fun getOpponentPlayerIndex(): Flow<Int?>
     fun removeLobbyNode()
+    fun toggleDiceRowAnimation()
 }

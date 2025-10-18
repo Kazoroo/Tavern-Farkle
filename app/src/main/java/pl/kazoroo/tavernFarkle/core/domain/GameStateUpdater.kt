@@ -149,4 +149,11 @@ class GameStateUpdater {
     fun setGameEnd(state: GameState, gameEnd: Boolean): GameState {
         return state.copy(isGameEnd = gameEnd)
     }
+
+    /**
+     * Toggles the dice row animation state.
+     */
+    fun toggleDiceRowAnimation(gameState: GameState): GameState {
+        return gameState.copy(isAnimating = !gameState.isAnimating)
+    }
 }

@@ -8,6 +8,7 @@ data class GameStateDto(
     val betAmount: Int = 0,
     val skucha: Boolean = false,
     val currentPlayerUuid: String = "",
+    val animating: Boolean = false,
     val gameEnd: Boolean = false,
     val players: List<PlayerDto> = emptyList()
 ) {
@@ -15,6 +16,7 @@ data class GameStateDto(
         gameUuid = UUID.fromString(gameUuid),
         betAmount = betAmount,
         isSkucha = skucha,
+        isAnimating = animating,
         currentPlayerUuid = currentPlayerUuid,
         isGameEnd = gameEnd,
         players = players.map { it.toDomain() }

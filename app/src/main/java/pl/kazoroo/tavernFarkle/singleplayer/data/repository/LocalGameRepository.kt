@@ -87,4 +87,8 @@ class LocalGameRepository(
     override fun setGameEnd(gameEnd: Boolean) {
         _gameState.update { updater.setGameEnd(it, gameEnd) }
     }
+
+    override fun toggleDiceRowAnimation() {
+        _gameState.update { updater.toggleDiceRowAnimation(it) }
+    }
 }
