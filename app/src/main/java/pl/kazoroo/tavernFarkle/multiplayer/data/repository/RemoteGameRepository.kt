@@ -65,8 +65,8 @@ class RemoteGameRepository(
         _gameState.value = updater.saveGameState(gameState)
     }
 
-    fun saveGameDataToDatabase(gameState: GameState) {
-        firebaseDataSource.setGameState(gameState)
+    fun saveGameDataToDatabase() {
+        firebaseDataSource.setGameState(gameState.value)
     }
 
     override fun toggleDiceSelection(index: Int) {
@@ -175,9 +175,9 @@ class RemoteGameRepository(
         }
     }
 
-    fun observeGameData(gameState: GameState) {
+    fun observeGameData() {
         firebaseDataSource.observeGameData(
-            gameUuid = gameState.gameUuid.toString(),
+            gameUuid = gameState.value.gameUuid.toString(),
             onUpdate = { gameStateDto ->
                 val newState = gameStateDto?.toDomain() ?: return@observeGameData
                 _gameState.value = newState

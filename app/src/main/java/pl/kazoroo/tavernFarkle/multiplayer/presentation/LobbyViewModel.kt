@@ -51,8 +51,8 @@ class LobbyViewModel(
                     isMultiplayer = true
                 )
 
-            remoteGameRepository.saveGameDataToDatabase(gameState = remoteGameRepository.gameState.value)
-            remoteGameRepository.observeGameData(gameState = remoteGameRepository.gameState.value)
+            remoteGameRepository.saveGameDataToDatabase()
+            remoteGameRepository.observeGameData()
         }
     }
 
@@ -73,7 +73,8 @@ class LobbyViewModel(
                 gameUuid
             )
 
-            remoteGameRepository.observeGameData(gameState = remoteGameRepository.gameState.value)
+            println("joinLobby state = ${remoteGameRepository.gameState.value}")
+            remoteGameRepository.observeGameData()
         }
 
         SoundPlayer.playSound(SoundType.CLICK)

@@ -176,12 +176,14 @@ fun GameScreen(
 
         if(isGameResultDialogVisible && isOpponentTurn) {
             GameResultAndSkuchaDialog(
-                text = "Defeat", textColor = DarkRed,
+                text = "Defeat",
+                textColor = DarkRed,
                 extraText = "Next time will be better!"
             )
         } else if(isGameResultDialogVisible) {
             GameResultAndSkuchaDialog(
-                text = "Win!", textColor = Color.Green,
+                text = "Win!",
+                textColor = Color.Green,
                 extraText = "You are the champion!"
             )
         }
