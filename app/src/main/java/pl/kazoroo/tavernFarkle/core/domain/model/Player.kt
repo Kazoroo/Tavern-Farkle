@@ -1,12 +1,14 @@
 package pl.kazoroo.tavernFarkle.core.domain.model
 
 import pl.kazoroo.tavernFarkle.multiplayer.data.model.PlayerDto
+import pl.kazoroo.tavernFarkle.multiplayer.data.remote.PlayerStatus
 
 data class Player(
     val uuid: String,
     val totalPoints: Int = 0,
     val roundPoints: Int = 0,
     val selectedPoints: Int = 0,
+    val status: PlayerStatus = PlayerStatus.IN_GAME,
     val diceSet: List<Dice>
 ) {
     init {
@@ -18,6 +20,7 @@ data class Player(
         totalPoints = totalPoints,
         roundPoints = roundPoints,
         selectedPoints = selectedPoints,
+        status = status.name,
         diceSet = diceSet.map { it.toDto() }
     )
 }

@@ -44,6 +44,7 @@ class LobbyViewModel(
         setBetValue(bet.toString())
 
         viewModelScope.launch {
+            remoteGameRepository.removeListeners()
             startNewGameUseCaseFactory.create(isMultiplayer = true)
                 .invoke(
                     bet,
@@ -68,6 +69,7 @@ class LobbyViewModel(
         if(!canAffordBet(bet, coinsAmount, context)) return
 
         viewModelScope.launch {
+            remoteGameRepository.removeListeners()
             joinLobbyUseCase.invoke(
                 selectedSpecialDiceNames,
                 gameUuid

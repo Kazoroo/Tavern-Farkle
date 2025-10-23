@@ -10,6 +10,7 @@ import pl.kazoroo.tavernFarkle.core.domain.GameStateUpdater
 import pl.kazoroo.tavernFarkle.core.domain.model.Dice
 import pl.kazoroo.tavernFarkle.core.domain.model.GameState
 import pl.kazoroo.tavernFarkle.core.domain.repository.GameRepository
+import pl.kazoroo.tavernFarkle.multiplayer.data.remote.PlayerStatus
 import java.util.UUID
 
 class LocalGameRepository(
@@ -35,6 +36,8 @@ class LocalGameRepository(
     override fun getOpponentPlayerIndex(): Flow<Int?> = flowOf(1)
 
     override fun removeLobbyNode() {}
+
+    override fun updatePlayerStatus(status: PlayerStatus) {}
 
     override fun setMyUuid(uuid: String) {
         _myUuidState.value = uuid

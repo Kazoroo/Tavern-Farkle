@@ -4,6 +4,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 import pl.kazoroo.tavernFarkle.core.domain.model.Dice
 import pl.kazoroo.tavernFarkle.core.domain.model.GameState
+import pl.kazoroo.tavernFarkle.multiplayer.data.remote.PlayerStatus
 
 interface GameRepository {
     val gameState: StateFlow<GameState>
@@ -25,4 +26,5 @@ interface GameRepository {
     fun getOpponentPlayerIndex(): Flow<Int?>
     fun removeLobbyNode()
     fun toggleDiceRowAnimation()
+    fun updatePlayerStatus(status: PlayerStatus)
 }

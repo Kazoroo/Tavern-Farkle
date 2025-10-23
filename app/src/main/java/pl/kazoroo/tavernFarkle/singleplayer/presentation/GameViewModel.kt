@@ -1,5 +1,8 @@
 package pl.kazoroo.tavernFarkle.singleplayer.presentation
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
@@ -12,6 +15,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -23,6 +27,7 @@ import pl.kazoroo.tavernFarkle.core.domain.usecase.game.DrawDiceUseCase
 import pl.kazoroo.tavernFarkle.core.presentation.navigation.Screen
 import pl.kazoroo.tavernFarkle.menu.sound.SoundPlayer
 import pl.kazoroo.tavernFarkle.menu.sound.SoundType
+import pl.kazoroo.tavernFarkle.multiplayer.data.remote.PlayerStatus
 import pl.kazoroo.tavernFarkle.singleplayer.domain.usecase.PlayOpponentTurnUseCase
 
 class GameViewModel(
@@ -55,6 +60,9 @@ class GameViewModel(
     val opponentPlayerIndex: StateFlow<Int?> =
         repository.getOpponentPlayerIndex()
             .stateIn(viewModelScope, SharingStarted.WhileSubscribed(1000L), null)
+
+    var playerQuit by mutableStateOf(false)
+        private set
 
     init {
         observeSkucha()
@@ -192,4 +200,38 @@ class GameViewModel(
                 }
         }
     }
+
+    fun onQuit() {
+        repository.updatePlayerStatus(PlayerStatus.LEFT)
+    }
+
+    fun observePlayerStatus(navController: NavHostController) {
+        scope.launch {
+            opponentPlayerIndex
+                .filterNotNull()
+                .distinctUntilChanged()
+                .collect { opponentPlayerIndex ->
+                    repository.gameState
+                        .map { it.players[opponentPlayerIndex].status }
+                        .distinctUntilChanged()
+                        .collect {
+                            when (it) {
+                                PlayerStatus.LEFT -> {
+                                    if(repository.gameState.value.players[opponentPlayerIndex].status == PlayerStatus.LEFT) {
+                                        playerQuit = true
+                                        delay(2500L)
+                                        repository.removeLobbyNode()
+                                        navController.navigate(Screen.MainScreen.withArgs()) {
+                                            popUpTo(Screen.GameScreen.withArgs()) { inclusive = true }
+                                        }
+                                    }
+                                }
+
+                                else -> {}
+                            }
+                        }
+                }
+        }
+    }
 }
+

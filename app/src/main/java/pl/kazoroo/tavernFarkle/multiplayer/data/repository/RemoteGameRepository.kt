@@ -12,6 +12,7 @@ import pl.kazoroo.tavernFarkle.core.domain.model.GameState
 import pl.kazoroo.tavernFarkle.core.domain.repository.GameRepository
 import pl.kazoroo.tavernFarkle.multiplayer.data.model.Lobby
 import pl.kazoroo.tavernFarkle.multiplayer.data.remote.FirebaseDataSource
+import pl.kazoroo.tavernFarkle.multiplayer.data.remote.PlayerStatus
 import java.util.UUID
 
 class RemoteGameRepository(
@@ -189,6 +190,18 @@ class RemoteGameRepository(
         firebaseDataSource.removeLobbyNode(
             gameUuid = gameState.value.gameUuid.toString()
         )
+    }
+
+    override fun updatePlayerStatus(status: PlayerStatus) {
+        firebaseDataSource.updatePlayerStatus(
+            gameUuid = gameState.value.gameUuid.toString(),
+            value = status,
+            playerIndex = getMyPlayerIndex()
+        )
+    }
+
+    fun removeListeners() {
+        firebaseDataSource.removeGameListener(gameState.value.gameUuid.toString())
     }
 
     override fun toggleDiceRowAnimation() {

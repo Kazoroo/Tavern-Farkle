@@ -16,6 +16,7 @@ import pl.kazoroo.tavernFarkle.multiplayer.data.model.PlayerDto
 
 class FirebaseDataSource {
     val database = Firebase.database
+    private val activeListeners = mutableMapOf<String, ValueEventListener>()
 
     fun observeGameData(
         gameUuid: String,
@@ -23,17 +24,34 @@ class FirebaseDataSource {
     ) {
         val playersRef = database.getReference(gameUuid)
 
-        playersRef.addValueEventListener(object : ValueEventListener {
+        val listener = object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
+                if (!snapshot.exists()) {
+                    removeGameListener(gameUuid)
+                    return
+                }
+
                 val newGameState = snapshot.getValue<GameStateDto>()
                 onUpdate(newGameState)
             }
 
             override fun onCancelled(error: DatabaseError) {
                 Log.e("Firebase", "Error occurred when trying to fetch game data: $error")
-                FirebaseCrashlytics.getInstance().recordException(error.toException())
             }
-        })
+        }
+
+        removeGameListener(gameUuid)
+
+        playersRef.addValueEventListener(listener)
+        activeListeners[gameUuid] = listener
+    }
+
+    fun removeGameListener(gameUuid: String) {
+        val ref = database.getReference(gameUuid)
+        activeListeners[gameUuid]?.let {
+            ref.removeEventListener(it)
+            activeListeners.remove(gameUuid)
+        }
     }
 
     fun setGameState(gameState: GameState) {
@@ -114,6 +132,12 @@ class FirebaseDataSource {
 
     fun updateIsAnimating(gameUuid: String, value: Boolean) {
         val ref = database.getReference("$gameUuid/animating")
+
+        ref.setValue(value)
+    }
+
+    fun updatePlayerStatus(gameUuid: String, playerIndex: Int, value: PlayerStatus) {
+        val ref = database.getReference("$gameUuid/players/$playerIndex/status")
 
         ref.setValue(value)
     }

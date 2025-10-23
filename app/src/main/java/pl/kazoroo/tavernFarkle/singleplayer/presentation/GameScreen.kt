@@ -93,6 +93,7 @@ fun GameScreen(
 
     LaunchedEffect(true) {
         viewModel.onGameEnd(navController)
+        viewModel.observePlayerStatus(navController)
     }
 
     if(showExitDialog.value) {
@@ -100,6 +101,7 @@ fun GameScreen(
             onDismissClick = { showExitDialog.value = false },
             onQuitClick = {
                 showExitDialog.value = false
+                viewModel.onQuit()
                 navController.navigateUp()
             }
         )
@@ -185,6 +187,14 @@ fun GameScreen(
                 text = "Win!",
                 textColor = Color.Green,
                 extraText = "You are the champion!"
+            )
+        }
+
+        if(viewModel.playerQuit) {
+            GameResultAndSkuchaDialog(
+                text = "Win by giving up",
+                textColor = Color.Green,
+                extraText = "Your opponent leave the game",
             )
         }
     }
