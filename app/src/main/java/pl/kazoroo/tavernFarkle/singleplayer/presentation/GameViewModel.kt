@@ -205,7 +205,7 @@ class GameViewModel(
         repository.updatePlayerStatus(PlayerStatus.LEFT)
     }
 
-    fun observePlayerStatus(navController: NavHostController) {
+    fun observePlayerStatus(navController: NavHostController, addCoinsReward: () -> Unit) {
         scope.launch {
             opponentPlayerIndex
                 .filterNotNull()
@@ -221,6 +221,8 @@ class GameViewModel(
                                         playerQuit = true
                                         delay(2500L)
                                         repository.removeLobbyNode()
+
+                                        addCoinsReward()
                                         navController.navigate(Screen.MainScreen.withArgs()) {
                                             popUpTo(Screen.GameScreen.withArgs()) { inclusive = true }
                                         }

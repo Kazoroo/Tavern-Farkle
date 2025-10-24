@@ -93,7 +93,9 @@ fun GameScreen(
 
     LaunchedEffect(true) {
         viewModel.onGameEnd(navController)
-        viewModel.observePlayerStatus(navController)
+        viewModel.observePlayerStatus(navController) {
+            coinsViewModel.addBetCoinsToTotalCoinsAmount()
+        }
     }
 
     if(showExitDialog.value) {
