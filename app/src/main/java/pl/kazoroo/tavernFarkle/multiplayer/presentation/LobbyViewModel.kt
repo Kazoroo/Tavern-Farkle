@@ -39,12 +39,12 @@ class LobbyViewModel(
         onNavigate: () -> Unit,
         setBetValue: (bet: String) -> Unit
     ) {
-        SoundPlayer.playSound(SoundType.CLICK)
-        onNavigate()
         setBetValue(bet.toString())
 
         viewModelScope.launch {
             remoteGameRepository.removeListeners()
+            remoteGameRepository.clearState()
+
             startNewGameUseCaseFactory.create(isMultiplayer = true)
                 .invoke(
                     bet,
@@ -54,6 +54,8 @@ class LobbyViewModel(
 
             remoteGameRepository.saveGameDataToDatabase()
             remoteGameRepository.observeGameData()
+            onNavigate()
+            SoundPlayer.playSound(SoundType.CLICK)
         }
     }
 
@@ -75,12 +77,12 @@ class LobbyViewModel(
                 gameUuid
             )
 
-            println("joinLobby state = ${remoteGameRepository.gameState.value}")
             remoteGameRepository.observeGameData()
+
+            SoundPlayer.playSound(SoundType.CLICK)
+            onNavigate()
         }
 
-        SoundPlayer.playSound(SoundType.CLICK)
-        onNavigate()
         setBetValue(bet.toString())
     }
 

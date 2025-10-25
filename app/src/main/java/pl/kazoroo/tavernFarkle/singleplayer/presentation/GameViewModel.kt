@@ -142,7 +142,7 @@ class GameViewModel(
     }
 
     private fun observeSkucha() {
-        scope.launch {
+        viewModelScope.launch {
             repository.gameState
                 .map { it.isSkucha }
                 .distinctUntilChanged()
@@ -186,7 +186,7 @@ class GameViewModel(
     }
 
     private fun observeDiceAnimation() {
-        scope.launch {
+        viewModelScope.launch {
             repository.gameState
                 .map { it.isAnimating }
                 .distinctUntilChanged()
@@ -202,17 +202,25 @@ class GameViewModel(
     }
 
     fun onQuit() {
-        repository.updatePlayerStatus(PlayerStatus.LEFT)
+        if(gameState.value.players.size == 1) {
+            repository.removeLobbyNode()
+        } else {
+            repository.updatePlayerStatus(PlayerStatus.LEFT)
+        }
+
     }
 
     fun observePlayerStatus(navController: NavHostController, addCoinsReward: () -> Unit) {
-        scope.launch {
+        viewModelScope.launch {
             opponentPlayerIndex
                 .filterNotNull()
                 .distinctUntilChanged()
                 .collect { opponentPlayerIndex ->
                     repository.gameState
-                        .map { it.players[opponentPlayerIndex].status }
+                        .map { state ->
+                            state.players.getOrNull(opponentPlayerIndex)?.status
+                        }
+                        .filterNotNull()
                         .distinctUntilChanged()
                         .collect {
                             when (it) {

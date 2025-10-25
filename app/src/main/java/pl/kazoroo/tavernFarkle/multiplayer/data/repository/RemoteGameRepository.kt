@@ -208,4 +208,13 @@ class RemoteGameRepository(
         _gameState.update { updater.toggleDiceRowAnimation(it) }
         firebaseDataSource.updateIsAnimating(gameState.value.gameUuid.toString(), gameState.value.isAnimating)
     }
+
+    fun clearState() {
+        _gameState.value = GameState(
+            gameUuid = UUID.randomUUID(),
+            betAmount = 0,
+            currentPlayerUuid = "",
+            players = emptyList()
+        )
+    }
 }
