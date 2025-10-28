@@ -147,7 +147,6 @@ class GameViewModel(
                 .map { it.isSkucha }
                 .distinctUntilChanged()
                 .collect { isSkucha ->
-                    println("Caught new skucha value = $isSkucha")
                     if(isSkucha) {
                         delay(1000L)
                         SoundPlayer.playSound(SoundType.SKUCHA)
