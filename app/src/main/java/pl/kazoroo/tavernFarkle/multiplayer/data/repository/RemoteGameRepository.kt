@@ -160,8 +160,8 @@ class RemoteGameRepository(
         )
     }
 
-    override fun toggleSkucha() {
-        _gameState.update { updater.toggleSkucha(it) }
+    override fun setSkucha(skucha: Boolean) {
+        _gameState.update { updater.toggleSkucha(it, skucha) }
         firebaseDataSource.setGameState(_gameState.value)
     }
 

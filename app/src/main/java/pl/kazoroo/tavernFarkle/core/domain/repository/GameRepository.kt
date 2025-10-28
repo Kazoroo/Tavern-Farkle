@@ -20,7 +20,7 @@ interface GameRepository {
     fun resetDiceState()
     fun changeCurrentPlayer()
     fun resetRoundAndSelectedPoints()
-    fun toggleSkucha()
+    fun setSkucha(skucha: Boolean)
     fun setGameEnd(gameEnd: Boolean)
     fun getMyPlayerIndex(): Int
     fun getOpponentPlayerIndex(): Flow<Int?>

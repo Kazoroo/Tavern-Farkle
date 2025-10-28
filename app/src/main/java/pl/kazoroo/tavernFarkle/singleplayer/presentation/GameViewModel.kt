@@ -147,38 +147,36 @@ class GameViewModel(
                 .map { it.isSkucha }
                 .distinctUntilChanged()
                 .collect { isSkucha ->
+                    println("Caught new skucha value = $isSkucha")
                     if(isSkucha) {
-                        launch {
-                            delay(1000L)
-                            SoundPlayer.playSound(SoundType.SKUCHA)
-                            _showSkuchaDialog.value = true
-                            delay(2000L)
-                            _showSkuchaDialog.value = false
+                        delay(1000L)
+                        SoundPlayer.playSound(SoundType.SKUCHA)
+                        _showSkuchaDialog.value = true
+                        delay(2000L)
+                        _showSkuchaDialog.value = false
 
-                            val isHost = gameState.value.players[0].uuid == repository.myUuidState.value
-                            if(isHost) {
-                                repository.toggleSkucha()
-                                repository.resetRoundAndSelectedPoints()
-                            }
-
+                        val isHost = gameState.value.players[0].uuid == repository.myUuidState.value
+                        if(isHost) {
+                            repository.setSkucha(false)
+                            repository.resetRoundAndSelectedPoints()
                             repository.toggleDiceRowAnimation()
+                        }
+
+                        if(isHost) {
                             delay(600L)
+                            repository.resetDiceState()
+                            repository.changeCurrentPlayer()
 
-                            if(isHost) {
-                                repository.resetDiceState()
-                                repository.changeCurrentPlayer()
+                            drawDiceUseCase(
+                                repository.gameState.value.players[gameState.value.getCurrentPlayerIndex()].diceSet,
+                                repository = repository
+                            )
+                        }
 
-                                drawDiceUseCase(
-                                    repository.gameState.value.players[gameState.value.getCurrentPlayerIndex()].diceSet,
-                                    repository = repository
-                                )
-                            }
+                        val isOpponentTurn = repository.gameState.value.currentPlayerUuid != repository.myUuidState.value
 
-                            val isOpponentTurn = repository.gameState.value.currentPlayerUuid != repository.myUuidState.value
-
-                            if(isOpponentTurn && !isMultiplayer) {
-                                playOpponentTurnUseCase()
-                            }
+                        if(isOpponentTurn && !isMultiplayer) {
+                            playOpponentTurnUseCase()
                         }
                     }
                 }

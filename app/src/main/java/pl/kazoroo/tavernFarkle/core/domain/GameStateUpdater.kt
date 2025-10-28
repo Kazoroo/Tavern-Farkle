@@ -139,8 +139,8 @@ class GameStateUpdater {
     /**
      * Toggles the skucha state of the game.
      */
-    fun toggleSkucha(state: GameState): GameState {
-        return state.copy(isSkucha = !state.isSkucha)
+    fun toggleSkucha(state: GameState, skucha: Boolean): GameState {
+        return state.copy(isSkucha = skucha)
     }
 
     /**

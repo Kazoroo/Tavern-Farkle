@@ -83,8 +83,8 @@ class LocalGameRepository(
         _gameState.update { updater.resetRoundAndSelectedPoints(it) }
     }
 
-    override fun toggleSkucha() {
-        _gameState.update { updater.toggleSkucha(it) }
+    override fun setSkucha(skucha: Boolean) {
+        _gameState.update { updater.toggleSkucha(it, skucha) }
     }
 
     override fun setGameEnd(gameEnd: Boolean) {

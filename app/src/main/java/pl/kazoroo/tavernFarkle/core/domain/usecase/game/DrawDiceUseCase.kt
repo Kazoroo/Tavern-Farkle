@@ -47,7 +47,7 @@ open class DrawDiceUseCase(
             shuffledDiceSet,
             repository = repository
         )
-        if(skucha) repository.toggleSkucha()
+        if(skucha) repository.setSkucha(true)
 
         return shuffledDiceSet
     }
