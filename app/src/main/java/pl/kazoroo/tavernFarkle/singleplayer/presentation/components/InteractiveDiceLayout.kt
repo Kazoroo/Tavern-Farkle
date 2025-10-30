@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -58,6 +59,14 @@ fun InteractiveDiceLayout(
     ) {
         val screenWidth = LocalConfiguration.current.screenWidthDp
         val imageSize = (screenWidth.dp / 3) - 10.dp
+
+        if(activePlayer != 2) {
+            Text(
+                text = "Waiting for player to join...",
+                modifier = Modifier.padding(top = 60.dp),
+                color = Color.White
+            )
+        }
 
         for (row in 0..1) {
             AnimatedVisibility(
