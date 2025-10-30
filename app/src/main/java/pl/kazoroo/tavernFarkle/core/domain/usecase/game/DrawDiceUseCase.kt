@@ -28,7 +28,8 @@ open class DrawDiceUseCase(
      */
     open operator fun invoke(
         diceSet: List<Dice>,
-        repository: GameRepository
+        repository: GameRepository,
+        checkForSkucha: Boolean = true
     ): List<Dice> {
         val newDiceSet = diceSet.map { dice ->
             val specialDice = dice.specialDiceName
@@ -47,7 +48,9 @@ open class DrawDiceUseCase(
             shuffledDiceSet,
             repository = repository
         )
-        if(skucha) repository.setSkucha(true)
+        if(checkForSkucha) {
+            if(skucha) repository.setSkucha(true)
+        }
 
         return shuffledDiceSet
     }

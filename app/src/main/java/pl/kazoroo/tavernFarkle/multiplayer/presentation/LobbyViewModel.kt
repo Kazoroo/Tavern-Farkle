@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import pl.kazoroo.tavernFarkle.R
+import pl.kazoroo.tavernFarkle.core.domain.usecase.game.CheckForSkuchaUseCase
 import pl.kazoroo.tavernFarkle.core.domain.usecase.game.StartNewGameUseCaseFactory
 import pl.kazoroo.tavernFarkle.menu.sound.SoundPlayer
 import pl.kazoroo.tavernFarkle.menu.sound.SoundType
@@ -21,7 +22,8 @@ import pl.kazoroo.tavernFarkle.shop.domain.model.SpecialDiceName
 class LobbyViewModel(
     private val remoteGameRepository: RemoteGameRepository,
     private val startNewGameUseCaseFactory: StartNewGameUseCaseFactory,
-    private val joinLobbyUseCase: JoinLobbyUseCase
+    private val joinLobbyUseCase: JoinLobbyUseCase,
+    private val checkForSkuchaUseCase: CheckForSkuchaUseCase
 ): ViewModel() {
     val lobbyList: StateFlow<List<Lobby>> = remoteGameRepository.lobbyList
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(1000L, 0), emptyList())
@@ -81,6 +83,13 @@ class LobbyViewModel(
 
             SoundPlayer.playSound(SoundType.CLICK)
             onNavigate()
+
+            val skucha = checkForSkuchaUseCase.invoke(
+                diceList = remoteGameRepository.gameState.value.players[0].diceSet,
+                repository = remoteGameRepository
+            )
+
+            if(skucha) remoteGameRepository.setSkucha(true)
         }
 
         setBetValue(bet.toString())

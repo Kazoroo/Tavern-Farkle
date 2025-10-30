@@ -144,7 +144,8 @@ fun GameScreen(
                     }
                 },
                 isDiceClickable = !isOpponentTurn && !state.isGameEnd,
-                isDiceAnimating = viewModel.isDiceAnimating.collectAsState().value
+                isDiceAnimating = viewModel.isDiceAnimating.collectAsState().value,
+                activePlayer = state.players.count()
             )
             Spacer(modifier = Modifier.weight(1f))
 

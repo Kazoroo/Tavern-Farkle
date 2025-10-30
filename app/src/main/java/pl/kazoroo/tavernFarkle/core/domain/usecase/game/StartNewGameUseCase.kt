@@ -21,7 +21,7 @@ class StartNewGameUseCase(
         isMultiplayer: Boolean
     ) {
         val paddedUserDiceNames = userDiceNames.padWithNullsToSix()
-        val userDiceSet = createDiceSet(paddedUserDiceNames, gameRepository, drawDiceUseCase)
+        val userDiceSet = createDiceSet(paddedUserDiceNames, gameRepository, drawDiceUseCase, !isMultiplayer)
 
         val players = if(isMultiplayer) {
             listOf(Player(
@@ -75,12 +75,13 @@ suspend fun signInAnonymouslyOrGetExistingUid(): String = suspendCoroutine { con
 }
 
 
-fun createDiceSet(specialDiceNames: List<SpecialDiceName?>, gameRepository: GameRepository, drawDiceUseCase: DrawDiceUseCase) =
+fun createDiceSet(specialDiceNames: List<SpecialDiceName?>, gameRepository: GameRepository, drawDiceUseCase: DrawDiceUseCase, checkForSkucha: Boolean = true) =
     drawDiceUseCase(
         List(6) { index ->
             Dice(value = 0, image = 0, specialDiceName = specialDiceNames[index])
         },
-        repository = gameRepository
+        repository = gameRepository,
+        checkForSkucha = checkForSkucha
     )
 
 

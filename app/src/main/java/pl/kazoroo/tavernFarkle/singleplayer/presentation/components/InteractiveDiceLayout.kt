@@ -44,6 +44,7 @@ import pl.kazoroo.tavernFarkle.core.domain.model.Dice
 @Composable
 fun InteractiveDiceLayout(
     diceState: List<Dice>,
+    activePlayer: Int,
     diceOnClick: (Int) -> Unit,
     isDiceClickable: Boolean,
     isDiceAnimating: Boolean
@@ -60,7 +61,7 @@ fun InteractiveDiceLayout(
 
         for (row in 0..1) {
             AnimatedVisibility(
-                visible = !isDiceAnimating
+                visible = !isDiceAnimating && activePlayer == 2
             ) {
                 Row(
                     horizontalArrangement = Arrangement.Center

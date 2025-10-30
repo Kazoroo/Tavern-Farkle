@@ -113,7 +113,8 @@ class DependencyContainer(
             LobbyViewModel(
                 remoteGameRepository = remoteGameRepository,
                 joinLobbyUseCase = joinLobbyUseCase,
-                startNewGameUseCaseFactory = startNewGameUseCaseFactory
+                startNewGameUseCaseFactory = startNewGameUseCaseFactory,
+                checkForSkuchaUseCase = checkForSkuchaUseCase
             )
         }
 
