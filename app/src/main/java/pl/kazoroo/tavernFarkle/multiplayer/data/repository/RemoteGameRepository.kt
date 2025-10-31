@@ -94,7 +94,7 @@ class RemoteGameRepository(
     override fun sumRoundPoints() {
         _gameState.update { updater.sumRoundPoints(it) }
 
-        firebaseDataSource.updatePlayers(
+        firebaseDataSource.updatePlayer(
             gameUuid = gameState.value.gameUuid.toString(),
             playerIndex = gameState.value.getCurrentPlayerIndex(),
             value = gameState.value.getCurrentPlayer().toDto()
@@ -104,7 +104,7 @@ class RemoteGameRepository(
     override fun hideSelectedDice() {
         _gameState.update { updater.hideSelectedDice(it) }
 
-        firebaseDataSource.updatePlayers(
+        firebaseDataSource.updatePlayer(
             gameUuid = gameState.value.gameUuid.toString(),
             playerIndex = gameState.value.getCurrentPlayerIndex(),
             value = gameState.value.getCurrentPlayer().toDto()
@@ -114,7 +114,7 @@ class RemoteGameRepository(
     override fun updateDiceSet(newDice: List<Dice>) {
         _gameState.update { updater.updateDiceSet(it, newDice) }
 
-        firebaseDataSource.updatePlayers(
+        firebaseDataSource.updatePlayer(
             gameUuid = gameState.value.gameUuid.toString(),
             playerIndex = gameState.value.getCurrentPlayerIndex(),
             value = gameState.value.getCurrentPlayer().toDto()
@@ -124,7 +124,7 @@ class RemoteGameRepository(
     override fun sumTotalPoints() {
         _gameState.update { updater.sumTotalPoints(it) }
 
-        firebaseDataSource.updatePlayers(
+        firebaseDataSource.updatePlayer(
             gameUuid = gameState.value.gameUuid.toString(),
             playerIndex = gameState.value.getCurrentPlayerIndex(),
             value = gameState.value.getCurrentPlayer().toDto()
@@ -134,7 +134,7 @@ class RemoteGameRepository(
     override fun resetDiceState() {
         _gameState.update { updater.resetDiceState(it) }
 
-        firebaseDataSource.updatePlayers(
+        firebaseDataSource.updatePlayer(
             gameUuid = gameState.value.gameUuid.toString(),
             playerIndex = gameState.value.getCurrentPlayerIndex(),
             value = gameState.value.getCurrentPlayer().toDto()
@@ -153,7 +153,7 @@ class RemoteGameRepository(
     override fun resetRoundAndSelectedPoints() {
         _gameState.update { updater.resetRoundAndSelectedPoints(it) }
 
-        firebaseDataSource.updatePlayers(
+        firebaseDataSource.updatePlayer(
             gameUuid = gameState.value.gameUuid.toString(),
             playerIndex = gameState.value.getCurrentPlayerIndex(),
             value = gameState.value.getCurrentPlayer().toDto()
@@ -192,11 +192,16 @@ class RemoteGameRepository(
         )
     }
 
-    override fun updatePlayerStatus(status: PlayerStatus) {
-        firebaseDataSource.updatePlayerStatus(
+    override fun updatePlayerStatus(status: PlayerStatus, timestamp: Long) {
+        _gameState.update {
+            updater.updatePlayerStatusAndTimestamp(it, status, timestamp)
+        }
+        val myPlayerIndex = getMyPlayerIndex()
+
+        firebaseDataSource.updatePlayer(
             gameUuid = gameState.value.gameUuid.toString(),
-            value = status,
-            playerIndex = getMyPlayerIndex()
+            playerIndex = myPlayerIndex,
+            value = _gameState.value.players[myPlayerIndex].toDto()
         )
     }
 

@@ -13,6 +13,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -31,6 +32,9 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation.NavHostController
 import pl.kazoroo.tavernFarkle.R
 import pl.kazoroo.tavernFarkle.core.domain.model.TableData
@@ -38,6 +42,7 @@ import pl.kazoroo.tavernFarkle.core.presentation.CoinsViewModel
 import pl.kazoroo.tavernFarkle.core.presentation.components.BackgroundImage
 import pl.kazoroo.tavernFarkle.menu.presentation.components.ActionIconButton
 import pl.kazoroo.tavernFarkle.menu.presentation.components.HowToPlayDialog
+import pl.kazoroo.tavernFarkle.multiplayer.data.remote.PlayerStatus
 import pl.kazoroo.tavernFarkle.singleplayer.presentation.components.ButtonInfo
 import pl.kazoroo.tavernFarkle.singleplayer.presentation.components.ExitDialog
 import pl.kazoroo.tavernFarkle.singleplayer.presentation.components.GameButtons
@@ -80,6 +85,29 @@ fun GameScreen(
     )
     val showExitDialog = remember { mutableStateOf(false) }
     var isHelpDialogVisible by remember { mutableStateOf(false) }
+    val lifecycleOwner = LocalLifecycleOwner.current
+
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            when (event) {
+                Lifecycle.Event.ON_PAUSE -> {
+                    viewModel.updatePlayerState(PlayerStatus.PAUSED)
+                }
+
+                Lifecycle.Event.ON_RESUME -> {
+                    viewModel.updatePlayerState(PlayerStatus.IN_GAME)
+                }
+
+                else -> Unit
+            }
+        }
+
+        lifecycleOwner.lifecycle.addObserver(observer)
+
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+        }
+    }
 
     if(isHelpDialogVisible) {
         HowToPlayDialog(
@@ -198,6 +226,14 @@ fun GameScreen(
                 text = "Win by giving up",
                 textColor = Color.Green,
                 extraText = "Your opponent leave the game",
+            )
+        }
+
+        if(viewModel.timerValue > -1) {
+            GameResultAndSkuchaDialog(
+                text = viewModel.timerValue.toString(),
+                textColor = Color.White,
+                extraText = "Waiting for opponent to return"
             )
         }
     }

@@ -112,7 +112,7 @@ class FirebaseDataSource {
         ref.setValue(value)
     }
 
-    fun updatePlayers(gameUuid: String, playerIndex: Int, value: PlayerDto) {
+    fun updatePlayer(gameUuid: String, playerIndex: Int, value: PlayerDto) {
         val ref = database.getReference("$gameUuid/players/$playerIndex")
 
         ref.setValue(value)

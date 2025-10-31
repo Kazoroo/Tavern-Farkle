@@ -26,5 +26,5 @@ interface GameRepository {
     fun getOpponentPlayerIndex(): Flow<Int?>
     fun removeLobbyNode()
     fun toggleDiceRowAnimation()
-    fun updatePlayerStatus(status: PlayerStatus)
+    fun updatePlayerStatus(status: PlayerStatus, timestamp: Long)
 }

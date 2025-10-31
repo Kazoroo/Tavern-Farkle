@@ -9,6 +9,7 @@ data class PlayerDto(
     val roundPoints: Int = 0,
     val selectedPoints: Int = 0,
     val status: String = PlayerStatus.IN_GAME.name,
+    val statusTimestamp: Long = 0,
     val diceSet: List<DiceDto> = emptyList()
 ) {
     fun toDomain() = Player(
@@ -17,6 +18,7 @@ data class PlayerDto(
         roundPoints = roundPoints,
         selectedPoints = selectedPoints,
         status = PlayerStatus.valueOf(status),
+        statusTimestamp = statusTimestamp,
         diceSet = diceSet.map { it.toDomain() }
     )
 }

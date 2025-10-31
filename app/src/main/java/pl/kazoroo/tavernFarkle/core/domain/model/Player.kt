@@ -9,6 +9,7 @@ data class Player(
     val roundPoints: Int = 0,
     val selectedPoints: Int = 0,
     val status: PlayerStatus = PlayerStatus.IN_GAME,
+    val statusTimestamp: Long = 0,
     val diceSet: List<Dice>
 ) {
     init {
@@ -21,6 +22,7 @@ data class Player(
         roundPoints = roundPoints,
         selectedPoints = selectedPoints,
         status = status.name,
+        statusTimestamp = statusTimestamp,
         diceSet = diceSet.map { it.toDto() }
     )
 }

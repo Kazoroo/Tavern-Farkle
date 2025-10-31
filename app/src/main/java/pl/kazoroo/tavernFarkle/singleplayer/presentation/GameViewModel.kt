@@ -9,6 +9,7 @@ import androidx.navigation.NavHostController
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -62,6 +63,9 @@ class GameViewModel(
             .stateIn(viewModelScope, SharingStarted.WhileSubscribed(1000L), null)
 
     var playerQuit by mutableStateOf(false)
+        private set
+
+    var timerValue by mutableStateOf(-1)
         private set
 
     init {
@@ -202,7 +206,7 @@ class GameViewModel(
         if(gameState.value.players.size == 1) {
             repository.removeLobbyNode()
         } else {
-            repository.updatePlayerStatus(PlayerStatus.LEFT)
+            repository.updatePlayerStatus(PlayerStatus.LEFT, System.currentTimeMillis())
         }
 
     }
@@ -233,12 +237,38 @@ class GameViewModel(
                                         }
                                     }
                                 }
+                                PlayerStatus.PAUSED -> {
+                                    if(repository.gameState.value.players[opponentPlayerIndex].status == PlayerStatus.PAUSED) {
+                                        startTimer()
+                                    }
+                                }
 
-                                else -> {}
+                                PlayerStatus.IN_GAME -> {
+                                    timerJob?.cancel()
+                                    timerValue = -1
+                                }
                             }
                         }
                 }
         }
+    }
+
+    private var timerJob: Job? = null
+    private fun startTimer() {
+        timerJob?.cancel()
+
+        timerJob = viewModelScope.launch {
+            for(i in 30 downTo 0) {
+                timerValue = i
+                delay(1000L)
+            }
+        }
+    }
+
+    fun updatePlayerState(status: PlayerStatus) {
+        val timestamp = System.currentTimeMillis()
+
+        repository.updatePlayerStatus(status, timestamp)
     }
 }
 

@@ -2,6 +2,7 @@ package pl.kazoroo.tavernFarkle.core.domain
 
 import pl.kazoroo.tavernFarkle.core.domain.model.Dice
 import pl.kazoroo.tavernFarkle.core.domain.model.GameState
+import pl.kazoroo.tavernFarkle.multiplayer.data.remote.PlayerStatus
 
 class GameStateUpdater {
 
@@ -155,5 +156,20 @@ class GameStateUpdater {
      */
     fun toggleDiceRowAnimation(gameState: GameState): GameState {
         return gameState.copy(isAnimating = !gameState.isAnimating)
+    }
+
+    fun updatePlayerStatusAndTimestamp(
+        gameState: GameState,
+        status: PlayerStatus,
+        timestamp: Long
+    ): GameState {
+        val currentIndex = gameState.getCurrentPlayerIndex()
+        val updatedPlayers = gameState.players.toMutableList()
+        updatedPlayers[currentIndex] = updatedPlayers[currentIndex].copy(
+            status = status,
+            statusTimestamp = timestamp
+        )
+
+        return gameState.copy(players = updatedPlayers)
     }
 }
