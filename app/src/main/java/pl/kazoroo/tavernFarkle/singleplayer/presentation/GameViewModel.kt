@@ -1,11 +1,16 @@
 package pl.kazoroo.tavernFarkle.singleplayer.presentation
 
+import android.content.Context
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
+import androidx.work.Data
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -28,6 +33,7 @@ import pl.kazoroo.tavernFarkle.core.domain.usecase.game.DrawDiceUseCase
 import pl.kazoroo.tavernFarkle.core.presentation.navigation.Screen
 import pl.kazoroo.tavernFarkle.menu.sound.SoundPlayer
 import pl.kazoroo.tavernFarkle.menu.sound.SoundType
+import pl.kazoroo.tavernFarkle.multiplayer.data.UpdatePlayerStatusWorker
 import pl.kazoroo.tavernFarkle.multiplayer.data.remote.PlayerStatus
 import pl.kazoroo.tavernFarkle.singleplayer.domain.usecase.PlayOpponentTurnUseCase
 
@@ -65,7 +71,7 @@ class GameViewModel(
     var playerQuit by mutableStateOf(false)
         private set
 
-    var timerValue by mutableStateOf(-1)
+    var timerValue by mutableIntStateOf(-1)
         private set
 
     init {
@@ -265,10 +271,23 @@ class GameViewModel(
         }
     }
 
-    fun updatePlayerState(status: PlayerStatus) {
+    fun updatePlayerState(status: PlayerStatus, context: Context) {
         val timestamp = System.currentTimeMillis()
 
         repository.updatePlayerStatus(status, timestamp)
+
+        val data = Data.Builder()
+            .putString("status", status.name)
+            .putInt("playerIndex", repository.getMyPlayerIndex())
+            .putString("gameUuid", gameState.value.gameUuid.toString())
+            .putLong("timestamp", timestamp)
+            .build()
+
+        val workRequest = OneTimeWorkRequestBuilder<UpdatePlayerStatusWorker>()
+            .setInputData(data)
+            .build()
+
+        WorkManager.getInstance(context).enqueue(workRequest)
     }
 }
 

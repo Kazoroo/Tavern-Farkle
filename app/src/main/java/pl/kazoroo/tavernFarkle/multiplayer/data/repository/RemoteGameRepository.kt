@@ -196,13 +196,6 @@ class RemoteGameRepository(
         _gameState.update {
             updater.updatePlayerStatusAndTimestamp(it, status, timestamp)
         }
-        val myPlayerIndex = getMyPlayerIndex()
-
-        firebaseDataSource.updatePlayer(
-            gameUuid = gameState.value.gameUuid.toString(),
-            playerIndex = myPlayerIndex,
-            value = _gameState.value.players[myPlayerIndex].toDto()
-        )
     }
 
     fun removeListeners() {

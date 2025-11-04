@@ -27,6 +27,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
@@ -86,22 +87,22 @@ fun GameScreen(
     val showExitDialog = remember { mutableStateOf(false) }
     var isHelpDialogVisible by remember { mutableStateOf(false) }
     val lifecycleOwner = LocalLifecycleOwner.current
+    val context = LocalContext.current
 
     DisposableEffect(lifecycleOwner) {
         val observer = LifecycleEventObserver { _, event ->
             when (event) {
                 Lifecycle.Event.ON_PAUSE -> {
-                    viewModel.updatePlayerState(PlayerStatus.PAUSED)
+                    viewModel.updatePlayerState(PlayerStatus.PAUSED, context = context)
                 }
 
                 Lifecycle.Event.ON_RESUME -> {
-                    viewModel.updatePlayerState(PlayerStatus.IN_GAME)
+                    viewModel.updatePlayerState(PlayerStatus.IN_GAME, context = context)
                 }
 
                 else -> Unit
             }
         }
-
         lifecycleOwner.lifecycle.addObserver(observer)
 
         onDispose {

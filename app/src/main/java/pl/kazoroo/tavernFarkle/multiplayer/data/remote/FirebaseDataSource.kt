@@ -141,4 +141,10 @@ class FirebaseDataSource {
 
         ref.setValue(value)
     }
+
+    fun updatePlayerTimestamp(gameUuid: String, playerIndex: Int, timestamp: Long) {
+        val ref = database.getReference("$gameUuid/players/$playerIndex/statusTimestamp")
+
+        ref.setValue(timestamp)
+    }
 }
