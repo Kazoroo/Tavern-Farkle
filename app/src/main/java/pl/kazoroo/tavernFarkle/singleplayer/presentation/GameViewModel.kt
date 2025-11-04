@@ -245,7 +245,7 @@ class GameViewModel(
                                 }
                                 PlayerStatus.PAUSED -> {
                                     if(repository.gameState.value.players[opponentPlayerIndex].status == PlayerStatus.PAUSED) {
-                                        startTimer()
+                                        startTimer(navController, addCoinsReward)
                                     }
                                 }
 
@@ -260,7 +260,7 @@ class GameViewModel(
     }
 
     private var timerJob: Job? = null
-    private fun startTimer() {
+    private fun startTimer(navController: NavHostController, addCoinsReward: () -> Unit) {
         timerJob?.cancel()
 
         timerJob = viewModelScope.launch {
@@ -268,6 +268,11 @@ class GameViewModel(
                 timerValue = i
                 delay(1000L)
             }
+
+            timerValue = -1
+            addCoinsReward()
+            navController.navigateUp()
+            repository.removeLobbyNode()
         }
     }
 

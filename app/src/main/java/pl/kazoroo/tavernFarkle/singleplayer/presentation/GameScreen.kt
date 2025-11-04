@@ -97,6 +97,14 @@ fun GameScreen(
                 }
 
                 Lifecycle.Event.ON_RESUME -> {
+                    val player = viewModel.gameState.value.players[myPlayerIndex]
+
+                    if(player.statusTimestamp < System.currentTimeMillis() - 30_000 && player.status == PlayerStatus.PAUSED) {
+                        navController.navigateUp()
+
+                        return@LifecycleEventObserver
+                    }
+
                     viewModel.updatePlayerState(PlayerStatus.IN_GAME, context = context)
                 }
 
