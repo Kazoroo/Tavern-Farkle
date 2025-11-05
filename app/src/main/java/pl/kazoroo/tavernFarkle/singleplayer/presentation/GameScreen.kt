@@ -88,12 +88,15 @@ fun GameScreen(
     var isHelpDialogVisible by remember { mutableStateOf(false) }
     val lifecycleOwner = LocalLifecycleOwner.current
     val context = LocalContext.current
+    var playerLeftGame by remember { mutableStateOf(false) }
 
     DisposableEffect(lifecycleOwner) {
         val observer = LifecycleEventObserver { _, event ->
             when (event) {
                 Lifecycle.Event.ON_PAUSE -> {
-                    viewModel.updatePlayerState(PlayerStatus.PAUSED, context = context)
+                    if(!playerLeftGame) {
+                        viewModel.updatePlayerState(PlayerStatus.PAUSED, context = context)
+                    }
                 }
 
                 Lifecycle.Event.ON_RESUME -> {
@@ -139,6 +142,7 @@ fun GameScreen(
         ExitDialog(
             onDismissClick = { showExitDialog.value = false },
             onQuitClick = {
+                playerLeftGame = true
                 showExitDialog.value = false
                 viewModel.onQuit()
                 navController.navigateUp()

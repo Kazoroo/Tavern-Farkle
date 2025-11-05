@@ -192,10 +192,27 @@ class RemoteGameRepository(
         )
     }
 
-    override fun updatePlayerStatus(status: PlayerStatus, timestamp: Long) {
+    override fun updatePlayerStatus(
+        status: PlayerStatus,
+        timestamp: Long,
+        updateRemotely: Boolean
+    ) {
+        updatePlayerStatusLocally(status, timestamp)
+
+        if (updateRemotely) {
+            firebaseDataSource.updatePlayer(
+                gameUuid = gameState.value.gameUuid.toString(),
+                playerIndex = getMyPlayerIndex(),
+                value = _gameState.value.players[getMyPlayerIndex()].toDto()
+            )
+        }
+    }
+
+    private fun updatePlayerStatusLocally(status: PlayerStatus, timestamp: Long) {
         _gameState.update {
             updater.updatePlayerStatusAndTimestamp(it, status, timestamp)
         }
+        println("Updated player status locally: $status")
     }
 
     fun removeListeners() {

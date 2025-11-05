@@ -214,7 +214,6 @@ class GameViewModel(
         } else {
             repository.updatePlayerStatus(PlayerStatus.LEFT, System.currentTimeMillis())
         }
-
     }
 
     fun observePlayerStatus(navController: NavHostController, addCoinsReward: () -> Unit) {
@@ -232,21 +231,17 @@ class GameViewModel(
                         .collect {
                             when (it) {
                                 PlayerStatus.LEFT -> {
-                                    if(repository.gameState.value.players[opponentPlayerIndex].status == PlayerStatus.LEFT) {
-                                        playerQuit = true
-                                        delay(2500L)
-                                        repository.removeLobbyNode()
+                                    playerQuit = true
+                                    delay(2500L)
+                                    repository.removeLobbyNode()
 
-                                        addCoinsReward()
-                                        navController.navigate(Screen.MainScreen.withArgs()) {
-                                            popUpTo(Screen.GameScreen.withArgs()) { inclusive = true }
-                                        }
+                                    addCoinsReward()
+                                    navController.navigate(Screen.MainScreen.withArgs()) {
+                                        popUpTo(Screen.GameScreen.withArgs()) { inclusive = true }
                                     }
                                 }
                                 PlayerStatus.PAUSED -> {
-                                    if(repository.gameState.value.players[opponentPlayerIndex].status == PlayerStatus.PAUSED) {
-                                        startTimer(navController, addCoinsReward)
-                                    }
+                                    startTimer(navController, addCoinsReward)
                                 }
 
                                 PlayerStatus.IN_GAME -> {
@@ -279,7 +274,7 @@ class GameViewModel(
     fun updatePlayerState(status: PlayerStatus, context: Context) {
         val timestamp = System.currentTimeMillis()
 
-        repository.updatePlayerStatus(status, timestamp)
+        repository.updatePlayerStatus(status, timestamp,  updateRemotely = false)
 
         val data = Data.Builder()
             .putString("status", status.name)

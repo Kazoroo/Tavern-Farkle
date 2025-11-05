@@ -37,7 +37,7 @@ class LocalGameRepository(
 
     override fun removeLobbyNode() {}
 
-    override fun updatePlayerStatus(status: PlayerStatus, timestamp: Long) {}
+    override fun updatePlayerStatus(status: PlayerStatus, timestamp: Long, updateRemotely: Boolean) {}
 
     override fun setMyUuid(uuid: String) {
         _myUuidState.value = uuid
