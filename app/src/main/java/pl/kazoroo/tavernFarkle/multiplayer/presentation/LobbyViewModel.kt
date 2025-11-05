@@ -12,6 +12,7 @@ import kotlinx.coroutines.launch
 import pl.kazoroo.tavernFarkle.R
 import pl.kazoroo.tavernFarkle.core.domain.usecase.game.CheckForSkuchaUseCase
 import pl.kazoroo.tavernFarkle.core.domain.usecase.game.StartNewGameUseCaseFactory
+import pl.kazoroo.tavernFarkle.core.domain.usecase.game.signInAnonymouslyOrGetExistingUid
 import pl.kazoroo.tavernFarkle.menu.sound.SoundPlayer
 import pl.kazoroo.tavernFarkle.menu.sound.SoundType
 import pl.kazoroo.tavernFarkle.multiplayer.JoinLobbyUseCase
@@ -32,7 +33,10 @@ class LobbyViewModel(
     val toastMessage: SharedFlow<String> = _toastMessage
 
     init {
-        remoteGameRepository.observeLobbyList()
+        viewModelScope.launch {
+            signInAnonymouslyOrGetExistingUid()
+            remoteGameRepository.observeLobbyList()
+        }
     }
 
     fun startNewGame(

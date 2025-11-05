@@ -74,7 +74,7 @@ class FirebaseDataSource {
         ref.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val lobbies = snapshot.children.mapNotNull { lobbySnapshot ->
-                    val gameUuid = lobbySnapshot.key ?: return@mapNotNull null
+                    val gameUuid = lobbySnapshot.child("gameUuid").getValue(String::class.java) ?: return@mapNotNull null
                     val betAmount = lobbySnapshot.child("betAmount").getValue(Int::class.java) ?: 0
                     val playerCount = lobbySnapshot.child("players").childrenCount.toInt()
 
