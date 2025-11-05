@@ -236,9 +236,7 @@ class GameViewModel(
                                     repository.removeLobbyNode()
 
                                     addCoinsReward()
-                                    navController.navigate(Screen.MainScreen.withArgs()) {
-                                        popUpTo(Screen.GameScreen.withArgs()) { inclusive = true }
-                                    }
+                                    navController.navigateUp()
                                 }
                                 PlayerStatus.PAUSED -> {
                                     startTimer(navController, addCoinsReward)

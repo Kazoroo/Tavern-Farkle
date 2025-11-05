@@ -172,7 +172,9 @@ class RemoteGameRepository(
 
     fun observeLobbyList() {
         firebaseDataSource.observeLobbyList { lobbies ->
-            _lobbyList.value = lobbies.sortedBy { it.playerCount }
+            _lobbyList.value = lobbies
+                .filter { !it.gameUuid.isEmpty() }
+                .sortedBy { it.playerCount }
         }
     }
 
@@ -197,22 +199,19 @@ class RemoteGameRepository(
         timestamp: Long,
         updateRemotely: Boolean
     ) {
-        updatePlayerStatusLocally(status, timestamp)
+        val updatedPlayer = updater.updatePlayerStatusAndTimestamp(gameState.value, status, timestamp)
 
         if (updateRemotely) {
             firebaseDataSource.updatePlayer(
                 gameUuid = gameState.value.gameUuid.toString(),
                 playerIndex = getMyPlayerIndex(),
-                value = _gameState.value.players[getMyPlayerIndex()].toDto()
+                value = updatedPlayer.players[getMyPlayerIndex()].toDto()
             )
         }
-    }
 
-    private fun updatePlayerStatusLocally(status: PlayerStatus, timestamp: Long) {
         _gameState.update {
-            updater.updatePlayerStatusAndTimestamp(it, status, timestamp)
+            updatedPlayer
         }
-        println("Updated player status locally: $status")
     }
 
     fun removeListeners() {
