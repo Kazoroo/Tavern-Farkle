@@ -208,8 +208,9 @@ class GameViewModel(
         }
     }
 
-    fun onQuit() {
+    fun onQuit(returnBet: () -> Unit) {
         if(gameState.value.players.size == 1) {
+            returnBet()
             repository.removeLobbyNode()
         } else {
             repository.updatePlayerStatus(PlayerStatus.LEFT, System.currentTimeMillis())

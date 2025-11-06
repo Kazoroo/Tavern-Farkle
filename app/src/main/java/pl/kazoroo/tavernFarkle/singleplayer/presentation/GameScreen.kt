@@ -144,7 +144,11 @@ fun GameScreen(
             onQuitClick = {
                 playerLeftGame = true
                 showExitDialog.value = false
-                viewModel.onQuit()
+                viewModel.onQuit(
+                    returnBet = {
+                        coinsViewModel.grantRewardCoins(rewardAmount = state.betAmount.toString())
+                    }
+                )
                 navController.navigateUp()
             }
         )
