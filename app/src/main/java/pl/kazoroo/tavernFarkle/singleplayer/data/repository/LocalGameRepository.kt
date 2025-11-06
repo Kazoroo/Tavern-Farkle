@@ -16,7 +16,6 @@ import java.util.UUID
 class LocalGameRepository(
     private val updater: GameStateUpdater
 ) : GameRepository {
-
     private val _gameState = MutableStateFlow(
         GameState(
             betAmount = 0,
