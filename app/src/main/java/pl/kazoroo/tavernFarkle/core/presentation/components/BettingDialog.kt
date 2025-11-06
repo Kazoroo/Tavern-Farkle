@@ -42,7 +42,7 @@ fun BettingDialog(
     onCloseClick: () -> Unit,
     coinsAmount: Int,
 ) {
-    var betAmount by remember { mutableStateOf("0") }
+    var betAmount by remember { mutableStateOf("") }
 
     Dialog(
         onDismissRequest = onCloseClick
@@ -118,7 +118,6 @@ fun BettingDialog(
             val isBetAmountValid = betAmount.isNotEmpty() && isBetAmountNumeric && betAmount.toInt() <= coinsAmount
 
             Spacer(modifier = Modifier.weight(1f))
-
             Button(
                 onClick = {
                     onClick(betAmount)
@@ -132,7 +131,7 @@ fun BettingDialog(
                     .dropShadow(
                         shape = RoundedCornerShape(dimensionResource(R.dimen.rounded_corner)),
                         shadow = Shadow(
-                            color = Color(0x80000000),
+                            color = if(isBetAmountValid) Color(0x80000000) else Color.Transparent,
                             radius = 10.dp,
                             offset = DpOffset(5.dp, 12.dp)
                         )
