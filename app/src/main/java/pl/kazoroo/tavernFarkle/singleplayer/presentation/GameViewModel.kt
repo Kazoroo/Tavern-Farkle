@@ -90,7 +90,7 @@ class GameViewModel(
                         _showGameEndDialog.value = false
 
                         navController.navigate(Screen.MainScreen.withArgs()) {
-                            popUpTo(Screen.GameScreen.withArgs()) { inclusive = true }
+                            popUpTo(Screen.GameScreen.withArgs(isMultiplayer)) { inclusive = true }
                         }
 
                         repository.removeLobbyNode()
@@ -189,23 +189,6 @@ class GameViewModel(
                             if(isOpponentTurn && !isMultiplayer) {
                                 playOpponentTurnUseCase()
                             }
-                        }
-
-                        if(isHost) {
-                            delay(600L)
-                            repository.resetDiceState()
-                            repository.changeCurrentPlayer()
-
-                            drawDiceUseCase(
-                                repository.gameState.value.players[gameState.value.getCurrentPlayerIndex()].diceSet,
-                                repository = repository
-                            )
-                        }
-
-                        val isOpponentTurn = repository.gameState.value.currentPlayerUuid != repository.myUuidState.value
-
-                        if(isOpponentTurn && !isMultiplayer) {
-                            playOpponentTurnUseCase()
                         }
                     }
                 }
