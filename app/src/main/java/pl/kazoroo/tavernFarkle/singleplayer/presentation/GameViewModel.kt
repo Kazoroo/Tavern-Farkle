@@ -25,6 +25,7 @@ import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
 import pl.kazoroo.tavernFarkle.core.domain.model.GameState
 import pl.kazoroo.tavernFarkle.core.domain.repository.GameRepository
 import pl.kazoroo.tavernFarkle.core.domain.usecase.game.CalculatePointsUseCase
@@ -151,13 +152,14 @@ class GameViewModel(
         }
     }
 
+    private val skuchaMutex = Mutex()
     private fun observeSkucha() {
         viewModelScope.launch {
             repository.gameState
                 .map { it.isSkucha }
                 .distinctUntilChanged()
                 .collect { isSkucha ->
-                    if(isSkucha) {
+                    if(isSkucha && skuchaMutex.tryLock()) {
                         viewModelScope.launch {
                             delay(1000L)
                             SoundPlayer.playSound(SoundType.SKUCHA)
@@ -175,7 +177,6 @@ class GameViewModel(
                             if(isHost) {
                                 delay(600L)
                                 repository.resetDiceState()
-                                println("changing current player")
                                 repository.changeCurrentPlayer()
 
                                 drawDiceUseCase(
@@ -189,6 +190,7 @@ class GameViewModel(
                             if(isOpponentTurn && !isMultiplayer) {
                                 playOpponentTurnUseCase()
                             }
+                            skuchaMutex.unlock()
                         }
                     }
                 }
