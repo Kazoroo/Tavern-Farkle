@@ -24,8 +24,7 @@ import pl.kazoroo.tavernFarkle.singleplayer.presentation.components.DiceButton
 @Composable
 fun RevealScope.MenuNavigationButtons(
     navController: NavController,
-    playWithComputerOnClick: () -> Unit,
-    playOnlineOnClick: () -> Unit
+    playWithComputerOnClick: () -> Unit
 ) {
     val buttonsModifier: Modifier = Modifier
         .height(dimensionResource(R.dimen.menu_button_height))
@@ -46,15 +45,18 @@ fun RevealScope.MenuNavigationButtons(
             modifier = buttonsModifier.revealable(key = RevealableKeys.SinglePlayer)
         )
 
-/*        DiceButton(
+        DiceButton(
             buttonInfo = ButtonInfo(
                 text = stringResource(R.string.play_online),
                 modifier = buttonsModifier
                     .testTag("Play online button"),
-                onClick = playOnlineOnClick
+                onClick = {
+                    navController.navigate(Screen.LobbyScreen.route)
+                    SoundPlayer.playSound(SoundType.CLICK)
+                }
             ),
             modifier = buttonsModifier.revealable(key = RevealableKeys.MultiPlayer)
-        )*/
+        )
 
         DiceButton(
             buttonInfo = ButtonInfo(

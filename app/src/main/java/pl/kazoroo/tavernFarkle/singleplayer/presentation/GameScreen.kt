@@ -6,13 +6,14 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -21,19 +22,28 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shadow
+import androidx.compose.ui.graphics.StrokeJoin
+import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation.NavHostController
-import kotlinx.coroutines.delay
 import pl.kazoroo.tavernFarkle.R
 import pl.kazoroo.tavernFarkle.core.domain.model.TableData
 import pl.kazoroo.tavernFarkle.core.presentation.CoinsViewModel
 import pl.kazoroo.tavernFarkle.core.presentation.components.BackgroundImage
 import pl.kazoroo.tavernFarkle.menu.presentation.components.ActionIconButton
 import pl.kazoroo.tavernFarkle.menu.presentation.components.HowToPlayDialog
+import pl.kazoroo.tavernFarkle.multiplayer.data.remote.PlayerStatus
 import pl.kazoroo.tavernFarkle.singleplayer.presentation.components.ButtonInfo
 import pl.kazoroo.tavernFarkle.singleplayer.presentation.components.ExitDialog
 import pl.kazoroo.tavernFarkle.singleplayer.presentation.components.GameButtons
@@ -49,29 +59,67 @@ fun GameScreen(
 ) {
     val state by viewModel.gameState.collectAsState()
 
+    val myPlayerIndex = viewModel.myPlayerIndex
+    val opponentPlayerIndex = viewModel.opponentPlayerIndex.collectAsState().value
     val currentPlayerIndex = state.getCurrentPlayerIndex()
     val isOpponentTurn = viewModel.isOpponentTurn.collectAsState().value
-    val selectedPoints = state.players[0].selectedPoints
+    val selectedPoints = state.players[myPlayerIndex].selectedPoints
+    val isGameResultDialogVisible = viewModel.showGameEndDialog.collectAsState().value
+    val isSkuchaDialogVisible = viewModel.showSkuchaDialog.collectAsState().value
 
     val tableData = listOf(
         TableData(
             pointsType = stringResource(R.string.total),
-            yourPoints = state.players[0].totalPoints.toString(),
-            opponentPoints = state.players[1].totalPoints.toString()
+            yourPoints = state.players[myPlayerIndex].totalPoints.toString(),
+            opponentPoints = opponentPlayerIndex?.let { state.players[it].totalPoints.toString() } ?: "-"
         ),
         TableData(
             pointsType = stringResource(R.string.round),
-            yourPoints = state.players[0].roundPoints.toString(),
-            opponentPoints = state.players[1].roundPoints.toString()
+            yourPoints = state.players[myPlayerIndex].roundPoints.toString(),
+            opponentPoints = opponentPlayerIndex?.let { state.players[it].roundPoints.toString() } ?: "-"
         ),
         TableData(
             pointsType = stringResource(R.string.selected_forDices),
             yourPoints = selectedPoints.toString(),
-            opponentPoints = state.players[1].selectedPoints.toString()
+            opponentPoints = opponentPlayerIndex?.let { state.players[it].selectedPoints.toString() } ?: "-"
         ),
     )
     val showExitDialog = remember { mutableStateOf(false) }
     var isHelpDialogVisible by remember { mutableStateOf(false) }
+    val lifecycleOwner = LocalLifecycleOwner.current
+    val context = LocalContext.current
+    var playerLeftGame by remember { mutableStateOf(false) }
+
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            when (event) {
+                Lifecycle.Event.ON_PAUSE -> {
+                    if(!playerLeftGame) {
+                        viewModel.updatePlayerState(PlayerStatus.PAUSED, context = context)
+                    }
+                }
+
+                Lifecycle.Event.ON_RESUME -> {
+                    val player = viewModel.gameState.value.players[myPlayerIndex]
+
+                    if(player.statusTimestamp < System.currentTimeMillis() - 30_000 && player.status == PlayerStatus.PAUSED) {
+                        navController.navigateUp()
+
+                        return@LifecycleEventObserver
+                    }
+
+                    viewModel.updatePlayerState(PlayerStatus.IN_GAME, context = context)
+                }
+
+                else -> Unit
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+        }
+    }
 
     if(isHelpDialogVisible) {
         HowToPlayDialog(
@@ -84,14 +132,23 @@ fun GameScreen(
     }
 
     LaunchedEffect(true) {
-        viewModel.initializeNavController(navController, coinsViewModel)
+        viewModel.onGameEnd(navController)
+        viewModel.observePlayerStatus(navController) {
+            coinsViewModel.addBetCoinsToTotalCoinsAmount()
+        }
     }
 
     if(showExitDialog.value) {
         ExitDialog(
             onDismissClick = { showExitDialog.value = false },
             onQuitClick = {
+                playerLeftGame = true
                 showExitDialog.value = false
+                viewModel.onQuit(
+                    returnBet = {
+                        coinsViewModel.grantRewardCoins(rewardAmount = state.betAmount.toString())
+                    }
+                )
                 navController.navigateUp()
             }
         )
@@ -132,24 +189,26 @@ fun GameScreen(
                     }
                 },
                 isDiceClickable = !isOpponentTurn && !state.isGameEnd,
-                isDiceAnimating = viewModel.isDiceAnimating.collectAsState().value
+                isDiceAnimating = viewModel.isDiceAnimating.collectAsState().value,
+                activePlayer = state.players.count()
             )
             Spacer(modifier = Modifier.weight(1f))
 
+            val isActionAllowed = selectedPoints != 0 && !isOpponentTurn && !state.isGameEnd && state.players.size == 2
             val buttonsInfo = listOf(
                 ButtonInfo(
                     text = stringResource(id = R.string.score_and_roll_again),
                     onClick = {
                         viewModel.onScoreAndRollAgain()
                     },
-                    enabled = (selectedPoints != 0 && !isOpponentTurn) && !state.isGameEnd
+                    enabled = isActionAllowed
                 ),
                 ButtonInfo(
                     text = stringResource(id = R.string.pass),
                     onClick = {
-                        viewModel.onPass(navController)
+                        viewModel.onPass { coinsViewModel.addBetCoinsToTotalCoinsAmount() }
                     },
-                    enabled = (selectedPoints != 0 && !isOpponentTurn) && !state.isGameEnd
+                    enabled = isActionAllowed
                 ),
             )
 
@@ -158,75 +217,98 @@ fun GameScreen(
             )
         }
 
-        @Composable
-        fun gameResultAndSkuchaDialog(text: String, extraText: String?, textColor: Color) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                Column(
-                    modifier = Modifier
-                        .wrapContentSize()
-                        .background(
-                            color = Color(26, 26, 26, 220),
-                            shape = RoundedCornerShape(dimensionResource(id = R.dimen.rounded_corner))
-                        ),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text(
-                        text = text,
-                        color = textColor,
-                        style = MaterialTheme.typography.displayLarge,
-                        modifier = Modifier
-                            .padding(dimensionResource(id = R.dimen.medium_padding))
-                    )
-
-                    if(extraText != null) {
-                        Text(
-                            text = extraText,
-                            color = Color.White,
-                            style = MaterialTheme.typography.displayMedium,
-                            modifier = Modifier
-                                .padding(dimensionResource(id = R.dimen.medium_padding))
-                        )
-                    }
-                }
-            }
-        }
-
-        var isGameResultDialogVisible by remember { mutableStateOf(false) }
-        var isSkuchaDialogVisible by remember { mutableStateOf(false) }
-
-        LaunchedEffect(state.isGameEnd) {
-            delay(1000L)
-
-            isGameResultDialogVisible = state.isGameEnd
-        }
-
-        LaunchedEffect(state.isSkucha) {
-            delay(1000L)
-
-            isSkuchaDialogVisible = state.isSkucha
-        }
-
         if(isSkuchaDialogVisible) {
-            gameResultAndSkuchaDialog(
+            GameResultAndSkuchaDialog(
                 text = "Skucha!", textColor = Color(212, 212, 212),
                 extraText = null
             )
         }
 
         if(isGameResultDialogVisible && isOpponentTurn) {
-            gameResultAndSkuchaDialog(
-                text = "Defeat", textColor = DarkRed,
+            GameResultAndSkuchaDialog(
+                text = "Defeat",
+                textColor = DarkRed,
                 extraText = "Next time will be better!"
             )
         } else if(isGameResultDialogVisible) {
-            gameResultAndSkuchaDialog(
-                text = "Win!", textColor = Color.Green,
+            GameResultAndSkuchaDialog(
+                text = "Win!",
+                textColor = Color.Green,
                 extraText = "You are the champion!"
             )
+        }
+
+        if(viewModel.playerQuit) {
+            GameResultAndSkuchaDialog(
+                text = "Win by giving up",
+                textColor = Color.Green,
+                extraText = "Your opponent leave the game",
+            )
+        }
+
+        if(viewModel.timerValue > -1) {
+            GameResultAndSkuchaDialog(
+                text = viewModel.timerValue.toString(),
+                textColor = Color.White,
+                extraText = "Waiting for opponent to return"
+            )
+        }
+    }
+}
+
+@Composable
+fun GameResultAndSkuchaDialog(text: String, extraText: String?, textColor: Color) {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth(0.80f)
+                .background(
+                    color = Color(26, 26, 26, 220),
+                    shape = RoundedCornerShape(dimensionResource(id = R.dimen.rounded_corner))
+                ),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Box {
+                Text(
+                    text = text,
+                    style = MaterialTheme.typography.titleLarge.copy(
+                        drawStyle = Stroke(
+                            width = 14f,
+                            join = StrokeJoin.Round,
+                            miter = 10f
+                        )
+                    ),
+                    color = Color.Black,
+                    textAlign = TextAlign.Center
+                )
+
+                Text(
+                    text = text,
+                    style = MaterialTheme.typography.titleLarge.copy(
+                        shadow = Shadow(
+                            color = Color.Black,
+                            offset = Offset(-20f, 15f),
+                            blurRadius = 20f
+                        )
+                    ),
+                    color = textColor,
+                    textAlign = TextAlign.Center
+                )
+            }
+
+            if(extraText != null) {
+                Text(
+                    text = extraText,
+                    textAlign = TextAlign.Center,
+                    color = Color.White,
+                    style = MaterialTheme.typography.displayMedium,
+                    modifier = Modifier
+                        .padding(dimensionResource(id = R.dimen.medium_padding))
+                )
+            }
         }
     }
 }

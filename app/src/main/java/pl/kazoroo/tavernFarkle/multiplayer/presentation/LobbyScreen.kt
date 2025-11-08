@@ -1,10 +1,14 @@
 package pl.kazoroo.tavernFarkle.multiplayer.presentation
 
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -14,9 +18,12 @@ import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -24,20 +31,26 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.dropShadow
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.shadow.Shadow
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import kotlinx.coroutines.flow.collectLatest
 import pl.kazoroo.tavernFarkle.R
 import pl.kazoroo.tavernFarkle.core.presentation.CoinsViewModel
 import pl.kazoroo.tavernFarkle.core.presentation.components.BackgroundImage
 import pl.kazoroo.tavernFarkle.core.presentation.components.BettingDialog
 import pl.kazoroo.tavernFarkle.core.presentation.components.CoinAmountIndicator
+import pl.kazoroo.tavernFarkle.core.presentation.components.NavigateBackButton
 import pl.kazoroo.tavernFarkle.core.presentation.navigation.Screen
-import pl.kazoroo.tavernFarkle.menu.sound.SoundPlayer
-import pl.kazoroo.tavernFarkle.menu.sound.SoundType
 import pl.kazoroo.tavernFarkle.multiplayer.data.model.Lobby
 import pl.kazoroo.tavernFarkle.shop.presentation.inventory.InventoryViewModel
 
@@ -51,46 +64,76 @@ fun LobbyScreen(
 ) {
     var isBettingDialogVisible by remember { mutableStateOf(false) }
     val lobbyList = lobbyViewModel.lobbyList.collectAsState().value
+    val context = LocalContext.current
+
+    LaunchedEffect(lobbyViewModel.toastMessage) {
+        lobbyViewModel.toastMessage.collectLatest { message ->
+            Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+        }
+    }
 
     Box(modifier = Modifier.fillMaxSize()) {
         BackgroundImage()
 
-        Box(modifier = Modifier.fillMaxSize().systemBarsPadding()) {
+        Box(modifier = Modifier
+            .fillMaxSize()
+            .systemBarsPadding()) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
                     .systemBarsPadding()
             ) {
-                CoinAmountIndicator(
-                    coinsAmount = coinsAmount,
-                    modifier = Modifier.align(Alignment.Start)
-                )
-
-                LazyColumn {
-                    items(lobbyList.size) { index ->
-                        LobbyCard(lobbyList[index])
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .align(Alignment.Start),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    NavigateBackButton {
+                        navController.navigateUp()
                     }
-                }
-            }
 
-            Button(
-                onClick = {
-                    isBettingDialogVisible = true
-                },
-                modifier = Modifier
-                    .padding(
-                        horizontal = dimensionResource(R.dimen.medium_padding),
-                        vertical = dimensionResource(R.dimen.medium_padding),
+                    CoinAmountIndicator(
+                        coinsAmount = coinsAmount
                     )
-                    .fillMaxWidth()
-                    .height(dimensionResource(R.dimen.menu_button_height))
-                    .align(Alignment.BottomCenter),
-                shape = RoundedCornerShape(20.dp)
-            ) {
-                Text(
-                    text = stringResource(R.string.create_lobby),
-                    fontWeight = FontWeight.W800
-                )
+                }
+
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxWidth(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    LobbyList(lobbyList, lobbyViewModel, inventoryViewModel, navController, coinsViewModel, context)
+                }
+
+                Button(
+                    onClick = {
+                        isBettingDialogVisible = true
+                    },
+                    modifier = Modifier
+                        .padding(
+                            horizontal = dimensionResource(R.dimen.medium_padding),
+                            vertical = dimensionResource(R.dimen.medium_padding),
+                        )
+                        .fillMaxWidth()
+                        .height(dimensionResource(R.dimen.menu_button_height))
+                        .dropShadow(
+                            shape = RoundedCornerShape(dimensionResource(R.dimen.rounded_corner)),
+                            shadow = Shadow(
+                                color = Color(0x80000000),
+                                radius = 10.dp,
+                                offset = DpOffset(5.dp, 12.dp)
+                            )
+                        ),
+                    shape = RoundedCornerShape(20.dp)
+                ) {
+                    Text(
+                        text = stringResource(R.string.create_lobby),
+                        fontWeight = FontWeight.W800
+                    )
+                }
             }
         }
 
@@ -102,11 +145,12 @@ fun LobbyScreen(
                 onClick = { betAmount ->
                     lobbyViewModel.startNewGame(
                         betAmount.toInt(),
-                        inventoryViewModel.getSelectedSpecialDiceNames()
+                        inventoryViewModel.getSelectedSpecialDiceNames(),
+                        onNavigate = { navController.navigate(Screen.GameScreen.withArgs(true)) },
+                        setBetValue = { bet ->
+                            coinsViewModel.setBetValue(bet)
+                        },
                     )
-                    SoundPlayer.playSound(SoundType.CLICK)
-                    navController.navigate(Screen.GameScreen.withArgs(true))
-                    coinsViewModel.setBetValue(betAmount)
                 },
                 coinsAmount = coinsAmount.toInt()
             )
@@ -115,39 +159,107 @@ fun LobbyScreen(
 }
 
 @Composable
-private fun LobbyCard(lobbyData: Lobby) {
+private fun BoxScope.LobbyList(
+    lobbyList: List<Lobby>,
+    lobbyViewModel: LobbyViewModel,
+    inventoryViewModel: InventoryViewModel,
+    navController: NavHostController,
+    coinsViewModel: CoinsViewModel,
+    context: Context
+) {
+    if (lobbyList.isEmpty()) {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Text(
+                text = stringResource(R.string.no_lobbies_available),
+                fontWeight = FontWeight.W700,
+                fontSize = MaterialTheme.typography.displayMedium.fontSize,
+                color = Color.White,
+                textAlign = TextAlign.Center
+            )
+            Text(
+                text = stringResource(R.string.you_can_wait_or_create_one),
+                color = Color.White,
+                textAlign = TextAlign.Center
+            )
+        }
+    } else {
+        LazyColumn(
+            modifier = Modifier.align(Alignment.TopCenter)
+        ) {
+            items(lobbyList.size) { index ->
+                LobbyCard(
+                    lobbyData = lobbyList[index],
+                    onJoinClick = {
+                        lobbyViewModel.joinLobby(
+                            gameUuid = lobbyList[index].gameUuid,
+                            selectedSpecialDiceNames = inventoryViewModel.getSelectedSpecialDiceNames(),
+                            onNavigate = { navController.navigate(Screen.GameScreen.withArgs(true)) },
+                            bet = lobbyList[index].betAmount,
+                            setBetValue = { bet ->
+                                coinsViewModel.setBetValue(bet)
+                            },
+                            context = context,
+                            coinsAmount = coinsViewModel.coinsAmount.value.toInt()
+                        )
+                    }
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun LobbyCard(lobbyData: Lobby, onJoinClick: () -> Unit) {
     Card(
         modifier = Modifier.padding(
             horizontal = dimensionResource(R.dimen.medium_padding),
             vertical = dimensionResource(R.dimen.small_padding),
-        )
+        ).fillMaxWidth().height(120.dp)
     ) {
         Row(
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            modifier = Modifier.fillMaxSize()
         ) {
-            Text(
-                text = "Bet: ${lobbyData.betAmount}",
-                modifier = Modifier.padding(
-                    start = dimensionResource(R.dimen.medium_padding)
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "Bet: ${lobbyData.betAmount}",
                 )
-            )
 
-            Image(
-                painter = painterResource(R.drawable.coin),
-                contentDescription = "Coin icon",
+                Image(
+                    painter = painterResource(R.drawable.coin),
+                    contentDescription = "Coin icon",
+                    modifier = Modifier
+                        .size(dimensionResource(R.dimen.coin_icon_size))
+                        .padding(start = dimensionResource(R.dimen.small_padding))
+                )
+            }
+
+            Text(
+                text = "${lobbyData.playerCount} / 2\nplayers",
+                textAlign = TextAlign.Center,
                 modifier = Modifier
-                    .size(dimensionResource(R.dimen.coin_icon_size))
-                    .padding(start = dimensionResource(R.dimen.small_padding))
+                    .border(1.dp, Color.LightGray, RoundedCornerShape(5.dp))
+                    .padding(dimensionResource(R.dimen.small_padding))
             )
-
-            Spacer(modifier = Modifier.weight(1f))
 
             Button(
-                onClick = {},
-                modifier = Modifier.padding(dimensionResource(R.dimen.medium_padding)),
-                shape = RoundedCornerShape(10.dp)
+                onClick = onJoinClick,
+                shape = RoundedCornerShape(12.dp),
+                enabled = lobbyData.playerCount == 1,
+                elevation = ButtonDefaults.buttonElevation(defaultElevation = 12.dp)
             ) {
-                Text(stringResource(R.string.join))
+                Text(
+                    text = stringResource(R.string.join),
+                    fontWeight = FontWeight.W700,
+                    modifier = Modifier.padding(5.dp)
+                )
             }
         }
     }

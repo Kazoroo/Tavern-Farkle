@@ -22,11 +22,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.dropShadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.shadow.Shadow
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import pl.kazoroo.tavernFarkle.R
@@ -39,7 +42,7 @@ fun BettingDialog(
     onCloseClick: () -> Unit,
     coinsAmount: Int,
 ) {
-    var betAmount by remember { mutableStateOf("0") }
+    var betAmount by remember { mutableStateOf("") }
 
     Dialog(
         onDismissRequest = onCloseClick
@@ -115,7 +118,6 @@ fun BettingDialog(
             val isBetAmountValid = betAmount.isNotEmpty() && isBetAmountNumeric && betAmount.toInt() <= coinsAmount
 
             Spacer(modifier = Modifier.weight(1f))
-
             Button(
                 onClick = {
                     onClick(betAmount)
@@ -125,6 +127,14 @@ fun BettingDialog(
                     .padding(
                         bottom = dimensionResource(R.dimen.medium_padding),
                         top = dimensionResource(R.dimen.medium_padding)
+                    )
+                    .dropShadow(
+                        shape = RoundedCornerShape(dimensionResource(R.dimen.rounded_corner)),
+                        shadow = Shadow(
+                            color = if(isBetAmountValid) Color(0x80000000) else Color.Transparent,
+                            radius = 10.dp,
+                            offset = DpOffset(5.dp, 12.dp)
+                        )
                     ),
                 enabled = isBetAmountValid,
                 elevation = ButtonDefaults.buttonElevation(5.dp)

@@ -1,34 +1,44 @@
 package pl.kazoroo.tavernFarkle.singleplayer.data.repository
 
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.update
 import pl.kazoroo.tavernFarkle.core.domain.GameStateUpdater
 import pl.kazoroo.tavernFarkle.core.domain.model.Dice
 import pl.kazoroo.tavernFarkle.core.domain.model.GameState
 import pl.kazoroo.tavernFarkle.core.domain.repository.GameRepository
+import pl.kazoroo.tavernFarkle.multiplayer.data.remote.PlayerStatus
 import java.util.UUID
 
 class LocalGameRepository(
     private val updater: GameStateUpdater
 ) : GameRepository {
-
     private val _gameState = MutableStateFlow(
         GameState(
             betAmount = 0,
             gameUuid = UUID.randomUUID(),
             isSkucha = false,
-            currentPlayerUuid = UUID.randomUUID(),
+            currentPlayerUuid = "",
             players = emptyList(),
         )
     )
     override val gameState: StateFlow<GameState> = _gameState.asStateFlow()
 
-    private val _myUuidState = MutableStateFlow(UUID.randomUUID())
-    override val myUuidState: StateFlow<UUID> = _myUuidState.asStateFlow()
+    private val _myUuidState = MutableStateFlow("")
+    override val myUuidState: StateFlow<String> = _myUuidState.asStateFlow()
 
-    override fun setMyUuid(uuid: UUID) {
+    override fun getMyPlayerIndex(): Int = 0
+
+    override fun getOpponentPlayerIndex(): Flow<Int?> = flowOf(1)
+
+    override fun removeLobbyNode() {}
+
+    override fun updatePlayerStatus(status: PlayerStatus, timestamp: Long, updateRemotely: Boolean) {}
+
+    override fun setMyUuid(uuid: String) {
         _myUuidState.value = uuid
     }
 
@@ -72,11 +82,15 @@ class LocalGameRepository(
         _gameState.update { updater.resetRoundAndSelectedPoints(it) }
     }
 
-    override fun toggleSkucha() {
-        _gameState.update { updater.toggleSkucha(it) }
+    override fun setSkucha(skucha: Boolean) {
+        _gameState.update { updater.toggleSkucha(it, skucha) }
     }
 
-    override fun toggleGameEnd() {
-        _gameState.update { updater.toggleGameEnd(it) }
+    override fun setGameEnd(gameEnd: Boolean) {
+        _gameState.update { updater.setGameEnd(it, gameEnd) }
+    }
+
+    override fun toggleDiceRowAnimation() {
+        _gameState.update { updater.toggleDiceRowAnimation(it) }
     }
 }

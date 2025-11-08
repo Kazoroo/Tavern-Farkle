@@ -12,7 +12,7 @@ class PlayOpponentTurnUseCase(
     private val calculatePointsUseCase: CalculatePointsUseCase,
     private val checkGameEndUseCase: CheckGameEndUseCase
 ) {
-    suspend operator fun invoke(triggerDiceRowAnimation: suspend () -> Unit) {
+    suspend operator fun invoke() {
         val playingUntilDiceLeft = (2..3).random()
         var numberOfVisibleDice = 6
 
@@ -34,13 +34,10 @@ class PlayOpponentTurnUseCase(
             }
 
             if (numberOfVisibleDice - indexesOfDiceGivingPoints.size > playingUntilDiceLeft || numberOfVisibleDice - indexesOfDiceGivingPoints.size == 0) {
-                scoreAndRollAgain(triggerDiceRowAnimation)
+                scoreAndRollAgain()
                 numberOfVisibleDice = repository.gameState.value.players[1].diceSet.count { it.isVisible }
             } else {
-                passRound(
-                    triggerDiceRowAnimation,
-                    repository
-                )
+                passRound()
                 break
             }
         }
@@ -63,15 +60,13 @@ class PlayOpponentTurnUseCase(
         return indexesOfDiceGivingPoints
     }
 
-    private suspend fun passRound(
-        triggerDiceRowAnimation: suspend () -> Unit,
-        repository: GameRepository
-    ) {
+    private suspend fun passRound() {
         repository.sumTotalPoints()
 
         if(checkGameEndUseCase(repository = repository)) return
 
-        triggerDiceRowAnimation()
+        repository.toggleDiceRowAnimation()
+        delay(600L)
         repository.resetDiceState()
         repository.changeCurrentPlayer()
 
@@ -84,10 +79,12 @@ class PlayOpponentTurnUseCase(
         )
     }
 
-    private suspend fun scoreAndRollAgain(triggerDiceRowAnimation: suspend () -> Unit) {
+    private suspend fun scoreAndRollAgain() {
         repository.sumRoundPoints()
         repository.hideSelectedDice()
-        triggerDiceRowAnimation()
+        delay(200L)
+        repository.toggleDiceRowAnimation()
+        delay(600L)
 
         if(repository.gameState.value.players[repository.gameState.value.getCurrentPlayerIndex()].diceSet.all { !it.isVisible }) {
             repository.resetDiceState()

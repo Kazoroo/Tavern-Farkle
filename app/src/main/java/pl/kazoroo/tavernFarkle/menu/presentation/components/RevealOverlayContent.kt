@@ -40,12 +40,12 @@ fun RevealOverlayScope.RevealOverlayContent(key: Key) {
             )
         }
 
-/*        RevealableKeys.MultiPlayer -> {
+        RevealableKeys.MultiPlayer -> {
             OverlayItem(
                 alignModifier = Modifier.align(verticalArrangement = RevealOverlayArrangement.Top),
                 text = "Multiplayer lets you play with real players, such as your friends. Join a lobby or create your own."
             )
-        }*/ //TODO: Uncomment when finished
+        }
 
         RevealableKeys.HowToPlay -> {
             OverlayItem(

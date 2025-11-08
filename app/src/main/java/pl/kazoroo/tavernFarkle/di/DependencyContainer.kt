@@ -8,11 +8,13 @@ import pl.kazoroo.tavernFarkle.core.domain.usecase.game.CalculatePointsUseCase
 import pl.kazoroo.tavernFarkle.core.domain.usecase.game.CheckForSkuchaUseCase
 import pl.kazoroo.tavernFarkle.core.domain.usecase.game.CheckGameEndUseCase
 import pl.kazoroo.tavernFarkle.core.domain.usecase.game.DrawDiceUseCase
+import pl.kazoroo.tavernFarkle.core.domain.usecase.game.StartNewGameUseCaseFactory
 import pl.kazoroo.tavernFarkle.core.domain.usecase.userdata.ReadUserDataUseCase
 import pl.kazoroo.tavernFarkle.core.domain.usecase.userdata.SaveUserDataUseCase
 import pl.kazoroo.tavernFarkle.core.presentation.CoinsViewModel
 import pl.kazoroo.tavernFarkle.core.presentation.viewModelFactoryHelper
 import pl.kazoroo.tavernFarkle.menu.presentation.MainMenuViewModel
+import pl.kazoroo.tavernFarkle.multiplayer.JoinLobbyUseCase
 import pl.kazoroo.tavernFarkle.multiplayer.data.remote.FirebaseDataSource
 import pl.kazoroo.tavernFarkle.multiplayer.data.repository.RemoteGameRepository
 import pl.kazoroo.tavernFarkle.multiplayer.presentation.LobbyViewModel
@@ -50,7 +52,7 @@ class DependencyContainer(
         DrawDiceUseCase(checkForSkuchaUseCase)
     }
     val checkGameEndUseCase by lazy {
-        CheckGameEndUseCase(null)
+        CheckGameEndUseCase()
     }
     val playOpponentTurnUseCase by lazy {
         PlayOpponentTurnUseCase(localGameRepository, drawDiceUseCase, calculatePointsUseCase, checkGameEndUseCase)
@@ -67,6 +69,16 @@ class DependencyContainer(
     val remoteGameRepository by lazy {
         RemoteGameRepository(firebaseDataSource, gameStateUpdater)
     }
+    val joinLobbyUseCase by lazy {
+        JoinLobbyUseCase(remoteGameRepository, drawDiceUseCase, firebaseDataSource)
+    }
+
+    val startNewGameUseCaseFactory: StartNewGameUseCaseFactory
+        get() = StartNewGameUseCaseFactory(
+            localRepo = localGameRepository,
+            remoteRepo = remoteGameRepository,
+            drawDiceUseCase = drawDiceUseCase
+        )
 
     val settingsViewModelFactory: ViewModelProvider.Factory
         get() = viewModelFactoryHelper {
@@ -100,7 +112,9 @@ class DependencyContainer(
         get() = viewModelFactoryHelper {
             LobbyViewModel(
                 remoteGameRepository = remoteGameRepository,
-                drawDiceUseCase = drawDiceUseCase
+                joinLobbyUseCase = joinLobbyUseCase,
+                startNewGameUseCaseFactory = startNewGameUseCaseFactory,
+                checkForSkuchaUseCase = checkForSkuchaUseCase
             )
         }
 
@@ -111,7 +125,8 @@ class DependencyContainer(
                 calculatePointsUseCase = calculatePointsUseCase,
                 drawDiceUseCase = drawDiceUseCase,
                 playOpponentTurnUseCase = playOpponentTurnUseCase,
-                checkGameEndUseCase = checkGameEndUseCase
+                checkGameEndUseCase = checkGameEndUseCase,
+                isMultiplayer = isMultiplayer
             )
         }
 }

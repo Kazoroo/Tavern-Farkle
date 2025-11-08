@@ -4,23 +4,21 @@ import pl.kazoroo.tavernFarkle.core.domain.model.GameState
 import java.util.UUID
 
 data class GameStateDto(
-    val gameUuid: String,
-    val betAmount: Int,
-    val isSkucha: Boolean = false,
-    val currentPlayerUuid: String,
-    val isGameEnd: Boolean = false,
-    val players: List<PlayerDto>
+    val gameUuid: String = "",
+    val betAmount: Int = 0,
+    val skucha: Boolean = false,
+    val currentPlayerUuid: String = "",
+    val animating: Boolean = false,
+    val gameEnd: Boolean = false,
+    val players: List<PlayerDto> = emptyList()
 ) {
-    fun getCurrentPlayerIndex(): Int {
-        return players.indexOfFirst { it.uuid == currentPlayerUuid }
-    }
-
     fun toDomain() = GameState(
         gameUuid = UUID.fromString(gameUuid),
         betAmount = betAmount,
-        isSkucha = isSkucha,
-        currentPlayerUuid = UUID.fromString(currentPlayerUuid),
-        isGameEnd = isGameEnd,
+        isSkucha = skucha,
+        isAnimating = animating,
+        currentPlayerUuid = currentPlayerUuid,
+        isGameEnd = gameEnd,
         players = players.map { it.toDomain() }
     )
 }

@@ -7,7 +7,8 @@ data class GameState(
     val gameUuid: UUID,
     val betAmount: Int,
     val isSkucha: Boolean = false,
-    val currentPlayerUuid: UUID,
+    val isAnimating: Boolean = false,
+    val currentPlayerUuid: String,
     val isGameEnd: Boolean = false,
     val players: List<Player>
 ) {
@@ -17,9 +18,10 @@ data class GameState(
     fun toDto() = GameStateDto(
         gameUuid = gameUuid.toString(),
         betAmount = betAmount,
-        isSkucha = isSkucha,
-        currentPlayerUuid = currentPlayerUuid.toString(),
-        isGameEnd = isGameEnd,
+        skucha = isSkucha,
+        animating = isAnimating,
+        currentPlayerUuid = currentPlayerUuid,
+        gameEnd = isGameEnd,
         players = players.map { it.toDto() }
     )
 }

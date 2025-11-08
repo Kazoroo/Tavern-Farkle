@@ -2,6 +2,7 @@ package pl.kazoroo.tavernFarkle.core.domain
 
 import pl.kazoroo.tavernFarkle.core.domain.model.Dice
 import pl.kazoroo.tavernFarkle.core.domain.model.GameState
+import pl.kazoroo.tavernFarkle.multiplayer.data.remote.PlayerStatus
 
 class GameStateUpdater {
 
@@ -139,14 +140,36 @@ class GameStateUpdater {
     /**
      * Toggles the skucha state of the game.
      */
-    fun toggleSkucha(state: GameState): GameState {
-        return state.copy(isSkucha = !state.isSkucha)
+    fun toggleSkucha(state: GameState, skucha: Boolean): GameState {
+        return state.copy(isSkucha = skucha)
     }
 
     /**
      * Toggles the game end state.
      */
-    fun toggleGameEnd(state: GameState): GameState {
-        return state.copy(isGameEnd = !state.isGameEnd)
+    fun setGameEnd(state: GameState, gameEnd: Boolean): GameState {
+        return state.copy(isGameEnd = gameEnd)
+    }
+
+    /**
+     * Toggles the dice row animation state.
+     */
+    fun toggleDiceRowAnimation(gameState: GameState): GameState {
+        return gameState.copy(isAnimating = !gameState.isAnimating)
+    }
+
+    fun updatePlayerStatusAndTimestamp(
+        gameState: GameState,
+        status: PlayerStatus,
+        timestamp: Long
+    ): GameState {
+        val currentIndex = gameState.getCurrentPlayerIndex()
+        val updatedPlayers = gameState.players.toMutableList()
+        updatedPlayers[currentIndex] = updatedPlayers[currentIndex].copy(
+            status = status,
+            statusTimestamp = timestamp
+        )
+
+        return gameState.copy(players = updatedPlayers)
     }
 }

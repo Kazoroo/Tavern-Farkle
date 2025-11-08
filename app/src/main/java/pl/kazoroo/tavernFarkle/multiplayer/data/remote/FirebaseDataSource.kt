@@ -7,12 +7,52 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.database
+import com.google.firebase.database.getValue
+import kotlinx.coroutines.tasks.await
 import pl.kazoroo.tavernFarkle.core.domain.model.GameState
+import pl.kazoroo.tavernFarkle.multiplayer.data.model.GameStateDto
 import pl.kazoroo.tavernFarkle.multiplayer.data.model.Lobby
-import java.util.UUID
+import pl.kazoroo.tavernFarkle.multiplayer.data.model.PlayerDto
 
 class FirebaseDataSource {
     val database = Firebase.database
+    private val activeListeners = mutableMapOf<String, ValueEventListener>()
+
+    fun observeGameData(
+        gameUuid: String,
+        onUpdate: (GameStateDto?) -> Unit
+    ) {
+        val playersRef = database.getReference(gameUuid)
+
+        val listener = object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (!snapshot.exists()) {
+                    removeGameListener(gameUuid)
+                    return
+                }
+
+                val newGameState = snapshot.getValue<GameStateDto>()
+                onUpdate(newGameState)
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.e("Firebase", "Error occurred when trying to fetch game data: $error")
+            }
+        }
+
+        removeGameListener(gameUuid)
+
+        playersRef.addValueEventListener(listener)
+        activeListeners[gameUuid] = listener
+    }
+
+    fun removeGameListener(gameUuid: String) {
+        val ref = database.getReference(gameUuid)
+        activeListeners[gameUuid]?.let {
+            ref.removeEventListener(it)
+            activeListeners.remove(gameUuid)
+        }
+    }
 
     fun setGameState(gameState: GameState) {
         val ref = database.getReference(gameState.gameUuid.toString())
@@ -20,9 +60,9 @@ class FirebaseDataSource {
         ref.setValue(gameState.toDto())
     }
 
-    fun updateDiceSelection(gameUuid: UUID, playerIndex: Int, index: Int, value: Boolean) {
+    fun updateDiceSelection(gameUuid: String, playerIndex: Int, index: Int, value: Boolean) {
         val ref = database.getReference(
-            gameUuid.toString().plus("/players/${playerIndex}/diceSet/$index/selected")
+            gameUuid.plus("/players/${playerIndex}/diceSet/$index/selected")
         )
 
         ref.setValue(value)
@@ -33,8 +73,16 @@ class FirebaseDataSource {
 
         ref.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                val lobbies = snapshot.children.mapNotNull {
-                    it.getValue(Lobby::class.java)
+                val lobbies = snapshot.children.mapNotNull { lobbySnapshot ->
+                    val gameUuid = lobbySnapshot.child("gameUuid").getValue(String::class.java) ?: return@mapNotNull null
+                    val betAmount = lobbySnapshot.child("betAmount").getValue(Int::class.java) ?: 0
+                    val playerCount = lobbySnapshot.child("players").childrenCount.toInt()
+
+                    Lobby(
+                        gameUuid = gameUuid,
+                        betAmount = betAmount,
+                        playerCount = playerCount
+                    )
                 }
                 onUpdated(lobbies)
             }
@@ -44,5 +92,59 @@ class FirebaseDataSource {
                 FirebaseCrashlytics.getInstance().recordException(error.toException())
             }
         })
+    }
+
+    fun addPlayerToLobby(gameUuid: String, playerData: PlayerDto) {
+        val ref = database.getReference("$gameUuid/players/1")
+
+        ref.setValue(playerData)
+    }
+
+    suspend fun readGameData(gameUuid: String): GameStateDto? {
+        val ref = database.getReference(gameUuid)
+        val snapshot = ref.get().await()
+        return snapshot.getValue(GameStateDto::class.java)
+    }
+
+    fun updateSelectedPoints(gameUuid: String, playerIndex: Int, value: Int) {
+        val ref = database.getReference("$gameUuid/players/$playerIndex/selectedPoints")
+
+        ref.setValue(value)
+    }
+
+    fun updatePlayer(gameUuid: String, playerIndex: Int, value: PlayerDto) {
+        val ref = database.getReference("$gameUuid/players/$playerIndex")
+
+        ref.setValue(value)
+    }
+
+    fun updateCurrentPlayerUuid(gameUuid: String, value: String) {
+        val ref = database.getReference("$gameUuid/currentPlayerUuid")
+
+        ref.setValue(value)
+    }
+
+    fun removeLobbyNode(gameUuid: String) {
+        val ref = database.getReference(gameUuid)
+
+        ref.removeValue()
+    }
+
+    fun updateIsAnimating(gameUuid: String, value: Boolean) {
+        val ref = database.getReference("$gameUuid/animating")
+
+        ref.setValue(value)
+    }
+
+    fun updatePlayerStatus(gameUuid: String, playerIndex: Int, value: PlayerStatus) {
+        val ref = database.getReference("$gameUuid/players/$playerIndex/status")
+
+        ref.setValue(value)
+    }
+
+    fun updatePlayerTimestamp(gameUuid: String, playerIndex: Int, timestamp: Long) {
+        val ref = database.getReference("$gameUuid/players/$playerIndex/statusTimestamp")
+
+        ref.setValue(timestamp)
     }
 }

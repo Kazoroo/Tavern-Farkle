@@ -1,8 +1,10 @@
 package pl.kazoroo.tavernFarkle.multiplayer.data.repository
 
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import pl.kazoroo.tavernFarkle.core.domain.GameStateUpdater
 import pl.kazoroo.tavernFarkle.core.domain.model.Dice
@@ -10,10 +12,11 @@ import pl.kazoroo.tavernFarkle.core.domain.model.GameState
 import pl.kazoroo.tavernFarkle.core.domain.repository.GameRepository
 import pl.kazoroo.tavernFarkle.multiplayer.data.model.Lobby
 import pl.kazoroo.tavernFarkle.multiplayer.data.remote.FirebaseDataSource
+import pl.kazoroo.tavernFarkle.multiplayer.data.remote.PlayerStatus
 import java.util.UUID
 
 class RemoteGameRepository(
-    private val firebaseDataSource: FirebaseDataSource,
+    val firebaseDataSource: FirebaseDataSource,
     private val updater: GameStateUpdater
 ) : GameRepository {
     private val _gameState = MutableStateFlow(
@@ -21,33 +24,57 @@ class RemoteGameRepository(
             betAmount = 0,
             gameUuid = UUID.randomUUID(),
             isSkucha = false,
-            currentPlayerUuid = UUID.randomUUID(),
+            currentPlayerUuid = "",
             players = emptyList(),
         )
     )
     override val gameState: StateFlow<GameState> = _gameState.asStateFlow()
 
-    private val _myUuidState = MutableStateFlow<UUID>(UUID.randomUUID())
-    override val myUuidState: StateFlow<UUID> = _myUuidState.asStateFlow()
+    private val _myUuidState = MutableStateFlow("")
+    override val myUuidState: StateFlow<String> = _myUuidState.asStateFlow()
 
     private val _lobbyList = MutableStateFlow<List<Lobby>>(emptyList())
     val lobbyList: StateFlow<List<Lobby>> = _lobbyList.asStateFlow()
 
-    override fun setMyUuid(uuid: UUID) {
+    /**
+     * Return an index of the player that is assigned to this client
+     *
+     * @return index of the player in the current game state that matches this client's UUID or `null` if not found
+     */
+    override fun getMyPlayerIndex(): Int =
+        _gameState.value.players.indexOfFirst { it.uuid == myUuidState.value }
+            .takeIf { it >= 0 } ?: 0
+
+    /**
+     * Returns a [Flow] that emits the index of the opponent player relative to this client.
+     * The value updates reactively whenever the players list changes.
+     *
+     * @return a [Flow] emitting the index of the opponent player, or `null` if no opponent is found
+     */
+    override fun getOpponentPlayerIndex(): Flow<Int?> {
+        return _gameState.map { state ->
+            state.players.indexOfFirst { it.uuid != myUuidState.value }
+                .takeIf { it >= 0 }
+        }
+    }
+
+    override fun setMyUuid(uuid: String) {
         _myUuidState.value = uuid
     }
 
     override fun saveGameState(gameState: GameState) {
         _gameState.value = updater.saveGameState(gameState)
+    }
 
-        firebaseDataSource.setGameState(gameState)
+    fun saveGameDataToDatabase() {
+        firebaseDataSource.setGameState(gameState.value)
     }
 
     override fun toggleDiceSelection(index: Int) {
         _gameState.update { updater.toggleDiceSelection(it, index) }
 
         firebaseDataSource.updateDiceSelection(
-            gameUuid = gameState.value.gameUuid,
+            gameUuid = gameState.value.gameUuid.toString(),
             playerIndex = gameState.value.getCurrentPlayerIndex(),
             index = index,
             value = gameState.value.getCurrentPlayer().diceSet[index].isSelected
@@ -56,47 +83,151 @@ class RemoteGameRepository(
 
     override fun updateSelectedPoints(selectedPoints: Int) {
         _gameState.update { updater.updateSelectedPoints(it, selectedPoints) }
+
+        firebaseDataSource.updateSelectedPoints(
+            gameUuid = gameState.value.gameUuid.toString(),
+            playerIndex = gameState.value.getCurrentPlayerIndex(),
+            value = gameState.value.getCurrentPlayer().selectedPoints
+        )
     }
 
     override fun sumRoundPoints() {
         _gameState.update { updater.sumRoundPoints(it) }
+
+        firebaseDataSource.updatePlayer(
+            gameUuid = gameState.value.gameUuid.toString(),
+            playerIndex = gameState.value.getCurrentPlayerIndex(),
+            value = gameState.value.getCurrentPlayer().toDto()
+        )
     }
 
     override fun hideSelectedDice() {
         _gameState.update { updater.hideSelectedDice(it) }
+
+        firebaseDataSource.updatePlayer(
+            gameUuid = gameState.value.gameUuid.toString(),
+            playerIndex = gameState.value.getCurrentPlayerIndex(),
+            value = gameState.value.getCurrentPlayer().toDto()
+        )
     }
 
     override fun updateDiceSet(newDice: List<Dice>) {
         _gameState.update { updater.updateDiceSet(it, newDice) }
+
+        firebaseDataSource.updatePlayer(
+            gameUuid = gameState.value.gameUuid.toString(),
+            playerIndex = gameState.value.getCurrentPlayerIndex(),
+            value = gameState.value.getCurrentPlayer().toDto()
+        )
     }
 
     override fun sumTotalPoints() {
         _gameState.update { updater.sumTotalPoints(it) }
+
+        firebaseDataSource.updatePlayer(
+            gameUuid = gameState.value.gameUuid.toString(),
+            playerIndex = gameState.value.getCurrentPlayerIndex(),
+            value = gameState.value.getCurrentPlayer().toDto()
+        )
     }
 
     override fun resetDiceState() {
         _gameState.update { updater.resetDiceState(it) }
+
+        firebaseDataSource.updatePlayer(
+            gameUuid = gameState.value.gameUuid.toString(),
+            playerIndex = gameState.value.getCurrentPlayerIndex(),
+            value = gameState.value.getCurrentPlayer().toDto()
+        )
     }
 
     override fun changeCurrentPlayer() {
         _gameState.update { updater.changeCurrentPlayer(it) }
+
+        firebaseDataSource.updateCurrentPlayerUuid(
+            gameUuid = gameState.value.gameUuid.toString(),
+            value = gameState.value.currentPlayerUuid
+        )
     }
 
     override fun resetRoundAndSelectedPoints() {
         _gameState.update { updater.resetRoundAndSelectedPoints(it) }
+
+        firebaseDataSource.updatePlayer(
+            gameUuid = gameState.value.gameUuid.toString(),
+            playerIndex = gameState.value.getCurrentPlayerIndex(),
+            value = gameState.value.getCurrentPlayer().toDto()
+        )
     }
 
-    override fun toggleSkucha() {
-        _gameState.update { updater.toggleSkucha(it) }
+    override fun setSkucha(skucha: Boolean) {
+        _gameState.update { updater.toggleSkucha(it, skucha) }
+        firebaseDataSource.setGameState(_gameState.value)
     }
 
-    override fun toggleGameEnd() {
-        _gameState.update { updater.toggleGameEnd(it) }
+    override fun setGameEnd(gameEnd: Boolean) {
+        _gameState.update { updater.setGameEnd(it, gameEnd) }
+        firebaseDataSource.setGameState(_gameState.value)
     }
 
     fun observeLobbyList() {
         firebaseDataSource.observeLobbyList { lobbies ->
             _lobbyList.value = lobbies
+                .sortedBy { it.playerCount }
         }
+    }
+
+    fun observeGameData() {
+        firebaseDataSource.observeGameData(
+            gameUuid = gameState.value.gameUuid.toString(),
+            onUpdate = { gameStateDto ->
+                val newState = gameStateDto?.toDomain() ?: return@observeGameData
+                _gameState.value = newState
+            }
+        )
+    }
+
+    override fun removeLobbyNode() {
+        firebaseDataSource.removeLobbyNode(
+            gameUuid = gameState.value.gameUuid.toString()
+        )
+    }
+
+    override fun updatePlayerStatus(
+        status: PlayerStatus,
+        timestamp: Long,
+        updateRemotely: Boolean
+    ) {
+        val updatedPlayer = updater.updatePlayerStatusAndTimestamp(gameState.value, status, timestamp)
+
+        if (updateRemotely) {
+            firebaseDataSource.updatePlayer(
+                gameUuid = gameState.value.gameUuid.toString(),
+                playerIndex = getMyPlayerIndex(),
+                value = updatedPlayer.players[getMyPlayerIndex()].toDto()
+            )
+        }
+
+        _gameState.update {
+            updatedPlayer
+        }
+    }
+
+    fun removeListeners() {
+        firebaseDataSource.removeGameListener(gameState.value.gameUuid.toString())
+    }
+
+    override fun toggleDiceRowAnimation() {
+        _gameState.update { updater.toggleDiceRowAnimation(it) }
+        firebaseDataSource.updateIsAnimating(gameState.value.gameUuid.toString(), gameState.value.isAnimating)
+    }
+
+    fun clearState() {
+        _gameState.value = GameState(
+            gameUuid = UUID.randomUUID(),
+            betAmount = 0,
+            currentPlayerUuid = "",
+            players = emptyList()
+        )
     }
 }

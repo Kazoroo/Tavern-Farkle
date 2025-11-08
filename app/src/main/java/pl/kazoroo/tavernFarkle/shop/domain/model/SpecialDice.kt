@@ -5,7 +5,7 @@ import androidx.annotation.DrawableRes
 data class SpecialDice(
     val name: SpecialDiceName,
     val price: Int,
-    @DrawableRes val image: List<Int>,
+    @param:DrawableRes val image: List<Int>,
     val chancesOfDrawingValue: List<Float>
 ) {
     init {

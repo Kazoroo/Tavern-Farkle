@@ -11,8 +11,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
@@ -58,7 +56,7 @@ fun BoxScope.MenuActionButtons(
         val padding = dimensionResource(R.dimen.small_padding)
 
         ActionIconButton(
-            icon = Icons.Default.Settings,
+            painterIcon = painterResource(R.drawable.settings_24dp_white),
             onClick = {
                 navController.navigate(Screen.SettingsScreen.route)
                 SoundPlayer.playSound(SoundType.CLICK)

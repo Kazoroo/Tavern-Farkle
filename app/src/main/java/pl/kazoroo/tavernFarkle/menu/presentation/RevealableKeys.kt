@@ -4,7 +4,7 @@ enum class RevealableKeys {
     Welcome,
     Skucha,
     SinglePlayer,
-    //MultiPlayer, //TODO: Uncomment when implemented
+    MultiPlayer,
     HowToPlay,
     ShopButton,
     InventoryButton,
