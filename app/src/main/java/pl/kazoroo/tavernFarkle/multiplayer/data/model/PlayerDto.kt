@@ -1,8 +1,10 @@
 package pl.kazoroo.tavernFarkle.multiplayer.data.model
 
+import androidx.annotation.Keep
 import pl.kazoroo.tavernFarkle.core.domain.model.Player
 import pl.kazoroo.tavernFarkle.multiplayer.data.remote.PlayerStatus
 
+@Keep
 data class PlayerDto(
     val uuid: String = "",
     val totalPoints: Int = 0,

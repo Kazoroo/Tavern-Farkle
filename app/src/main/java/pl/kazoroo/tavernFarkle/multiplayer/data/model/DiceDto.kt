@@ -1,8 +1,10 @@
 package pl.kazoroo.tavernFarkle.multiplayer.data.model
 
+import androidx.annotation.Keep
 import pl.kazoroo.tavernFarkle.core.domain.model.Dice
 import pl.kazoroo.tavernFarkle.shop.domain.model.SpecialDiceName
 
+@Keep
 data class DiceDto(
     val value: Int = 0,
     val selected: Boolean = false,

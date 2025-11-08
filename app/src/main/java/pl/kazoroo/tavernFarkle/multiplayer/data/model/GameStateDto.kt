@@ -1,8 +1,10 @@
 package pl.kazoroo.tavernFarkle.multiplayer.data.model
 
+import androidx.annotation.Keep
 import pl.kazoroo.tavernFarkle.core.domain.model.GameState
 import java.util.UUID
 
+@Keep
 data class GameStateDto(
     val gameUuid: String = "",
     val betAmount: Int = 0,
