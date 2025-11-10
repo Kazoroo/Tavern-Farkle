@@ -3,6 +3,7 @@ package pl.kazoroo.tavernFarkle.shop.domain
 import android.app.Activity
 import android.content.Context
 import android.util.Log
+import android.widget.Toast
 import com.google.android.gms.ads.AdError
 import com.google.android.gms.ads.FullScreenContentCallback
 import com.google.android.gms.ads.LoadAdError
@@ -24,6 +25,8 @@ object AdManager {
             object : RewardedAdLoadCallback() {
                 override fun onAdFailedToLoad(adError: LoadAdError) {
                     Log.d(TAG, "The ad failed to load - $adError")
+                    Toast.makeText(context, "Ad failed to load. Try again", Toast.LENGTH_SHORT).show()
+                    
                     rewardedAd = null
                 }
 
@@ -62,6 +65,8 @@ object AdManager {
             loadRewardedAd(context)
         } ?: run {
             Log.d(TAG, "The rewarded ad wasn't ready yet.")
+            Toast.makeText(context, "The ad was not ready yet. Try again.", Toast.LENGTH_LONG).show()
+            loadRewardedAd(context)
         }
     }
 }
