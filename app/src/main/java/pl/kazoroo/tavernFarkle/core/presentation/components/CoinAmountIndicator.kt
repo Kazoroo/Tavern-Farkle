@@ -26,7 +26,11 @@ fun CoinAmountIndicator(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
-            text = coinsAmount,
+            text = coinsAmount
+                .reversed()
+                .chunked(3)
+                .joinToString(" ")
+                .reversed(),
             color = Color.White
         )
 
