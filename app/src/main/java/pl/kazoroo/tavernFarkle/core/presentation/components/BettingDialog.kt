@@ -3,6 +3,7 @@ package pl.kazoroo.tavernFarkle.core.presentation.components
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -12,6 +13,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -49,7 +51,7 @@ fun BettingDialog(
     ) {
         Column(
             modifier = Modifier
-                .height(350.dp)
+                .height(400.dp)
                 .background(
                     color = Color.White,
                     shape = RoundedCornerShape(dimensionResource(R.dimen.medium_padding))
@@ -117,7 +119,12 @@ fun BettingDialog(
             }
             val isBetAmountValid = betAmount.isNotEmpty() && isBetAmountNumeric && betAmount.toInt() <= coinsAmount
 
+            QuickBetButtons(coinsAmount) {
+                betAmount = it
+            }
+
             Spacer(modifier = Modifier.weight(1f))
+
             Button(
                 onClick = {
                     onClick(betAmount)
@@ -131,7 +138,7 @@ fun BettingDialog(
                     .dropShadow(
                         shape = RoundedCornerShape(dimensionResource(R.dimen.rounded_corner)),
                         shadow = Shadow(
-                            color = if(isBetAmountValid) Color(0x80000000) else Color.Transparent,
+                            color = if (isBetAmountValid) Color(0x80000000) else Color.Transparent,
                             radius = 10.dp,
                             offset = DpOffset(5.dp, 12.dp)
                         )
@@ -146,6 +153,42 @@ fun BettingDialog(
                         horizontal = dimensionResource(R.dimen.medium_padding)
                     )
                 )
+            }
+        }
+    }
+}
+
+@Composable
+private fun QuickBetButtons(coinsAmount: Int, updateBetAmount: (String) -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(
+                horizontal = dimensionResource(R.dimen.small_padding),
+                vertical = dimensionResource(R.dimen.small_padding)
+            ),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        val buttons = listOf(
+            "All" to coinsAmount,
+            "1/2" to (coinsAmount / 2),
+            "1/4" to (coinsAmount / 4)
+        )
+
+        buttons.forEachIndexed { index, (label, amount) ->
+            OutlinedButton(
+                onClick = {
+                    updateBetAmount(amount.toString())
+                },
+                modifier = Modifier.weight(1f)
+            ) {
+                Text(
+                    text = label
+                )
+            }
+
+            if (index < buttons.lastIndex) {
+                Spacer(modifier = Modifier.weight(0.1f))
             }
         }
     }
