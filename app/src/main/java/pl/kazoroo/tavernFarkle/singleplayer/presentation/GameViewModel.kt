@@ -161,7 +161,7 @@ class GameViewModel(
                 .collect { isSkucha ->
                     if(isSkucha && skuchaMutex.tryLock()) {
                         viewModelScope.launch {
-                            delay(1000L)
+                            delay(2000L)
                             SoundPlayer.playSound(SoundType.SKUCHA)
                             _showSkuchaDialog.value = true
                             delay(2000L)
@@ -187,10 +187,11 @@ class GameViewModel(
 
                             val isOpponentTurn = repository.gameState.value.currentPlayerUuid != repository.myUuidState.value
 
+                            skuchaMutex.unlock()
+
                             if(isOpponentTurn && !isMultiplayer) {
                                 playOpponentTurnUseCase()
                             }
-                            skuchaMutex.unlock()
                         }
                     }
                 }
