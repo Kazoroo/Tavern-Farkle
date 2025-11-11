@@ -33,8 +33,7 @@ import pl.kazoroo.tavernFarkle.R
 @Composable
 fun DiceButton(
     buttonInfo: ButtonInfo,
-    modifier: Modifier = Modifier,
-    backgroundContentScale: ContentScale = ContentScale.Crop
+    modifier: Modifier = Modifier
 ) {
     val alphaBackground by animateFloatAsState(
         targetValue = if (buttonInfo.enabled) 1f else 0.4f,
@@ -69,7 +68,7 @@ fun DiceButton(
             Image(
                 painter = painterResource(id = R.drawable.glossy_button),
                 contentDescription = stringResource(R.string.score_and_roll_again),
-                contentScale = backgroundContentScale,
+                contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .fillMaxSize()
                     .clip(RoundedCornerShape(dimensionResource(id = R.dimen.rounded_corner))),

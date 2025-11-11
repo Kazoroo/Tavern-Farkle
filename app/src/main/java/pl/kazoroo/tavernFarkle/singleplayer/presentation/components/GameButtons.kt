@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.unit.dp
 import pl.kazoroo.tavernFarkle.R
@@ -28,8 +27,7 @@ fun GameButtons(buttonsInfo: List<ButtonInfo>) {
                         start = dimensionResource(id = R.dimen.small_padding),
                         end = dimensionResource(id = R.dimen.small_padding),
                         bottom = dimensionResource(R.dimen.buttons_vertical_padding)
-                    ),
-                backgroundContentScale = ContentScale.FillBounds
+                    )
             )
         }
     }
