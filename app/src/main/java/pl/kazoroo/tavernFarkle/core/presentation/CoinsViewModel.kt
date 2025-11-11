@@ -8,6 +8,7 @@ import kotlinx.coroutines.launch
 import pl.kazoroo.tavernFarkle.core.data.local.UserDataKey
 import pl.kazoroo.tavernFarkle.core.domain.usecase.userdata.ReadUserDataUseCase
 import pl.kazoroo.tavernFarkle.core.domain.usecase.userdata.SaveUserDataUseCase
+import kotlin.math.abs
 
 class CoinsViewModel(
     private val saveUserDataUseCase: SaveUserDataUseCase,
@@ -56,10 +57,11 @@ class CoinsViewModel(
 
     private fun readCoinsAmount(): String {
         val coins = readUserDataUseCase.invoke<String>(UserDataKey.COINS)
+        val absoluteCoinsValue = abs(coins.toInt()).toString()
 
-        _coinsAmount.value = coins
+        _coinsAmount.value = absoluteCoinsValue
 
-        return coins
+        return absoluteCoinsValue
     }
 
     fun addBetCoinsToTotalCoinsAmount() {
