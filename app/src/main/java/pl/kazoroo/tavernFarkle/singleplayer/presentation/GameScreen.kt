@@ -271,7 +271,10 @@ fun GameResultAndSkuchaDialog(text: String, extraText: String?, textColor: Color
                 ),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Box {
+            Box(
+                modifier = Modifier
+                    .padding(dimensionResource(id = R.dimen.small_padding))
+            ) {
                 Text(
                     text = text,
                     style = MaterialTheme.typography.titleLarge.copy(
@@ -283,8 +286,6 @@ fun GameResultAndSkuchaDialog(text: String, extraText: String?, textColor: Color
                     ),
                     color = Color.Black,
                     textAlign = TextAlign.Center,
-                    modifier = Modifier
-                        .padding(top = dimensionResource(id = R.dimen.small_padding))
                 )
 
                 Text(
@@ -299,7 +300,6 @@ fun GameResultAndSkuchaDialog(text: String, extraText: String?, textColor: Color
                     color = textColor,
                     textAlign = TextAlign.Center,
                     modifier = Modifier
-                        .padding(top = dimensionResource(id = R.dimen.small_padding))
                 )
             }
 

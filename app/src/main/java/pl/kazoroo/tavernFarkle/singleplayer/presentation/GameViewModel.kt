@@ -76,7 +76,6 @@ class GameViewModel(
         private set
 
     init {
-        observeSkucha()
         observeDiceAnimation()
     }
 
@@ -153,7 +152,7 @@ class GameViewModel(
     }
 
     private val skuchaMutex = Mutex()
-    private fun observeSkucha() {
+    fun observeSkucha() {
         viewModelScope.launch {
             repository.gameState
                 .map { it.isSkucha }

@@ -59,6 +59,7 @@ fun Navigation(
             val gameViewModel = viewModel<GameViewModel>(
                 factory = dependencyContainer.gameViewModelFactory(isMultiplayer)
             )
+            gameViewModel.observeSkucha()
 
             GameScreen(
                 navController = navController,
