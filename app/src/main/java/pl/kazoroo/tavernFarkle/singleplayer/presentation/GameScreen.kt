@@ -94,7 +94,7 @@ fun GameScreen(
         val observer = LifecycleEventObserver { _, event ->
             when (event) {
                 Lifecycle.Event.ON_PAUSE -> {
-                    if(!playerLeftGame) {
+                    if(!playerLeftGame && state.players.count() == 2) {
                         viewModel.updatePlayerState(PlayerStatus.PAUSED, context = context)
                     }
                 }
