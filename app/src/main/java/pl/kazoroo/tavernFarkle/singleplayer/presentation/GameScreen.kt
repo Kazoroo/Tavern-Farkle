@@ -242,7 +242,7 @@ fun GameScreen(
             GameResultAndSkuchaDialog(
                 text = "Win by giving up",
                 textColor = Color.Green,
-                extraText = "Your opponent leave the game",
+                extraText = "Opponent leave the game",
             )
         }
 
@@ -264,9 +264,9 @@ fun GameResultAndSkuchaDialog(text: String, extraText: String?, textColor: Color
     ) {
         Column(
             modifier = Modifier
-                .fillMaxWidth(0.80f)
+                .fillMaxWidth(0.60f)
                 .background(
-                    color = Color(26, 26, 26, 220),
+                    color = Color(26, 26, 26, 200),
                     shape = RoundedCornerShape(dimensionResource(id = R.dimen.rounded_corner))
                 ),
             horizontalAlignment = Alignment.CenterHorizontally
@@ -282,7 +282,9 @@ fun GameResultAndSkuchaDialog(text: String, extraText: String?, textColor: Color
                         )
                     ),
                     color = Color.Black,
-                    textAlign = TextAlign.Center
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier
+                        .padding(top = dimensionResource(id = R.dimen.small_padding))
                 )
 
                 Text(
@@ -295,11 +297,13 @@ fun GameResultAndSkuchaDialog(text: String, extraText: String?, textColor: Color
                         )
                     ),
                     color = textColor,
-                    textAlign = TextAlign.Center
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier
+                        .padding(top = dimensionResource(id = R.dimen.small_padding))
                 )
             }
 
-            if(extraText != null) {
+            if (extraText != null) {
                 Text(
                     text = extraText,
                     textAlign = TextAlign.Center,
