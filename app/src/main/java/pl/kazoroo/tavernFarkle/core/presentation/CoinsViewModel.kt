@@ -27,14 +27,16 @@ class CoinsViewModel(
     fun grantRewardCoins(rewardAmount: String) {
         viewModelScope.launch {
             val coins = readCoinsAmount()
-            val newCoinBalance = (coins.toInt() + rewardAmount.toInt()).toString()
+            var newCoinBalance = (coins.toInt() + rewardAmount.toInt())
+            if(newCoinBalance < 0) newCoinBalance = Int.MAX_VALUE
+            val newCoinBalanceString = newCoinBalance.toString()
 
             saveUserDataUseCase.invoke(
-                value = newCoinBalance,
+                value = newCoinBalanceString,
                 key = UserDataKey.COINS
             )
             readCoinsAmount()
-            _coinsAmount.value = newCoinBalance
+            _coinsAmount.value = newCoinBalanceString
         }
     }
 
@@ -62,7 +64,9 @@ class CoinsViewModel(
 
     fun addBetCoinsToTotalCoinsAmount() {
         viewModelScope.launch {
-            _coinsAmount.value = (coinsAmount.value.toInt() + _betValue.value.toInt() * 2).toString()
+            var coins = (coinsAmount.value.toInt() + _betValue.value.toInt() * 2)
+            if(coins < 0) coins = Int.MAX_VALUE
+            _coinsAmount.value = coins.toString()
 
             saveUserDataUseCase.invoke(
                 value = _coinsAmount.value,
