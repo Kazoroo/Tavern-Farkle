@@ -9,12 +9,15 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
@@ -38,8 +41,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
@@ -215,50 +221,78 @@ private fun BoxScope.LobbyList(
 @Composable
 private fun LobbyCard(lobbyData: Lobby, onJoinClick: () -> Unit) {
     Card(
-        modifier = Modifier.padding(
-            horizontal = dimensionResource(R.dimen.medium_padding),
-            vertical = dimensionResource(R.dimen.small_padding),
-        ).fillMaxWidth().height(120.dp)
+        modifier = Modifier
+            .padding(
+                horizontal = dimensionResource(R.dimen.medium_padding),
+                vertical = dimensionResource(R.dimen.small_padding),
+            )
+            .fillMaxWidth()
+            .height(120.dp)
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceEvenly,
-            modifier = Modifier.fillMaxSize()
+            horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = 16.dp)
         ) {
             Row(
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center,
+                modifier = Modifier
+                    .weight(0.1f)
+                    .wrapContentHeight()
             ) {
+                val formatedBet = lobbyData.betAmount.toString()
+                    .reversed()
+                    .chunked(3)
+                    .joinToString(" ")
+                    .reversed()
+
                 Text(
-                    text = "Bet: ${lobbyData.betAmount}",
+                    text = buildAnnotatedString {
+                        withStyle(style = SpanStyle(fontWeight = FontWeight.W700)) {
+                            append("Bet: ")
+                        }
+                        withStyle(style = SpanStyle(fontWeight = FontWeight.Normal)) {
+                            append(formatedBet)
+                        }
+                    },
+                    fontWeight = FontWeight.W700,
+                    modifier = Modifier.weight(1f, fill = false)
                 )
 
                 Image(
                     painter = painterResource(R.drawable.coin),
-                    contentDescription = "Coin icon",
+                    contentDescription = null,
                     modifier = Modifier
                         .size(dimensionResource(R.dimen.coin_icon_size))
                         .padding(start = dimensionResource(R.dimen.small_padding))
                 )
             }
 
+            Spacer(modifier = Modifier.width(8.dp))
+
             Text(
                 text = "${lobbyData.playerCount} / 2\nplayers",
                 textAlign = TextAlign.Center,
                 modifier = Modifier
                     .border(1.dp, Color.LightGray, RoundedCornerShape(5.dp))
-                    .padding(dimensionResource(R.dimen.small_padding))
+                    .padding(horizontal = 8.dp, vertical = 4.dp)
             )
+
+            Spacer(modifier = Modifier.width(8.dp))
 
             Button(
                 onClick = onJoinClick,
                 shape = RoundedCornerShape(12.dp),
                 enabled = lobbyData.playerCount == 1,
-                elevation = ButtonDefaults.buttonElevation(defaultElevation = 12.dp)
+                elevation = ButtonDefaults.buttonElevation(defaultElevation = 12.dp),
             ) {
                 Text(
                     text = stringResource(R.string.join),
                     fontWeight = FontWeight.W700,
-                    modifier = Modifier.padding(5.dp)
+                    modifier = Modifier.padding(horizontal = 8.dp)
                 )
             }
         }
