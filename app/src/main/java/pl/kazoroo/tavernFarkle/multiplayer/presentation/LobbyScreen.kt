@@ -9,14 +9,12 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -227,23 +225,21 @@ private fun LobbyCard(lobbyData: Lobby, onJoinClick: () -> Unit) {
                 vertical = dimensionResource(R.dimen.small_padding),
             )
             .fillMaxWidth()
-            .height(120.dp)
+            .wrapContentHeight()
     ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween,
+        Column(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = 16.dp)
+                .fillMaxWidth()
+                .padding(horizontal = dimensionResource(R.dimen.medium_padding))
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center,
                 modifier = Modifier
-                    .weight(0.1f)
-                    .wrapContentHeight()
+                    .fillMaxWidth()
+                    .padding(vertical = dimensionResource(R.dimen.small_padding))
             ) {
-                val formatedBet = lobbyData.betAmount.toString()
+                val formattedBet = lobbyData.betAmount.toString()
                     .reversed()
                     .chunked(3)
                     .joinToString(" ")
@@ -254,11 +250,8 @@ private fun LobbyCard(lobbyData: Lobby, onJoinClick: () -> Unit) {
                         withStyle(style = SpanStyle(fontWeight = FontWeight.W700)) {
                             append("Bet: ")
                         }
-                        withStyle(style = SpanStyle(fontWeight = FontWeight.Normal)) {
-                            append(formatedBet)
-                        }
+                        append(formattedBet)
                     },
-                    fontWeight = FontWeight.W700,
                     modifier = Modifier.weight(1f, fill = false)
                 )
 
@@ -271,30 +264,35 @@ private fun LobbyCard(lobbyData: Lobby, onJoinClick: () -> Unit) {
                 )
             }
 
-            Spacer(modifier = Modifier.width(8.dp))
-
-            Text(
-                text = "${lobbyData.playerCount} / 2\nplayers",
-                textAlign = TextAlign.Center,
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier
-                    .border(1.dp, Color.LightGray, RoundedCornerShape(5.dp))
-                    .padding(horizontal = 8.dp, vertical = 4.dp)
-            )
-
-            Spacer(modifier = Modifier.width(8.dp))
-
-            Button(
-                onClick = onJoinClick,
-                shape = RoundedCornerShape(12.dp),
-                enabled = lobbyData.playerCount == 1,
-                elevation = ButtonDefaults.buttonElevation(defaultElevation = 12.dp),
+                    .fillMaxWidth()
+                    .padding(vertical = dimensionResource(R.dimen.small_padding))
             ) {
                 Text(
-                    text = stringResource(R.string.join),
-                    fontWeight = FontWeight.W700,
-                    modifier = Modifier.padding(horizontal = 8.dp)
+                    text = "${lobbyData.playerCount} / 2\nplayers",
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier
+                        .border(1.dp, Color.LightGray, RoundedCornerShape(5.dp))
+                        .padding(horizontal = 20.dp, vertical = 8.dp)
                 )
+
+                Button(
+                    onClick = onJoinClick,
+                    shape = RoundedCornerShape(12.dp),
+                    enabled = lobbyData.playerCount == 1,
+                    elevation = ButtonDefaults.buttonElevation(defaultElevation = 12.dp),
+                ) {
+                    Text(
+                        text = stringResource(R.string.join),
+                        fontWeight = FontWeight.W700,
+                        modifier = Modifier.padding(dimensionResource(R.dimen.small_padding))
+                    )
+                }
             }
         }
     }
 }
+
