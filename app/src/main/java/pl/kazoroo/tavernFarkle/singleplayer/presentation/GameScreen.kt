@@ -36,6 +36,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import pl.kazoroo.tavernFarkle.R
 import pl.kazoroo.tavernFarkle.core.domain.model.TableData
@@ -57,7 +58,7 @@ fun GameScreen(
     viewModel: GameViewModel,
     coinsViewModel: CoinsViewModel
 ) {
-    val state by viewModel.gameState.collectAsState()
+    val state by viewModel.gameState.collectAsStateWithLifecycle() //TODO: Test the ...WithLifecycle() and search for other places to introduce
 
     val myPlayerIndex = viewModel.myPlayerIndex
     val opponentPlayerIndex = viewModel.opponentPlayerIndex.collectAsState().value
