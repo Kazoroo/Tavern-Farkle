@@ -15,9 +15,13 @@ class CoinsViewModel(
     private val readUserDataUseCase: ReadUserDataUseCase
 ) : ViewModel() {
     private val _betValue = MutableStateFlow("0")
+    val betValue = _betValue.asStateFlow()
 
     private val _coinsAmount = MutableStateFlow("0")
     val coinsAmount = _coinsAmount.asStateFlow()
+
+    private val _coinsAmountAfterBetting = MutableStateFlow(0)
+    val coinsAmountAfterBetting = _coinsAmountAfterBetting.asStateFlow()
 
     init {
         viewModelScope.launch {
@@ -41,17 +45,19 @@ class CoinsViewModel(
         }
     }
 
-    fun setBetValue(value: String) {
-        _betValue.value = value
+    fun setBetValue(betAmount: String) {
+        _betValue.value = betAmount
 
         viewModelScope.launch {
             val coins = readCoinsAmount()
-            val newCoinBalance = (coins.toInt() - value.toInt()).toString()
+            val newCoinBalance = (coins.toInt() - betAmount.toInt()).toString()
             saveUserDataUseCase.invoke(
                 value = newCoinBalance,
                 key = UserDataKey.COINS
             )
             readCoinsAmount()
+
+            _coinsAmountAfterBetting.value = newCoinBalance.toInt()
         }
     }
 

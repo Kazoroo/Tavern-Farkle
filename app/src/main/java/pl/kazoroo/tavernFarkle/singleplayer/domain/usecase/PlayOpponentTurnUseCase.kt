@@ -63,7 +63,11 @@ class PlayOpponentTurnUseCase(
     private suspend fun passRound() {
         repository.sumTotalPoints()
 
-        if(checkGameEndUseCase(repository = repository)) return
+        val isGameEnd = checkGameEndUseCase(
+            repository = repository
+        )
+
+        if(isGameEnd) return
 
         repository.toggleDiceRowAnimation()
         delay(600L)

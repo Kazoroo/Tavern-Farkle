@@ -44,6 +44,8 @@ import pl.kazoroo.tavernFarkle.core.presentation.CoinsViewModel
 import pl.kazoroo.tavernFarkle.core.presentation.components.BackgroundImage
 import pl.kazoroo.tavernFarkle.menu.presentation.components.ActionIconButton
 import pl.kazoroo.tavernFarkle.menu.presentation.components.HowToPlayDialog
+import pl.kazoroo.tavernFarkle.menu.sound.SoundPlayer
+import pl.kazoroo.tavernFarkle.menu.sound.SoundType
 import pl.kazoroo.tavernFarkle.multiplayer.data.remote.PlayerStatus
 import pl.kazoroo.tavernFarkle.singleplayer.presentation.components.ButtonInfo
 import pl.kazoroo.tavernFarkle.singleplayer.presentation.components.ExitDialog
@@ -133,7 +135,13 @@ fun GameScreen(
     }
 
     LaunchedEffect(true) {
-        viewModel.onGameEnd(navController)
+        viewModel.onGameEnd(
+            navController,
+            coinsAmountAfterBetting = coinsViewModel.coinsAmountAfterBetting.value,
+            betAmount = coinsViewModel.betValue.value.toInt(),
+            grantStartCoins = { coinsViewModel.grantRewardCoins(rewardAmount = it.toString()) },
+            addBetCoinsToTotalCoinsAmount = { coinsViewModel.addBetCoinsToTotalCoinsAmount() },
+        )
         viewModel.observePlayerStatus(navController) {
             coinsViewModel.addBetCoinsToTotalCoinsAmount()
         }
@@ -207,7 +215,7 @@ fun GameScreen(
                 ButtonInfo(
                     text = stringResource(id = R.string.pass),
                     onClick = {
-                        viewModel.onPass { coinsViewModel.addBetCoinsToTotalCoinsAmount() }
+                        viewModel.onPass()
                     },
                     enabled = isActionAllowed
                 ),
@@ -225,25 +233,37 @@ fun GameScreen(
             )
         }
 
+        val coinsBefore = coinsViewModel.coinsAmountAfterBetting.collectAsState()
+        val betValue = coinsViewModel.betValue.collectAsState()
+
         if(isGameResultDialogVisible && isOpponentTurn) {
+            SoundPlayer.playSound(SoundType.FAILURE)
+
             GameResultAndSkuchaDialog(
                 text = "Defeat",
                 textColor = DarkRed,
-                extraText = "Next time will be better!"
+                extraText = if(coinsBefore.value == 0) "+ 50 starter coins to continue playing"
+                else "- ${betValue.value} coins"
             )
         } else if(isGameResultDialogVisible) {
+            SoundPlayer.playSound(SoundType.WIN)
+
             GameResultAndSkuchaDialog(
                 text = "Win!",
                 textColor = Color.Green,
-                extraText = "You are the champion!"
+                extraText = if(coinsBefore.value == 0 && betValue.value.toInt() == 0) "+ 50 starter coins to continue playing"
+                    else "+ ${betValue.value} coins"
             )
         }
 
         if(viewModel.playerQuit) {
+            SoundPlayer.playSound(SoundType.WIN)
+
             GameResultAndSkuchaDialog(
                 text = "Win by giving up",
                 textColor = Color.Green,
-                extraText = "Opponent leave the game",
+                extraText = if(coinsBefore.value == 0) "+ 50 starter coins to continue playing"
+                else "Opponent leave the game\n+${betValue.value} coins",
             )
         }
 
@@ -311,7 +331,7 @@ fun GameResultAndSkuchaDialog(text: String, extraText: String?, textColor: Color
                     color = Color.White,
                     style = MaterialTheme.typography.displayMedium,
                     modifier = Modifier
-                        .padding(dimensionResource(id = R.dimen.medium_padding))
+                        .padding(vertical = dimensionResource(id = R.dimen.medium_padding), horizontal = dimensionResource(R.dimen.small_padding))
                 )
             }
         }

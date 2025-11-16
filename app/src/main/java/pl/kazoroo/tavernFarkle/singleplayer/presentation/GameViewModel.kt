@@ -79,22 +79,38 @@ class GameViewModel(
         observeDiceAnimation()
     }
 
-    fun onGameEnd(navController: NavHostController) {
+    fun onGameEnd(
+        navController: NavHostController,
+        coinsAmountAfterBetting: Int,
+        betAmount: Int,
+        grantStartCoins: (Int) -> Unit,
+        addBetCoinsToTotalCoinsAmount: () -> Unit
+    ) {
         viewModelScope.launch {
             repository.gameState.collect { game ->
                 if (game.isGameEnd) {
-                    viewModelScope.launch {
-                        delay(1000L)
-                        _showGameEndDialog.value = true
-                        delay(3000L)
-                        _showGameEndDialog.value = false
+                    delay(1000L)
+                    _showGameEndDialog.value = true
+                    delay(3000L)
+                    _showGameEndDialog.value = false
 
-                        navController.navigate(Screen.MainScreen.withArgs()) {
-                            popUpTo(Screen.GameScreen.withArgs(isMultiplayer)) { inclusive = true }
+                    if (repository.gameState.value.currentPlayerUuid == repository.myUuidState.value) {
+                        if(coinsAmountAfterBetting == 0 && betAmount == 0) {
+                            grantStartCoins(50)
+                        } else {
+                            addBetCoinsToTotalCoinsAmount()
                         }
-
-                        repository.removeLobbyNode()
+                    } else {
+                        if(coinsAmountAfterBetting == 0) {
+                            grantStartCoins(50)
+                        }
                     }
+
+                    navController.navigate(Screen.MainScreen.withArgs()) {
+                        popUpTo(Screen.GameScreen.withArgs(isMultiplayer)) { inclusive = true }
+                    }
+
+                    repository.removeLobbyNode()
                 }
             }
         }
@@ -109,10 +125,14 @@ class GameViewModel(
         )
     }
 
-    fun onPass(addBetCoinsToTotalCoins: () -> Unit) {
+    fun onPass() {
         repository.sumTotalPoints()
 
-        if(checkGameEndUseCase(repository = repository, sumCoins = addBetCoinsToTotalCoins)) return
+        val isGameEnd = checkGameEndUseCase(
+            repository = repository
+        )
+
+        if(isGameEnd) return
 
         scope.launch {
             repository.toggleDiceRowAnimation()
