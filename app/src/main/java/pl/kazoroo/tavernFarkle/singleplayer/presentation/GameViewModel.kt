@@ -94,6 +94,12 @@ class GameViewModel(
                     delay(3000L)
                     _showGameEndDialog.value = false
 
+                    navController.navigate(Screen.MainScreen.withArgs()) {
+                        popUpTo(Screen.GameScreen.withArgs(isMultiplayer)) { inclusive = true }
+                    }
+
+                    delay(500L)
+
                     if (repository.gameState.value.currentPlayerUuid == repository.myUuidState.value) {
                         if(coinsAmountAfterBetting == 0 && betAmount == 0) {
                             grantStartCoins(50)
@@ -104,10 +110,6 @@ class GameViewModel(
                         if(coinsAmountAfterBetting == 0) {
                             grantStartCoins(50)
                         }
-                    }
-
-                    navController.navigate(Screen.MainScreen.withArgs()) {
-                        popUpTo(Screen.GameScreen.withArgs(isMultiplayer)) { inclusive = true }
                     }
 
                     repository.removeLobbyNode()

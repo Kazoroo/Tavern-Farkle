@@ -7,7 +7,7 @@ class CheckGameEndUseCase() {
         repository: GameRepository,
         sumCoins: () -> Unit = {},
     ): Boolean {
-        if(repository.gameState.value.players[repository.gameState.value.getCurrentPlayerIndex()].totalPoints >= 400) {
+        if(repository.gameState.value.players[repository.gameState.value.getCurrentPlayerIndex()].totalPoints >= 4000) {
             repository.setGameEnd(true)
 
             return true
