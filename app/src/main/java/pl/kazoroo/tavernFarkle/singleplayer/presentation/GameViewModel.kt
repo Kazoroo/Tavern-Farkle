@@ -81,10 +81,7 @@ class GameViewModel(
 
     fun onGameEnd(
         navController: NavHostController,
-        coinsAmountAfterBetting: Int,
-        betAmount: Int,
-        grantStartCoins: (Int) -> Unit,
-        addBetCoinsToTotalCoinsAmount: () -> Unit
+        handleGameEndRewards: (Boolean) -> Unit
     ) {
         viewModelScope.launch {
             repository.gameState.collect { game ->
@@ -94,25 +91,14 @@ class GameViewModel(
                     delay(3000L)
                     _showGameEndDialog.value = false
 
+                    val isWin = repository.gameState.value.currentPlayerUuid == repository.myUuidState.value
+                    handleGameEndRewards(isWin)
+
+                    repository.removeLobbyNode()
+
                     navController.navigate(Screen.MainScreen.withArgs()) {
                         popUpTo(Screen.GameScreen.withArgs(isMultiplayer)) { inclusive = true }
                     }
-
-                    delay(500L)
-
-                    if (repository.gameState.value.currentPlayerUuid == repository.myUuidState.value) {
-                        if(coinsAmountAfterBetting == 0 && betAmount == 0) {
-                            grantStartCoins(50)
-                        } else {
-                            addBetCoinsToTotalCoinsAmount()
-                        }
-                    } else {
-                        if(coinsAmountAfterBetting == 0) {
-                            grantStartCoins(50)
-                        }
-                    }
-
-                    repository.removeLobbyNode()
                 }
             }
         }
@@ -235,11 +221,11 @@ class GameViewModel(
         }
     }
 
-    fun onQuit(returnBet: () -> Unit) {
+    fun onQuit(takeBet: () -> Unit) {
         if(gameState.value.players.size == 1) {
-            returnBet()
             repository.removeLobbyNode()
         } else {
+            takeBet()
             repository.updatePlayerStatus(PlayerStatus.LEFT, System.currentTimeMillis())
         }
     }
@@ -261,10 +247,10 @@ class GameViewModel(
                                 PlayerStatus.LEFT -> {
                                     playerQuit = true
                                     delay(2500L)
-                                    repository.removeLobbyNode()
 
                                     addCoinsReward()
                                     navController.navigateUp()
+                                    repository.removeLobbyNode()
                                 }
                                 PlayerStatus.PAUSED -> {
                                     startTimer(navController, addCoinsReward)

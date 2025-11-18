@@ -2,6 +2,7 @@ package pl.kazoroo.tavernFarkle.core.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -29,6 +30,28 @@ class CoinsViewModel(
         }
     }
 
+    fun handleGameEndRewards(
+        isWin: Boolean
+    ) {
+        viewModelScope.launch {
+            delay(1000L)
+
+            if (isWin) {
+                if(coinsAmountAfterBetting.value == 0 && betValue.value.toInt() == 0) {
+                    takeCoinsFromWallet(coinsAmount.value.toInt() - 50)
+                } else {
+                    addBetCoinsToTotalCoinsAmount()
+                }
+            } else {
+                if(coinsAmountAfterBetting.value == 0) {
+                    takeCoinsFromWallet(coinsAmount.value.toInt() - 50)
+                } else {
+                    takeCoinsFromWallet(betValue.value.toInt())
+                }
+            }
+        }
+    }
+
     fun grantRewardCoins(rewardAmount: String) {
         viewModelScope.launch {
             val coins = readCoinsAmount()
@@ -48,17 +71,7 @@ class CoinsViewModel(
     fun setBetValue(betAmount: String) {
         _betValue.value = betAmount
 
-        viewModelScope.launch {
-            val coins = readCoinsAmount()
-            val newCoinBalance = (coins.toInt() - betAmount.toInt()).toString()
-            saveUserDataUseCase.invoke(
-                value = newCoinBalance,
-                key = UserDataKey.COINS
-            )
-            readCoinsAmount()
-
-            _coinsAmountAfterBetting.value = newCoinBalance.toInt()
-        }
+        _coinsAmountAfterBetting.value = coinsAmount.value.toInt() - betAmount.toInt()
     }
 
     private fun readCoinsAmount(): String {
@@ -72,7 +85,7 @@ class CoinsViewModel(
 
     fun addBetCoinsToTotalCoinsAmount() {
         viewModelScope.launch {
-            var coins = (coinsAmount.value.toInt() + _betValue.value.toInt() * 2)
+            var coins = (coinsAmount.value.toInt() + _betValue.value.toInt())
             if(coins < 0) coins = Int.MAX_VALUE
             _coinsAmount.value = coins.toString()
 

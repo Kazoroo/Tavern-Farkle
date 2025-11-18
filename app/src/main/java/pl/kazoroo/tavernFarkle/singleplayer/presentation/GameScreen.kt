@@ -137,10 +137,7 @@ fun GameScreen(
     LaunchedEffect(true) {
         viewModel.onGameEnd(
             navController,
-            coinsAmountAfterBetting = coinsViewModel.coinsAmountAfterBetting.value,
-            betAmount = coinsViewModel.betValue.value.toInt(),
-            grantStartCoins = { coinsViewModel.grantRewardCoins(rewardAmount = it.toString()) },
-            addBetCoinsToTotalCoinsAmount = { coinsViewModel.addBetCoinsToTotalCoinsAmount() },
+            handleGameEndRewards = { isWin -> coinsViewModel.handleGameEndRewards(isWin) }
         )
         viewModel.observePlayerStatus(navController) {
             coinsViewModel.addBetCoinsToTotalCoinsAmount()
@@ -154,8 +151,8 @@ fun GameScreen(
                 playerLeftGame = true
                 showExitDialog.value = false
                 viewModel.onQuit(
-                    returnBet = {
-                        coinsViewModel.grantRewardCoins(rewardAmount = state.betAmount.toString())
+                    takeBet = {
+                        coinsViewModel.takeCoinsFromWallet(amount = state.betAmount)
                     }
                 )
                 navController.navigateUp()
