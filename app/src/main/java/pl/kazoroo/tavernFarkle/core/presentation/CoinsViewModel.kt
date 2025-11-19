@@ -9,6 +9,8 @@ import kotlinx.coroutines.launch
 import pl.kazoroo.tavernFarkle.core.data.local.UserDataKey
 import pl.kazoroo.tavernFarkle.core.domain.usecase.userdata.ReadUserDataUseCase
 import pl.kazoroo.tavernFarkle.core.domain.usecase.userdata.SaveUserDataUseCase
+import pl.kazoroo.tavernFarkle.menu.sound.SoundPlayer
+import pl.kazoroo.tavernFarkle.menu.sound.SoundType
 import kotlin.math.abs
 
 class CoinsViewModel(
@@ -39,12 +41,14 @@ class CoinsViewModel(
             if (isWin) {
                 if(coinsAmountAfterBetting.value == 0 && betValue.value.toInt() == 0) {
                     takeCoinsFromWallet(coinsAmount.value.toInt() - 50)
+                    SoundPlayer.playSound(SoundType.FALLING_COINS)
                 } else {
                     addBetCoinsToTotalCoinsAmount()
                 }
             } else {
                 if(coinsAmountAfterBetting.value == 0) {
                     takeCoinsFromWallet(coinsAmount.value.toInt() - 50)
+                    SoundPlayer.playSound(SoundType.FALLING_COINS)
                 } else {
                     takeCoinsFromWallet(betValue.value.toInt())
                 }
@@ -94,6 +98,10 @@ class CoinsViewModel(
                 key = UserDataKey.COINS
             )
             readCoinsAmount()
+
+            if(betValue.value.toInt() != 0) {
+                SoundPlayer.playSound(SoundType.FALLING_COINS)
+            }
         }
     }
 

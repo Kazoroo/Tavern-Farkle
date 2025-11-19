@@ -27,6 +27,11 @@ object SoundPlayer {
                 soundPool!!.load(appContext, R.raw.dice_rolling, 1),
                 soundPool!!.load(appContext, R.raw.dice_rolling2, 1),
                 soundPool!!.load(appContext, R.raw.shaking_and_rolling_dice, 1)
+            ),
+            SoundType.FALLING_COINS to listOf(
+                soundPool!!.load(appContext, R.raw.coin_sound_1, 1),
+                soundPool!!.load(appContext, R.raw.coin_sound_2, 1),
+                soundPool!!.load(appContext, R.raw.coin_sound_3, 1),
             )
         )
     }

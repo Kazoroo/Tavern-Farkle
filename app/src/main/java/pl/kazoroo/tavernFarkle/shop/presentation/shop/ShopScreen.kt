@@ -35,6 +35,8 @@ import pl.kazoroo.tavernFarkle.core.presentation.CoinsViewModel
 import pl.kazoroo.tavernFarkle.core.presentation.components.BackgroundImage
 import pl.kazoroo.tavernFarkle.core.presentation.components.CoinAmountIndicator
 import pl.kazoroo.tavernFarkle.core.presentation.components.NavigateBackButton
+import pl.kazoroo.tavernFarkle.menu.sound.SoundPlayer
+import pl.kazoroo.tavernFarkle.menu.sound.SoundType
 import pl.kazoroo.tavernFarkle.shop.domain.usecase.BuySpecialDiceUseCase
 import pl.kazoroo.tavernFarkle.shop.presentation.AdViewModel
 import pl.kazoroo.tavernFarkle.shop.presentation.components.SpecialDiceCard
@@ -128,6 +130,7 @@ private fun RewardedVideoSection(
                     context = context,
                     onReward = {
                         coinsViewModel.grantRewardCoins(it)
+                        SoundPlayer.playSound(SoundType.FALLING_COINS)
                     }
                 )
             }
