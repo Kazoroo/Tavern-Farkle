@@ -3,16 +3,14 @@ package pl.kazoroo.tavernFarkle.singleplayer.domain.usecase
 import kotlinx.coroutines.delay
 import pl.kazoroo.tavernFarkle.core.domain.repository.GameRepository
 import pl.kazoroo.tavernFarkle.core.domain.usecase.game.CalculatePointsUseCase
-import pl.kazoroo.tavernFarkle.core.domain.usecase.game.CheckGameEndUseCase
 import pl.kazoroo.tavernFarkle.core.domain.usecase.game.DrawDiceUseCase
 
 class PlayOpponentTurnUseCase(
     private val repository: GameRepository,
     private val drawDiceUseCase: DrawDiceUseCase,
-    private val calculatePointsUseCase: CalculatePointsUseCase,
-    private val checkGameEndUseCase: CheckGameEndUseCase
+    private val calculatePointsUseCase: CalculatePointsUseCase
 ) {
-    suspend operator fun invoke() {
+    suspend operator fun invoke(checkForGameEnd: () -> Boolean) {
         val playingUntilDiceLeft = (2..3).random()
         var numberOfVisibleDice = 6
 
@@ -37,7 +35,7 @@ class PlayOpponentTurnUseCase(
                 scoreAndRollAgain()
                 numberOfVisibleDice = repository.gameState.value.players[1].diceSet.count { it.isVisible }
             } else {
-                passRound()
+                passRound(checkForGameEnd)
                 break
             }
         }
@@ -60,14 +58,10 @@ class PlayOpponentTurnUseCase(
         return indexesOfDiceGivingPoints
     }
 
-    private suspend fun passRound() {
+    private suspend fun passRound(checkForGameEnd: () -> Boolean) {
         repository.sumTotalPoints()
 
-        val isGameEnd = checkGameEndUseCase(
-            repository = repository
-        )
-
-        if(isGameEnd) return
+        if(checkForGameEnd()) return
 
         repository.toggleDiceRowAnimation()
         delay(600L)

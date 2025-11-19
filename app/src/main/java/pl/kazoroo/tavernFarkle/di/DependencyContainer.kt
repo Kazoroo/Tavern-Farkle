@@ -6,7 +6,6 @@ import pl.kazoroo.tavernFarkle.core.data.local.repository.UserDataRepository
 import pl.kazoroo.tavernFarkle.core.domain.GameStateUpdater
 import pl.kazoroo.tavernFarkle.core.domain.usecase.game.CalculatePointsUseCase
 import pl.kazoroo.tavernFarkle.core.domain.usecase.game.CheckForSkuchaUseCase
-import pl.kazoroo.tavernFarkle.core.domain.usecase.game.CheckGameEndUseCase
 import pl.kazoroo.tavernFarkle.core.domain.usecase.game.DrawDiceUseCase
 import pl.kazoroo.tavernFarkle.core.domain.usecase.game.StartNewGameUseCaseFactory
 import pl.kazoroo.tavernFarkle.core.domain.usecase.userdata.ReadUserDataUseCase
@@ -51,11 +50,8 @@ class DependencyContainer(
     val drawDiceUseCase by lazy {
         DrawDiceUseCase(checkForSkuchaUseCase)
     }
-    val checkGameEndUseCase by lazy {
-        CheckGameEndUseCase()
-    }
     val playOpponentTurnUseCase by lazy {
-        PlayOpponentTurnUseCase(localGameRepository, drawDiceUseCase, calculatePointsUseCase, checkGameEndUseCase)
+        PlayOpponentTurnUseCase(localGameRepository, drawDiceUseCase, calculatePointsUseCase)
     }
     val firebaseDataSource by lazy {
         FirebaseDataSource()
@@ -125,7 +121,6 @@ class DependencyContainer(
                 calculatePointsUseCase = calculatePointsUseCase,
                 drawDiceUseCase = drawDiceUseCase,
                 playOpponentTurnUseCase = playOpponentTurnUseCase,
-                checkGameEndUseCase = checkGameEndUseCase,
                 isMultiplayer = isMultiplayer
             )
         }

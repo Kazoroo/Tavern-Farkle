@@ -29,7 +29,6 @@ import kotlinx.coroutines.sync.Mutex
 import pl.kazoroo.tavernFarkle.core.domain.model.GameState
 import pl.kazoroo.tavernFarkle.core.domain.repository.GameRepository
 import pl.kazoroo.tavernFarkle.core.domain.usecase.game.CalculatePointsUseCase
-import pl.kazoroo.tavernFarkle.core.domain.usecase.game.CheckGameEndUseCase
 import pl.kazoroo.tavernFarkle.core.domain.usecase.game.DrawDiceUseCase
 import pl.kazoroo.tavernFarkle.core.presentation.navigation.Screen
 import pl.kazoroo.tavernFarkle.menu.sound.SoundPlayer
@@ -43,7 +42,6 @@ class GameViewModel(
     private val calculatePointsUseCase: CalculatePointsUseCase,
     private val drawDiceUseCase: DrawDiceUseCase,
     private val playOpponentTurnUseCase: PlayOpponentTurnUseCase,
-    private val checkGameEndUseCase: CheckGameEndUseCase,
     dispatcher: CoroutineDispatcher = Dispatchers.Main,
     private val isMultiplayer: Boolean
 ): ViewModel() {
@@ -113,14 +111,20 @@ class GameViewModel(
         )
     }
 
+    fun checkForGameEnd(): Boolean {
+        if(repository.gameState.value.players[repository.gameState.value.getCurrentPlayerIndex()].totalPoints >= 4000) {
+            repository.setGameEnd(true)
+
+            return true
+        }
+
+        return false
+    }
+
     fun onPass() {
         repository.sumTotalPoints()
 
-        val isGameEnd = checkGameEndUseCase(
-            repository = repository
-        )
-
-        if(isGameEnd) return
+        if(checkForGameEnd()) return
 
         scope.launch {
             repository.toggleDiceRowAnimation()
@@ -135,7 +139,7 @@ class GameViewModel(
             val isOpponentTurn = repository.gameState.value.currentPlayerUuid != repository.myUuidState.value
 
             if(isOpponentTurn && !isMultiplayer) {
-                playOpponentTurnUseCase()
+                playOpponentTurnUseCase { checkForGameEnd() }
             }
         }
     }
@@ -197,7 +201,7 @@ class GameViewModel(
                             skuchaMutex.unlock()
 
                             if(isOpponentTurn && !isMultiplayer) {
-                                playOpponentTurnUseCase()
+                                playOpponentTurnUseCase { checkForGameEnd() }
                             }
                         }
                     }
