@@ -198,7 +198,7 @@ class RemoteGameRepository(
         timestamp: Long,
         updateRemotely: Boolean
     ) {
-        val updatedPlayer = updater.updatePlayerStatusAndTimestamp(gameState.value, status, timestamp)
+        val updatedPlayer = updater.updatePlayerStatusAndTimestamp(gameState.value, status, timestamp, getMyPlayerIndex())
 
         if (updateRemotely) {
             firebaseDataSource.updatePlayer(

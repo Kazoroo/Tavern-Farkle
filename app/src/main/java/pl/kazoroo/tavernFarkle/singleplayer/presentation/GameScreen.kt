@@ -60,7 +60,7 @@ fun GameScreen(
     viewModel: GameViewModel,
     coinsViewModel: CoinsViewModel
 ) {
-    val state by viewModel.gameState.collectAsStateWithLifecycle() //TODO: Test the ...WithLifecycle() and search for other places to introduce
+    val state by viewModel.gameState.collectAsStateWithLifecycle()
 
     val myPlayerIndex = viewModel.myPlayerIndex
     val opponentPlayerIndex = viewModel.opponentPlayerIndex.collectAsState().value

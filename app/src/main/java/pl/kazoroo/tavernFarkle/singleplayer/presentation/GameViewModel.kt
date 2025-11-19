@@ -230,7 +230,11 @@ class GameViewModel(
             repository.removeLobbyNode()
         } else {
             takeBet()
-            repository.updatePlayerStatus(PlayerStatus.LEFT, System.currentTimeMillis())
+            repository.updatePlayerStatus(
+                status = PlayerStatus.LEFT,
+                timestamp = System.currentTimeMillis(),
+                updateRemotely = isMultiplayer
+            )
         }
     }
 
@@ -251,10 +255,11 @@ class GameViewModel(
                                 PlayerStatus.LEFT -> {
                                     playerQuit = true
                                     delay(2500L)
+                                    playerQuit = false
+                                    repository.removeLobbyNode()
 
                                     addCoinsReward()
                                     navController.navigateUp()
-                                    repository.removeLobbyNode()
                                 }
                                 PlayerStatus.PAUSED -> {
                                     startTimer(navController, addCoinsReward)

@@ -161,11 +161,11 @@ class GameStateUpdater {
     fun updatePlayerStatusAndTimestamp(
         gameState: GameState,
         status: PlayerStatus,
-        timestamp: Long
+        timestamp: Long,
+        myPlayerIndex: Int
     ): GameState {
-        val currentIndex = gameState.getCurrentPlayerIndex()
         val updatedPlayers = gameState.players.toMutableList()
-        updatedPlayers[currentIndex] = updatedPlayers[currentIndex].copy(
+        updatedPlayers[myPlayerIndex] = updatedPlayers[myPlayerIndex].copy(
             status = status,
             statusTimestamp = timestamp
         )
