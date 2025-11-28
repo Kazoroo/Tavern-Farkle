@@ -14,13 +14,18 @@ data class GameStateDto(
     val gameEnd: Boolean = false,
     val players: List<PlayerDto> = emptyList()
 ) {
-    fun toDomain() = GameState(
-        gameUuid = UUID.fromString(gameUuid),
-        betAmount = betAmount,
-        isSkucha = skucha,
-        isAnimating = animating,
-        currentPlayerUuid = currentPlayerUuid,
-        isGameEnd = gameEnd,
-        players = players.map { it.toDomain() }
-    )
+    fun toDomain(): GameState? {
+
+        if(gameUuid.isBlank()) return null
+
+        return GameState(
+            gameUuid = UUID.fromString(gameUuid),
+            betAmount = betAmount,
+            isSkucha = skucha,
+            isAnimating = animating,
+            currentPlayerUuid = currentPlayerUuid,
+            isGameEnd = gameEnd,
+            players = players.map { it.toDomain() }
+        )
+    }
 }

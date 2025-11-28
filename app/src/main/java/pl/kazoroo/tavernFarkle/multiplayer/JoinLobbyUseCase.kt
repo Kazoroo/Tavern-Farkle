@@ -1,5 +1,7 @@
 package pl.kazoroo.tavernFarkle.multiplayer
 
+import kotlinx.coroutines.delay
+import pl.kazoroo.tavernFarkle.core.domain.model.GameState
 import pl.kazoroo.tavernFarkle.core.domain.model.Player
 import pl.kazoroo.tavernFarkle.core.domain.usecase.game.DrawDiceUseCase
 import pl.kazoroo.tavernFarkle.core.domain.usecase.game.createDiceSet
@@ -24,9 +26,22 @@ class JoinLobbyUseCase(
         val player = Player(currentPlayerId, diceSet = userDiceSet)
         firebaseDataSource.addPlayerToLobby(gameUuid, player.toDto())
 
-        val gameState = firebaseDataSource.readGameData(gameUuid)?.toDomain() ?: throw Exception("Game state is null")
+        val gameState = retryReadGameState(gameUuid)
+            ?: throw Exception("Game state is null after 3 attempts")
 
         gameRepository.saveGameState(gameState)
         gameRepository.setMyUuid(currentPlayerId)
+    }
+
+    private suspend fun retryReadGameState(
+        gameUuid: String,
+    ): GameState? {
+        repeat(2) {
+            val result = firebaseDataSource.readGameData(gameUuid)?.toDomain()
+            if (result != null) return result
+            delay(100L)
+        }
+
+        return firebaseDataSource.readGameData(gameUuid)?.toDomain()
     }
 }
