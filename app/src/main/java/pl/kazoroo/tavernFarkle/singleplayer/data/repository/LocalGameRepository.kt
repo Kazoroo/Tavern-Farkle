@@ -93,4 +93,16 @@ class LocalGameRepository(
     override fun toggleDiceRowAnimation() {
         _gameState.update { updater.toggleDiceRowAnimation(it) }
     }
+
+    override fun resetState() {
+        _gameState.value = GameState(
+            gameUuid = UUID.randomUUID(),
+            betAmount = 0,
+            currentPlayerUuid = "",
+            players = emptyList(),
+            isSkucha = false,
+            isAnimating = false,
+            isGameEnd = false,
+        )
+    }
 }

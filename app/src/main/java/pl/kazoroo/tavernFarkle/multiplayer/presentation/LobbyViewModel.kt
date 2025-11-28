@@ -49,7 +49,7 @@ class LobbyViewModel(
 
         viewModelScope.launch {
             remoteGameRepository.removeListeners()
-            remoteGameRepository.clearState()
+            remoteGameRepository.resetState()
 
             startNewGameUseCaseFactory.create(isMultiplayer = true)
                 .invoke(

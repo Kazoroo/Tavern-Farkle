@@ -17,6 +17,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -25,7 +26,6 @@ import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.sync.Mutex
 import pl.kazoroo.tavernFarkle.core.domain.model.GameState
 import pl.kazoroo.tavernFarkle.core.domain.repository.GameRepository
 import pl.kazoroo.tavernFarkle.core.domain.usecase.game.CalculatePointsUseCase
@@ -73,7 +73,11 @@ class GameViewModel(
     var timerValue by mutableIntStateOf(-1)
         private set
 
+    private var skuchaEvents: MutableSharedFlow<Unit> = MutableSharedFlow(extraBufferCapacity = 64)
+
     init {
+        handleSkuchaQueue()
+        observeSkucha()
         observeDiceAnimation()
     }
 
@@ -102,15 +106,6 @@ class GameViewModel(
         }
     }
 
-    fun toggleDiceSelection(index: Int) {
-        repository.toggleDiceSelection(index)
-        val currentPlayerDiceSet = gameState.value.players[gameState.value.getCurrentPlayerIndex()].diceSet
-        calculatePointsUseCase(
-            diceList = currentPlayerDiceSet,
-            repository = repository
-        )
-    }
-
     fun checkForGameEnd(): Boolean {
         if(repository.gameState.value.players[repository.gameState.value.getCurrentPlayerIndex()].totalPoints >= 4000) {
             repository.setGameEnd(true)
@@ -119,6 +114,15 @@ class GameViewModel(
         }
 
         return false
+    }
+
+    fun toggleDiceSelection(index: Int) {
+        repository.toggleDiceSelection(index)
+        val currentPlayerDiceSet = gameState.value.players[gameState.value.getCurrentPlayerIndex()].diceSet
+        calculatePointsUseCase(
+            diceList = currentPlayerDiceSet,
+            repository = repository
+        )
     }
 
     fun onPass() {
@@ -163,49 +167,57 @@ class GameViewModel(
         }
     }
 
-    private val skuchaMutex = Mutex()
     fun observeSkucha() {
         viewModelScope.launch {
             repository.gameState
                 .map { it.isSkucha }
                 .distinctUntilChanged()
                 .collect { isSkucha ->
-                    if(isSkucha && skuchaMutex.tryLock()) {
-                        viewModelScope.launch {
-                            delay(2000L)
-                            SoundPlayer.playSound(SoundType.SKUCHA)
-                            _showSkuchaDialog.value = true
-                            delay(2000L)
-                            _showSkuchaDialog.value = false
-
-                            val isHost = gameState.value.players[0].uuid == repository.myUuidState.value
-                            if(isHost) {
-                                repository.setSkucha(false)
-                                repository.resetRoundAndSelectedPoints()
-                                repository.toggleDiceRowAnimation()
-                            }
-
-                            if(isHost) {
-                                delay(600L)
-                                repository.resetDiceState()
-                                repository.changeCurrentPlayer()
-
-                                drawDiceUseCase(
-                                    repository.gameState.value.players[gameState.value.getCurrentPlayerIndex()].diceSet,
-                                    repository = repository
-                                )
-                            }
-
-                            val isOpponentTurn = repository.gameState.value.currentPlayerUuid != repository.myUuidState.value
-
-                            skuchaMutex.unlock()
-
-                            if(isOpponentTurn && !isMultiplayer) {
-                                playOpponentTurnUseCase { checkForGameEnd() }
-                            }
-                        }
+                    if (isSkucha) {
+                        skuchaEvents.tryEmit(Unit)
                     }
                 }
+        }
+    }
+
+    fun handleSkuchaQueue() {
+        viewModelScope.launch {
+            skuchaEvents.collect {
+                runSkuchaSequence()
+            }
+        }
+    }
+
+    private suspend fun runSkuchaSequence() {
+        delay(2000)
+        SoundPlayer.playSound(SoundType.SKUCHA)
+        _showSkuchaDialog.value = true
+        delay(2000)
+        _showSkuchaDialog.value = false
+
+        val isHost = gameState.value.players[0].uuid == repository.myUuidState.value
+
+        if (isHost) {
+            repository.setSkucha(false)
+            repository.resetRoundAndSelectedPoints()
+            repository.toggleDiceRowAnimation()
+        }
+
+        if (isHost) {
+            delay(600)
+            repository.resetDiceState()
+            repository.changeCurrentPlayer()
+
+            drawDiceUseCase(
+                repository.gameState.value.players[gameState.value.getCurrentPlayerIndex()].diceSet,
+                repository = repository
+            )
+        }
+
+        val isOpponentTurn = repository.gameState.value.currentPlayerUuid != repository.myUuidState.value
+
+        if (isOpponentTurn && !isMultiplayer) {
+            playOpponentTurnUseCase { checkForGameEnd() }
         }
     }
 

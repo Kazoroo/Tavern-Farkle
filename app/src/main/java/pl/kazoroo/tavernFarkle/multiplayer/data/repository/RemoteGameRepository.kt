@@ -161,8 +161,8 @@ class RemoteGameRepository(
     }
 
     override fun setSkucha(skucha: Boolean) {
-        _gameState.update { updater.toggleSkucha(it, skucha) }
-        firebaseDataSource.setGameState(_gameState.value)
+        val newState = updater.toggleSkucha(_gameState.value, skucha)
+        firebaseDataSource.setGameState(newState)
     }
 
     override fun setGameEnd(gameEnd: Boolean) {
@@ -222,12 +222,15 @@ class RemoteGameRepository(
         firebaseDataSource.updateIsAnimating(gameState.value.gameUuid.toString(), gameState.value.isAnimating)
     }
 
-    fun clearState() {
+    override fun resetState() {
         _gameState.value = GameState(
             gameUuid = UUID.randomUUID(),
             betAmount = 0,
             currentPlayerUuid = "",
-            players = emptyList()
+            players = emptyList(),
+            isSkucha = false,
+            isAnimating = false,
+            isGameEnd = false,
         )
     }
 }

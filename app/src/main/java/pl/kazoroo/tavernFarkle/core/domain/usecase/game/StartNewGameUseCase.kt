@@ -20,6 +20,8 @@ class StartNewGameUseCase(
         userDiceNames: List<SpecialDiceName>,
         isMultiplayer: Boolean
     ) {
+        gameRepository.resetState()
+
         val paddedUserDiceNames = userDiceNames.padWithNullsToSix()
         val userDiceSet = createDiceSet(paddedUserDiceNames, gameRepository, drawDiceUseCase, !isMultiplayer)
 
@@ -81,7 +83,7 @@ fun createDiceSet(specialDiceNames: List<SpecialDiceName?>, gameRepository: Game
             Dice(value = 0, image = 0, specialDiceName = specialDiceNames[index])
         },
         repository = gameRepository,
-        checkForSkucha = checkForSkucha
+        checkForSkucha = checkForSkucha,
     )
 
 

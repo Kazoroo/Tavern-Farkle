@@ -27,4 +27,5 @@ interface GameRepository {
     fun removeLobbyNode()
     fun toggleDiceRowAnimation()
     fun updatePlayerStatus(status: PlayerStatus, timestamp: Long, updateRemotely: Boolean = true)
+    fun resetState()
 }
