@@ -91,13 +91,13 @@ fun GameScreen(
     var isHelpDialogVisible by remember { mutableStateOf(false) }
     val lifecycleOwner = LocalLifecycleOwner.current
     val context = LocalContext.current
-    var playerLeftGame by remember { mutableStateOf(false) }
+    var playerLeftGameThroughDialog by remember { mutableStateOf(false) }
 
     DisposableEffect(lifecycleOwner) {
         val observer = LifecycleEventObserver { _, event ->
             when (event) {
                 Lifecycle.Event.ON_PAUSE -> {
-                    if(!playerLeftGame && state.players.count() == 2) {
+                    if(!playerLeftGameThroughDialog && state.players.count() == 2) {
                         viewModel.updatePlayerState(PlayerStatus.PAUSED, context = context)
                     }
                 }
@@ -106,6 +106,8 @@ fun GameScreen(
                     val player = viewModel.gameState.value.players[myPlayerIndex]
 
                     if(player.statusTimestamp < System.currentTimeMillis() - 30_000 && player.status == PlayerStatus.PAUSED) {
+                        coinsViewModel.handleGameEndRewards(false)
+
                         navController.navigateUp()
 
                         return@LifecycleEventObserver
@@ -148,7 +150,7 @@ fun GameScreen(
         ExitDialog(
             onDismissClick = { showExitDialog.value = false },
             onQuitClick = {
-                playerLeftGame = true
+                playerLeftGameThroughDialog = true
                 showExitDialog.value = false
                 viewModel.onQuit(
                     takeBet = {
