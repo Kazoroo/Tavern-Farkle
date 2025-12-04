@@ -259,7 +259,7 @@ fun GameScreen(
             GameResultAndSkuchaDialog(
                 text = "Win by giving up",
                 textColor = Color.Green,
-                extraText = if(coinsBefore.value == 0) "+ 50 starter coins to continue playing"
+                extraText = if(coinsBefore.value == 0 && betValue.value.toInt() == 0) "+ 50 starter coins to continue playing"
                 else "Opponent leave the game\n+${betValue.value} coins",
             )
         }
