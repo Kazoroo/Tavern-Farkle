@@ -32,9 +32,7 @@ class CoinsViewModel(
         }
     }
 
-    fun handleGameEndRewards(
-        isWin: Boolean
-    ) {
+    fun handleGameEndRewards(isWin: Boolean) {
         viewModelScope.launch {
             delay(1000L)
 

@@ -140,7 +140,7 @@ fun GameScreen(
             handleGameEndRewards = { isWin -> coinsViewModel.handleGameEndRewards(isWin) }
         )
         viewModel.observePlayerStatus(navController) {
-            coinsViewModel.addBetCoinsToTotalCoinsAmount()
+            coinsViewModel.handleGameEndRewards(true)
         }
     }
 

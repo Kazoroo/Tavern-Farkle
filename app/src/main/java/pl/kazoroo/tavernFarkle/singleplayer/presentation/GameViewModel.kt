@@ -250,7 +250,7 @@ class GameViewModel(
         }
     }
 
-    fun observePlayerStatus(navController: NavHostController, addCoinsReward: () -> Unit) {
+    fun observePlayerStatus(navController: NavHostController, handleGameEndRewards: () -> Unit) {
         viewModelScope.launch {
             opponentPlayerIndex
                 .filterNotNull()
@@ -270,11 +270,11 @@ class GameViewModel(
                                     playerQuit = false
                                     repository.removeLobbyNode()
 
-                                    addCoinsReward()
+                                    handleGameEndRewards()
                                     navController.navigateUp()
                                 }
                                 PlayerStatus.PAUSED -> {
-                                    startTimer(navController, addCoinsReward)
+                                    startTimer(navController, handleGameEndRewards)
                                 }
 
                                 PlayerStatus.IN_GAME -> {
@@ -288,7 +288,7 @@ class GameViewModel(
     }
 
     private var timerJob: Job? = null
-    private fun startTimer(navController: NavHostController, addCoinsReward: () -> Unit) {
+    private fun startTimer(navController: NavHostController, handleGameEndRewards: () -> Unit) {
         timerJob?.cancel()
 
         timerJob = viewModelScope.launch {
@@ -298,7 +298,7 @@ class GameViewModel(
             }
 
             timerValue = -1
-            addCoinsReward()
+            handleGameEndRewards()
             navController.navigateUp()
             repository.removeLobbyNode()
         }
