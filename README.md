@@ -4,10 +4,6 @@ The game is varied with special dice and multiplayer mode. The gameplay is about
 
 <p align="left">
   <img alt="Tavern Farkle icon" height="80" src="app/src/main/ic_launcher-playstore.png" />
-    
-  <a href="https://play.google.com/store/apps/details?id=pl.kazoroo.tavernFarkle">
-    <img alt="Get it on Google Play" height="100" src="docs/google-badge.png" />
-  </a>
 </p>
 
 <h3>Key features:</h3>
