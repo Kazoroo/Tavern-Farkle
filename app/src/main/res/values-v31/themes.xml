@@ -2,8 +2,7 @@
 <resources>
 
     <style name="Theme.Dices.Starting" parent="Theme.SplashScreen">
-        <item name="windowSplashScreenBackground">#202820</item>
+        <item name="windowSplashScreenBackground">#41240e</item>
         <item name="postSplashScreenTheme">@style/Theme.Dices</item>
-        <item name="android:windowSplashScreenAnimatedIcon">@drawable/animated_logo</item>
     </style>
 </resources>
