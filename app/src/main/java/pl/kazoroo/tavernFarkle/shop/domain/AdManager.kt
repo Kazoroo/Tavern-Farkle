@@ -20,7 +20,7 @@ object AdManager {
 
         RewardedAd.load(
             context,
-            "ca-app-pub-2857855049969601/2462094570",
+            "ca-app-pub-2857855049969601/1055979641",
             adRequest,
             object : RewardedAdLoadCallback() {
                 override fun onAdFailedToLoad(adError: LoadAdError) {
