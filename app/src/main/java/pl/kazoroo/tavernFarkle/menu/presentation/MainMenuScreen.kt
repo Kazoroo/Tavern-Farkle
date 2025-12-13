@@ -23,7 +23,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.svenjacobs.reveal.Reveal
-import com.svenjacobs.reveal.RevealCanvas
 import com.svenjacobs.reveal.RevealCanvasState
 import com.svenjacobs.reveal.RevealState
 import com.svenjacobs.reveal.rememberRevealCanvasState
@@ -51,7 +50,8 @@ fun MainMenuScreen(
     navController: NavController,
     coinsViewModel: CoinsViewModel,
     mainMenuViewModel: MainMenuViewModel,
-    inventoryViewModel: InventoryViewModel
+    inventoryViewModel: InventoryViewModel,
+    revealCanvasState: RevealCanvasState
 ) {
     var isBettingDialogVisible by remember { mutableStateOf(false) }
     val revealCanvasState = rememberRevealCanvasState()
@@ -92,19 +92,14 @@ fun MainMenuScreen(
         }
     }
 
-    RevealCanvas(
-        modifier = Modifier.fillMaxSize(),
+    MainMenuContent(
+        coinsViewModel = coinsViewModel,
+        navController = navController,
         revealCanvasState = revealCanvasState,
-    ) {
-        MainMenuContent(
-            coinsViewModel = coinsViewModel,
-            navController = navController,
-            revealCanvasState = revealCanvasState,
-            playWithComputerOnClick = { isBettingDialogVisible = true },
-            revealState = revealState,
-            onboardingOnClick = { mainMenuViewModel.nextOnboardingStage() }
-        )
-    }
+        playWithComputerOnClick = { isBettingDialogVisible = true },
+        revealState = revealState,
+        onboardingOnClick = { mainMenuViewModel.nextOnboardingStage() }
+    )
 
     if(isBettingDialogVisible) {
         BettingDialog(

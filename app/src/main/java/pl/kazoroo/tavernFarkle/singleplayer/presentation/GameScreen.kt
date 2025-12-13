@@ -29,10 +29,8 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.svenjacobs.reveal.Reveal
-import com.svenjacobs.reveal.RevealCanvas
 import com.svenjacobs.reveal.RevealCanvasState
 import com.svenjacobs.reveal.RevealState
-import com.svenjacobs.reveal.rememberRevealCanvasState
 import com.svenjacobs.reveal.rememberRevealState
 import kotlinx.coroutines.delay
 import pl.kazoroo.tavernFarkle.R
@@ -60,11 +58,11 @@ private const val ONBOARDING_INITIAL_DELAY_MS = 2000L
 fun GameScreen(
     navController: NavHostController,
     viewModel: GameViewModel,
-    coinsViewModel: CoinsViewModel
+    coinsViewModel: CoinsViewModel,
+    revealCanvasState: RevealCanvasState
 ) {
     val state by viewModel.gameState.collectAsStateWithLifecycle()
 
-    val revealCanvasState = rememberRevealCanvasState()
     val revealState = rememberRevealState()
     val isFirstLaunch = viewModel.isFirstLaunch.collectAsState().value
     val onboardingStage = viewModel.onboardingStage.collectAsState().value
@@ -161,19 +159,14 @@ fun GameScreen(
         }
     }
 
-    RevealCanvas(
-        modifier = Modifier.fillMaxSize(),
+    GameContent(
+        viewModel = viewModel,
+        coinsViewModel = coinsViewModel,
         revealCanvasState = revealCanvasState,
-    ) {
-        GameContent(
-            viewModel = viewModel,
-            coinsViewModel = coinsViewModel,
-            revealCanvasState = revealCanvasState,
-            revealState = revealState,
-            state = state,
-            myPlayerIndex = myPlayerIndex
-        )
-    }
+        revealState = revealState,
+        state = state,
+        myPlayerIndex = myPlayerIndex
+    )
 }
 
 @Composable

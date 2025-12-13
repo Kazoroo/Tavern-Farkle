@@ -1,13 +1,17 @@
 package pl.kazoroo.tavernFarkle.core.presentation.navigation
 
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.svenjacobs.reveal.RevealCanvas
+import com.svenjacobs.reveal.rememberRevealCanvasState
 import pl.kazoroo.tavernFarkle.core.presentation.CoinsViewModel
 import pl.kazoroo.tavernFarkle.di.DependencyContainer
 import pl.kazoroo.tavernFarkle.menu.presentation.MainMenuScreen
@@ -33,76 +37,84 @@ fun Navigation(
     lobbyViewModel: LobbyViewModel
 ) {
     val navController = rememberNavController()
+    val revealCanvasState = rememberRevealCanvasState()
 
-    NavHost(
-        navController = navController,
-        startDestination = Screen.MainScreen.route
+    RevealCanvas(
+        modifier = Modifier.fillMaxSize(),
+        revealCanvasState = revealCanvasState,
     ) {
-        composable(
-            route = Screen.MainScreen.route
+        NavHost(
+            navController = navController,
+            startDestination = Screen.MainScreen.route
         ) {
-            MainMenuScreen(
-                navController = navController,
-                coinsViewModel = coinsViewModel,
-                mainMenuViewModel = mainMenuViewModel,
-                inventoryViewModel = inventoryViewModel
-            )
-        }
-        composable(
-            route = Screen.GameScreen.route + "/{isMultiplayer}",
-            arguments = listOf(navArgument("isMultiplayer") {
-                type = NavType.BoolType
-                defaultValue = false
-            })
-        ) {
-            val isMultiplayer = it.arguments?.getBoolean("isMultiplayer") ?: false
-            val gameViewModel = viewModel<GameViewModel>(
-                factory = dependencyContainer.gameViewModelFactory(isMultiplayer)
-            )
+            composable(
+                route = Screen.MainScreen.route
+            ) {
+                MainMenuScreen(
+                    navController = navController,
+                    coinsViewModel = coinsViewModel,
+                    mainMenuViewModel = mainMenuViewModel,
+                    inventoryViewModel = inventoryViewModel,
+                    revealCanvasState = revealCanvasState
+                )
+            }
+            composable(
+                route = Screen.GameScreen.route + "/{isMultiplayer}",
+                arguments = listOf(navArgument("isMultiplayer") {
+                    type = NavType.BoolType
+                    defaultValue = false
+                })
+            ) {
+                val isMultiplayer = it.arguments?.getBoolean("isMultiplayer") ?: false
+                val gameViewModel = viewModel<GameViewModel>(
+                    factory = dependencyContainer.gameViewModelFactory(isMultiplayer)
+                )
 
-            GameScreen(
-                navController = navController,
-                viewModel = gameViewModel,
-                coinsViewModel = coinsViewModel
-            )
-        }
-        composable(
-            route = Screen.LobbyScreen.route,
-        ) {
-            LobbyScreen(
-                coinsAmount = coinsViewModel.coinsAmount.collectAsState().value,
-                navController = navController,
-                lobbyViewModel = lobbyViewModel,
-                inventoryViewModel = inventoryViewModel,
-                coinsViewModel = coinsViewModel
-            )
-        }
-        composable(
-            route = Screen.ShopScreen.route
-        ) {
-            ShopScreen(
-                coinsViewModel = coinsViewModel,
-                buySpecialDiceUseCase = BuySpecialDiceUseCase(dependencyContainer.inventoryDataRepository),
-                navController = navController
-            )
-        }
+                GameScreen(
+                    navController = navController,
+                    viewModel = gameViewModel,
+                    coinsViewModel = coinsViewModel,
+                    revealCanvasState = revealCanvasState
+                )
+            }
+            composable(
+                route = Screen.LobbyScreen.route,
+            ) {
+                LobbyScreen(
+                    coinsAmount = coinsViewModel.coinsAmount.collectAsState().value,
+                    navController = navController,
+                    lobbyViewModel = lobbyViewModel,
+                    inventoryViewModel = inventoryViewModel,
+                    coinsViewModel = coinsViewModel
+                )
+            }
+            composable(
+                route = Screen.ShopScreen.route
+            ) {
+                ShopScreen(
+                    coinsViewModel = coinsViewModel,
+                    buySpecialDiceUseCase = BuySpecialDiceUseCase(dependencyContainer.inventoryDataRepository),
+                    navController = navController
+                )
+            }
 
-        composable(
-            route = Screen.InventoryScreen.route
-        ) {
-            InventoryScreen(
-                inventoryViewModel = inventoryViewModel,
-                navController = navController
-            )
-        }
+            composable(
+                route = Screen.InventoryScreen.route
+            ) {
+                InventoryScreen(
+                    inventoryViewModel = inventoryViewModel,
+                    navController = navController
+                )
+            }
 
-        composable(
-            route = Screen.SettingsScreen.route
-        ) {
-            SettingsScreen(
-                settingsViewModel,
-                navController = navController
-            )
+            composable(
+                route = Screen.SettingsScreen.route
+            ) {
+                SettingsScreen(
+                    settingsViewModel,
+                    navController = navController
+                )
+            }
         }
     }
 }
