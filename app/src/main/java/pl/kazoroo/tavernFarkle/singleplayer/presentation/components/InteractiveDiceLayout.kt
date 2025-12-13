@@ -115,7 +115,9 @@ private fun RevealScope.DiceImageWithShadow(
     val modifier =
         when (index) {
             4 -> Modifier.revealable(key = GameRevealableKeys.ScoringDice)
-            2, 3, 5 -> Modifier.revealable(GameRevealableKeys.ThreeOfKind)
+            2 -> Modifier.revealable(GameRevealableKeys.ThreeOfKindFirstDice)
+            3 -> Modifier.revealable(GameRevealableKeys.ThreeOfKindSecondDice)
+            5 -> Modifier.revealable(GameRevealableKeys.ThreeOfKindThirdDice)
             else -> Modifier
         }
 

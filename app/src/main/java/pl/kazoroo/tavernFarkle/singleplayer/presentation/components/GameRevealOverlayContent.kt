@@ -24,10 +24,22 @@ fun RevealOverlayScope.GameRevealOverlayContent(key: Key) {
                 text = "Tap here to score your points and play further."
             )
         }
-        GameRevealableKeys.ThreeOfKind -> {
+        GameRevealableKeys.ThreeOfKindFirstDice -> {
             OverlayItem(
-                alignModifier = Modifier.align(verticalArrangement = RevealOverlayArrangement.Bottom),
-                text = "Three or more of kind also gives you points. Select Them."
+                alignModifier = Modifier.align(verticalArrangement = RevealOverlayArrangement.Top, horizontalAlignment = Alignment.End, confineWidth = false),
+                text = "Three or more of kind also gives you points. Select first one."
+            )
+        }
+        GameRevealableKeys.ThreeOfKindSecondDice -> {
+            OverlayItem(
+                alignModifier = Modifier.align(verticalArrangement = RevealOverlayArrangement.Bottom, horizontalAlignment = Alignment.Start),
+                text = "Select second dice of kind..."
+            )
+        }
+        GameRevealableKeys.ThreeOfKindThirdDice -> {
+            OverlayItem(
+                alignModifier = Modifier.align(verticalArrangement = RevealOverlayArrangement.Bottom, horizontalAlignment = Alignment.End),
+                text = "...and third."
             )
         }
         GameRevealableKeys.PassButton -> {

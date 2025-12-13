@@ -147,11 +147,23 @@ fun GameScreen(
                     delay(200)
                     revealState.reveal(GameRevealableKeys.ScoreButton)
                 }
-                GameRevealableKeys.ThreeOfKind.ordinal -> {
-                    delay(200)
-                    revealState.reveal(GameRevealableKeys.ThreeOfKind)
+                GameRevealableKeys.ThreeOfKindFirstDice.ordinal -> {
+                    delay(ONBOARDING_INITIAL_DELAY_MS)
+                    revealState.reveal(GameRevealableKeys.ThreeOfKindFirstDice)
+                }
+                GameRevealableKeys.ThreeOfKindSecondDice.ordinal -> {
+                    delay(400)
+                    revealState.reveal(GameRevealableKeys.ThreeOfKindSecondDice)
+                }
+                GameRevealableKeys.ThreeOfKindThirdDice.ordinal -> {
+                    delay(400)
+                    revealState.reveal(GameRevealableKeys.ThreeOfKindThirdDice)
                 }
                 GameRevealableKeys.PassButton.ordinal -> {
+                    delay(400)
+                    revealState.reveal(GameRevealableKeys.PassButton)
+                }
+                GameRevealableKeys.Hide.ordinal -> {
                     revealState.hide()
                     viewModel.finishOnboarding()
                 }
@@ -221,11 +233,21 @@ fun GameContent(
                     viewModel.onScoreAndRollAgain()
                     viewModel.nextOnboardingStage()
                 }
-                GameRevealableKeys.ThreeOfKind -> {
-
+                GameRevealableKeys.ThreeOfKindFirstDice -> {
+                    viewModel.toggleDiceSelection(2)
+                    viewModel.nextOnboardingStage()
+                }
+                GameRevealableKeys.ThreeOfKindSecondDice -> {
+                    viewModel.toggleDiceSelection(3)
+                    viewModel.nextOnboardingStage()
+                }
+                GameRevealableKeys.ThreeOfKindThirdDice -> {
+                    viewModel.toggleDiceSelection(5)
+                    viewModel.nextOnboardingStage()
                 }
                 GameRevealableKeys.PassButton -> {
-
+                    viewModel.onPass()
+                    viewModel.nextOnboardingStage()
                 }
             }
         },
