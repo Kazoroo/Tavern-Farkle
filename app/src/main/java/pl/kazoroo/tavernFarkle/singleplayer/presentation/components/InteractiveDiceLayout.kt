@@ -39,11 +39,13 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.svenjacobs.reveal.RevealScope
 import pl.kazoroo.tavernFarkle.R
 import pl.kazoroo.tavernFarkle.core.domain.model.Dice
+import pl.kazoroo.tavernFarkle.singleplayer.presentation.GameRevealableKeys
 
 @Composable
-fun InteractiveDiceLayout(
+fun RevealScope.InteractiveDiceLayout(
     diceState: List<Dice>,
     activePlayer: Int,
     diceOnClick: (Int) -> Unit,
@@ -101,7 +103,7 @@ fun InteractiveDiceLayout(
 }
 
 @Composable
-private fun DiceImageWithShadow(
+private fun RevealScope.DiceImageWithShadow(
     imageSize: Dp,
     diceState: Dice,
     index: Int,
@@ -110,10 +112,17 @@ private fun DiceImageWithShadow(
 ) {
     CustomDiceShadow(shadowSize = imageSize)
 
+    val modifier =
+        when (index) {
+            4 -> Modifier.revealable(key = GameRevealableKeys.ScoringDice)
+            2, 3, 5 -> Modifier.revealable(GameRevealableKeys.ThreeOfKind)
+            else -> Modifier
+        }
+
     Image(
         painter = painterResource(id = diceState.image),
         contentDescription = "Dice $index",
-        modifier = Modifier
+        modifier = modifier
             .padding(2.dp)
             .size(imageSize)
             .animatedCircularBorder(

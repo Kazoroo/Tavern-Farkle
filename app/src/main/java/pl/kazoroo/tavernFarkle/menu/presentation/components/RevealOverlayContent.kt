@@ -1,19 +1,11 @@
 package pl.kazoroo.tavernFarkle.menu.presentation.components
 
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.dimensionResource
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import com.svenjacobs.reveal.Key
 import com.svenjacobs.reveal.RevealOverlayArrangement
 import com.svenjacobs.reveal.RevealOverlayScope
-import pl.kazoroo.tavernFarkle.R
+import pl.kazoroo.tavernFarkle.core.presentation.components.OverlayItem
 import pl.kazoroo.tavernFarkle.menu.presentation.RevealableKeys
 
 @Composable
@@ -67,21 +59,5 @@ fun RevealOverlayScope.RevealOverlayContent(key: Key) {
                 text = "After buying special dice, don’t forget to select them in your Inventory. You can choose up to 6 special dice."
             )
         }
-    }
-}
-
-@Composable
-private fun OverlayItem(alignModifier: Modifier, text: String) {
-    Surface(
-        modifier = alignModifier
-            .padding(8.dp),
-        shape = RoundedCornerShape(4.dp),
-        color = Color.White,
-    ) {
-        Text(
-            text = text,
-            textAlign = TextAlign.Center,
-            modifier = Modifier.padding(dimensionResource(R.dimen.small_padding))
-        )
     }
 }
