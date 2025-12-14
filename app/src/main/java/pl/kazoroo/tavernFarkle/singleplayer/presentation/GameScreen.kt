@@ -137,36 +137,39 @@ fun GameScreen(
     }
 
     LaunchedEffect(key1 = onboardingStage) {
-        if(isFirstLaunch) {
-            when(onboardingStage) {
-                GameRevealableKeys.ScoringDice.ordinal -> {
-                    delay(ONBOARDING_INITIAL_DELAY_MS)
-                    revealState.reveal(GameRevealableKeys.ScoringDice)
-                }
-                GameRevealableKeys.ScoreButton.ordinal -> {
-                    delay(200)
-                    revealState.reveal(GameRevealableKeys.ScoreButton)
-                }
-                GameRevealableKeys.ThreeOfKindFirstDice.ordinal -> {
-                    delay(ONBOARDING_INITIAL_DELAY_MS)
-                    revealState.reveal(GameRevealableKeys.ThreeOfKindFirstDice)
-                }
-                GameRevealableKeys.ThreeOfKindSecondDice.ordinal -> {
-                    delay(400)
-                    revealState.reveal(GameRevealableKeys.ThreeOfKindSecondDice)
-                }
-                GameRevealableKeys.ThreeOfKindThirdDice.ordinal -> {
-                    delay(400)
-                    revealState.reveal(GameRevealableKeys.ThreeOfKindThirdDice)
-                }
-                GameRevealableKeys.PassButton.ordinal -> {
-                    delay(400)
-                    revealState.reveal(GameRevealableKeys.PassButton)
-                }
-                GameRevealableKeys.Hide.ordinal -> {
-                    revealState.hide()
-                    viewModel.finishOnboarding()
-                }
+        if(!isFirstLaunch)  return@LaunchedEffect
+        while(viewModel.isDiceAnimating.value) {
+            delay(50)
+        }
+
+        when(onboardingStage) {
+            GameRevealableKeys.ScoringDice.ordinal -> {
+                delay(400)
+                revealState.reveal(GameRevealableKeys.ScoringDice)
+            }
+            GameRevealableKeys.ScoreButton.ordinal -> {
+                delay(400)
+                revealState.reveal(GameRevealableKeys.ScoreButton)
+            }
+            GameRevealableKeys.ThreeOfKindFirstDice.ordinal -> {
+                delay(ONBOARDING_INITIAL_DELAY_MS)
+                revealState.reveal(GameRevealableKeys.ThreeOfKindFirstDice)
+            }
+            GameRevealableKeys.ThreeOfKindSecondDice.ordinal -> {
+                delay(400)
+                revealState.reveal(GameRevealableKeys.ThreeOfKindSecondDice)
+            }
+            GameRevealableKeys.ThreeOfKindThirdDice.ordinal -> {
+                delay(400)
+                revealState.reveal(GameRevealableKeys.ThreeOfKindThirdDice)
+            }
+            GameRevealableKeys.PassButton.ordinal -> {
+                delay(400)
+                revealState.reveal(GameRevealableKeys.PassButton)
+            }
+            GameRevealableKeys.Hide.ordinal -> {
+                revealState.hide()
+                viewModel.finishOnboarding()
             }
         }
     }
