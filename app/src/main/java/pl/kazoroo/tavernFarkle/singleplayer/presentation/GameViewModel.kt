@@ -97,7 +97,7 @@ class GameViewModel(
         _isFirstLaunch.value = false
 
         viewModelScope.launch {
-            saveUserDataUseCase(false, UserDataKey.IS_FIRST_LAUNCH)
+            saveUserDataUseCase(false, UserDataKey.IS_FIRST_GAME)
         }
     }
 

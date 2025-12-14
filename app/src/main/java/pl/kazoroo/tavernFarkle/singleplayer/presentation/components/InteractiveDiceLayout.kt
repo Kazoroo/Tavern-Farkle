@@ -14,6 +14,7 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -114,10 +115,10 @@ private fun RevealScope.DiceImageWithShadow(
 
     val modifier =
         when (index) {
-            4 -> Modifier.revealable(key = GameRevealableKeys.ScoringDice)
-            2 -> Modifier.revealable(GameRevealableKeys.ThreeOfKindFirstDice)
-            3 -> Modifier.revealable(GameRevealableKeys.ThreeOfKindSecondDice)
-            5 -> Modifier.revealable(GameRevealableKeys.ThreeOfKindThirdDice)
+            4 -> Modifier.revealable(key = GameRevealableKeys.ScoringDice, padding = PaddingValues(0.dp))
+            2 -> Modifier.revealable(GameRevealableKeys.ThreeOfKindFirstDice, padding = PaddingValues(0.dp))
+            3 -> Modifier.revealable(GameRevealableKeys.ThreeOfKindSecondDice, padding = PaddingValues(0.dp))
+            5 -> Modifier.revealable(GameRevealableKeys.ThreeOfKindThirdDice, padding = PaddingValues(0.dp))
             else -> Modifier
         }
 
