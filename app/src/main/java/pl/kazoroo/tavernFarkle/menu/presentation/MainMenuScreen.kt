@@ -25,7 +25,6 @@ import androidx.navigation.NavController
 import com.svenjacobs.reveal.Reveal
 import com.svenjacobs.reveal.RevealCanvasState
 import com.svenjacobs.reveal.RevealState
-import com.svenjacobs.reveal.rememberRevealCanvasState
 import com.svenjacobs.reveal.rememberRevealState
 import kotlinx.coroutines.delay
 import pl.kazoroo.tavernFarkle.R
@@ -54,7 +53,6 @@ fun MainMenuScreen(
     revealCanvasState: RevealCanvasState
 ) {
     var isBettingDialogVisible by remember { mutableStateOf(false) }
-    val revealCanvasState = rememberRevealCanvasState()
     val revealState = rememberRevealState()
     val isFirstLaunch = mainMenuViewModel.isFirstLaunch.collectAsState().value
     val onboardingStage = mainMenuViewModel.onboardingStage.collectAsState().value

@@ -45,7 +45,7 @@ fun RevealOverlayScope.GameRevealOverlayContent(key: Key) {
         GameRevealableKeys.PassButton -> {
             OverlayItem(
                 alignModifier = Modifier.align(verticalArrangement = RevealOverlayArrangement.Top, horizontalAlignment = Alignment.End),
-                text = "If you don't want to risk more, click Pass to finish your round."
+                text = "If you don't want to risk more, click Pass to finish your round. Then your opponent takes their turn."
             )
         }
     }

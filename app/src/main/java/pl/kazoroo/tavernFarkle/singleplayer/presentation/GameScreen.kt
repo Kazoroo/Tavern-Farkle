@@ -137,7 +137,7 @@ fun GameScreen(
     }
 
     LaunchedEffect(key1 = onboardingStage) {
-        if(!isFirstLaunch)  return@LaunchedEffect
+        if(!isFirstLaunch || viewModel.isMultiplayer)  return@LaunchedEffect
         while(viewModel.isDiceAnimating.value) {
             delay(50)
         }

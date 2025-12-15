@@ -47,7 +47,7 @@ class GameViewModel(
     private val drawDiceUseCase: DrawDiceUseCase,
     private val playOpponentTurnUseCase: PlayOpponentTurnUseCase,
     dispatcher: CoroutineDispatcher = Dispatchers.Main,
-    private val isMultiplayer: Boolean,
+    val isMultiplayer: Boolean,
     private val saveUserDataUseCase: SaveUserDataUseCase,
     readUserDataUseCase: ReadUserDataUseCase,
 ): ViewModel() {
