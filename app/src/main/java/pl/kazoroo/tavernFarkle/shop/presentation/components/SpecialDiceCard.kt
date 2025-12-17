@@ -29,7 +29,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import pl.kazoroo.tavernFarkle.R
@@ -57,9 +56,10 @@ fun SpecialDiceCard(
             modifier = Modifier.fillMaxSize()
         ) {
             Image(
-                painter = painterResource(id = R.drawable.paper_texture),
+                painter = painterResource(id = R.drawable.parchment_texture),
                 contentDescription = null,
-                contentScale = ContentScale.FillBounds
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.fillMaxSize()
             )
 
             Column(
@@ -155,18 +155,5 @@ fun SpecialDiceCard(
                 }
             }
         }
-    }
-}
-
-@Preview
-@Composable
-private fun x() {
-    Box {
-        SpecialDiceCard(
-            name = SpecialDiceName.SPIDERS_DICE,
-            image = R.drawable.spiders_dice_1,
-            chancesOfDrawingValue = listOf(12f, 12f, 12f, 12f, 12f, 12f),
-            price = 123
-        ) { }
     }
 }

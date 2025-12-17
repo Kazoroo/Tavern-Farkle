@@ -34,6 +34,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.dropShadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.shadow.Shadow
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
@@ -227,69 +228,80 @@ private fun LobbyCard(lobbyData: Lobby, onJoinClick: () -> Unit) {
             .fillMaxWidth()
             .wrapContentHeight()
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = dimensionResource(R.dimen.medium_padding))
+        Box(
+            modifier = Modifier.fillMaxSize()
         ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center,
+            Image(
+                painter = painterResource(id = R.drawable.parchment_texture),
+                contentDescription = null,
+                contentScale = ContentScale.FillBounds,
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = dimensionResource(R.dimen.small_padding))
+                    .padding(horizontal = dimensionResource(R.dimen.medium_padding))
             ) {
-                val formattedBet = lobbyData.betAmount.toString()
-                    .reversed()
-                    .chunked(3)
-                    .joinToString(" ")
-                    .reversed()
-
-                Text(
-                    text = buildAnnotatedString {
-                        withStyle(style = SpanStyle(fontWeight = FontWeight.W700)) {
-                            append("Bet: ")
-                        }
-                        append(formattedBet)
-                    },
-                    modifier = Modifier.weight(1f, fill = false)
-                )
-
-                Image(
-                    painter = painterResource(R.drawable.coin),
-                    contentDescription = null,
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center,
                     modifier = Modifier
-                        .size(dimensionResource(R.dimen.coin_icon_size))
-                        .padding(start = dimensionResource(R.dimen.small_padding))
-                )
-            }
+                        .fillMaxWidth()
+                        .padding(vertical = dimensionResource(R.dimen.small_padding))
+                ) {
+                    val formattedBet = lobbyData.betAmount.toString()
+                        .reversed()
+                        .chunked(3)
+                        .joinToString(" ")
+                        .reversed()
 
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = dimensionResource(R.dimen.small_padding))
-            ) {
-                Text(
-                    text = "${lobbyData.playerCount} / 2\nplayers",
-                    textAlign = TextAlign.Center,
+                    Text(
+                        text = buildAnnotatedString {
+                            withStyle(style = SpanStyle(fontWeight = FontWeight.W700)) {
+                                append("Bet: ")
+                            }
+                            append(formattedBet)
+                        },
+                        modifier = Modifier.weight(1f, fill = false)
+                    )
+
+                    Image(
+                        painter = painterResource(R.drawable.coin),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .size(dimensionResource(R.dimen.coin_icon_size))
+                            .padding(start = dimensionResource(R.dimen.small_padding))
+                    )
+                }
+
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween,
                     modifier = Modifier
-                        .border(1.dp, Color.LightGray, RoundedCornerShape(5.dp))
-                        .padding(horizontal = 20.dp, vertical = 8.dp)
-                )
-
-                Button(
-                    onClick = onJoinClick,
-                    shape = RoundedCornerShape(12.dp),
-                    enabled = lobbyData.playerCount == 1,
-                    elevation = ButtonDefaults.buttonElevation(defaultElevation = 12.dp),
+                        .fillMaxWidth()
+                        .padding(vertical = dimensionResource(R.dimen.small_padding))
                 ) {
                     Text(
-                        text = stringResource(R.string.join),
-                        fontWeight = FontWeight.W700,
-                        modifier = Modifier.padding(dimensionResource(R.dimen.small_padding))
+                        text = "${lobbyData.playerCount} / 2\nplayers",
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier
+                            .border(1.dp, Color.DarkGray, RoundedCornerShape(5.dp))
+                            .padding(horizontal = 20.dp, vertical = 8.dp)
                     )
+
+                    Button(
+                        onClick = onJoinClick,
+                        shape = RoundedCornerShape(12.dp),
+                        enabled = lobbyData.playerCount == 1,
+                        elevation = ButtonDefaults.buttonElevation(defaultElevation = 12.dp),
+                    ) {
+                        Text(
+                            text = stringResource(R.string.join),
+                            fontWeight = FontWeight.W700,
+                            modifier = Modifier.padding(dimensionResource(R.dimen.small_padding))
+                        )
+                    }
                 }
             }
         }

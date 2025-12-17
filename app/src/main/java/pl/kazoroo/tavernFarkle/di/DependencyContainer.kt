@@ -48,7 +48,7 @@ class DependencyContainer(
         CheckForSkuchaUseCase(calculatePointsUseCase)
     }
     val drawDiceUseCase by lazy {
-        DrawDiceUseCase(checkForSkuchaUseCase)
+        DrawDiceUseCase(checkForSkuchaUseCase, readUserDataUseCase)
     }
     val playOpponentTurnUseCase by lazy {
         PlayOpponentTurnUseCase(localGameRepository, drawDiceUseCase, calculatePointsUseCase)
@@ -121,7 +121,9 @@ class DependencyContainer(
                 calculatePointsUseCase = calculatePointsUseCase,
                 drawDiceUseCase = drawDiceUseCase,
                 playOpponentTurnUseCase = playOpponentTurnUseCase,
-                isMultiplayer = isMultiplayer
+                isMultiplayer = isMultiplayer,
+                readUserDataUseCase = readUserDataUseCase,
+                saveUserDataUseCase = saveUserDataUseCase
             )
         }
 }

@@ -21,15 +21,19 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import pl.kazoroo.tavernFarkle.core.data.local.UserDataKey
 import pl.kazoroo.tavernFarkle.core.domain.model.GameState
 import pl.kazoroo.tavernFarkle.core.domain.repository.GameRepository
 import pl.kazoroo.tavernFarkle.core.domain.usecase.game.CalculatePointsUseCase
 import pl.kazoroo.tavernFarkle.core.domain.usecase.game.DrawDiceUseCase
+import pl.kazoroo.tavernFarkle.core.domain.usecase.userdata.ReadUserDataUseCase
+import pl.kazoroo.tavernFarkle.core.domain.usecase.userdata.SaveUserDataUseCase
 import pl.kazoroo.tavernFarkle.core.presentation.navigation.Screen
 import pl.kazoroo.tavernFarkle.menu.sound.SoundPlayer
 import pl.kazoroo.tavernFarkle.menu.sound.SoundType
@@ -43,10 +47,18 @@ class GameViewModel(
     private val drawDiceUseCase: DrawDiceUseCase,
     private val playOpponentTurnUseCase: PlayOpponentTurnUseCase,
     dispatcher: CoroutineDispatcher = Dispatchers.Main,
-    private val isMultiplayer: Boolean
+    val isMultiplayer: Boolean,
+    private val saveUserDataUseCase: SaveUserDataUseCase,
+    readUserDataUseCase: ReadUserDataUseCase,
 ): ViewModel() {
     private val scope = CoroutineScope(dispatcher + SupervisorJob())
     val gameState: StateFlow<GameState> = repository.gameState
+
+    private val _onboardingStage = MutableStateFlow(GameRevealableKeys.ScoringDice.ordinal)
+    val onboardingStage: StateFlow<Int> = _onboardingStage.asStateFlow()
+
+    private val _isFirstLaunch = MutableStateFlow<Boolean>(readUserDataUseCase(UserDataKey.IS_FIRST_GAME))
+    val isFirstLaunch: StateFlow<Boolean> = _isFirstLaunch.asStateFlow()
 
     val isOpponentTurn: StateFlow<Boolean> =
         gameState.map { state ->
@@ -79,6 +91,18 @@ class GameViewModel(
         handleSkuchaQueue()
         observeSkucha()
         observeDiceAnimation()
+    }
+
+    fun finishOnboarding() {
+        _isFirstLaunch.value = false
+
+        viewModelScope.launch {
+            saveUserDataUseCase(false, UserDataKey.IS_FIRST_GAME)
+        }
+    }
+
+    fun nextOnboardingStage() {
+        _onboardingStage.value++
     }
 
     fun onGameEnd(

@@ -1,13 +1,16 @@
 package pl.kazoroo.tavernFarkle.core.domain.usecase.game
 
 import pl.kazoroo.tavernFarkle.R
+import pl.kazoroo.tavernFarkle.core.data.local.UserDataKey
 import pl.kazoroo.tavernFarkle.core.data.local.repository.SpecialDiceList
 import pl.kazoroo.tavernFarkle.core.domain.model.Dice
 import pl.kazoroo.tavernFarkle.core.domain.repository.GameRepository
+import pl.kazoroo.tavernFarkle.core.domain.usecase.userdata.ReadUserDataUseCase
 import kotlin.random.Random
 
 open class DrawDiceUseCase(
-    private val checkForSkuchaUseCase: CheckForSkuchaUseCase
+    private val checkForSkuchaUseCase: CheckForSkuchaUseCase,
+    private val readUserDataUseCase: ReadUserDataUseCase
 ) {
     private val diceDrawables = listOf(
         R.drawable.dice_1,
@@ -31,17 +34,23 @@ open class DrawDiceUseCase(
         repository: GameRepository,
         checkForSkucha: Boolean = true
     ): List<Dice> {
-        val newDiceSet = diceSet.map { dice ->
+        val isFirstGame = readUserDataUseCase.invoke<Boolean>(UserDataKey.IS_FIRST_GAME)
+
+        val newDiceSet = diceSet.mapIndexed { index, dice ->
             val specialDice = dice.specialDiceName
                 ?.let { name -> SpecialDiceList.specialDiceList.first { it.name == name } }
-            val value = getRandomWithProbability(specialDice?.chancesOfDrawingValue ?: normalDiceProbability)
+            val value = if(isFirstGame) {
+                listOf(6, 4, 2, 2, 1, 2)[index]
+            } else {
+                getRandomWithProbability(specialDice?.chancesOfDrawingValue ?: normalDiceProbability)
+            }
 
             dice.copy(
                 value = value,
                 image = (specialDice?.image ?: diceDrawables)[value - 1]
             )
         }
-        val shuffledDiceSet = newDiceSet.shuffled()
+        val shuffledDiceSet = if(!isFirstGame) newDiceSet.shuffled() else newDiceSet
 
         if(repository.gameState.value.players.isNotEmpty()) repository.updateDiceSet(shuffledDiceSet)
 

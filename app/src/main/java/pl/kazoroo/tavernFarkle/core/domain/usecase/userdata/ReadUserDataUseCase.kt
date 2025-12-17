@@ -27,6 +27,7 @@ class ReadUserDataUseCase(private val userDataRepository: UserDataRepository) {
             UserDataKey.IS_SOUND_ENABLED -> true as T
             UserDataKey.IS_MUSIC_ENABLED -> true as T
             UserDataKey.IS_FIRST_LAUNCH -> true as T
+            UserDataKey.IS_FIRST_GAME -> true as T
         }
     }
 }

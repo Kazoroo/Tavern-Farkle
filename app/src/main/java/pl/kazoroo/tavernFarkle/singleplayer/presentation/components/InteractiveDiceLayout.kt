@@ -14,6 +14,7 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -39,11 +40,13 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.svenjacobs.reveal.RevealScope
 import pl.kazoroo.tavernFarkle.R
 import pl.kazoroo.tavernFarkle.core.domain.model.Dice
+import pl.kazoroo.tavernFarkle.singleplayer.presentation.GameRevealableKeys
 
 @Composable
-fun InteractiveDiceLayout(
+fun RevealScope.InteractiveDiceLayout(
     diceState: List<Dice>,
     activePlayer: Int,
     diceOnClick: (Int) -> Unit,
@@ -101,7 +104,7 @@ fun InteractiveDiceLayout(
 }
 
 @Composable
-private fun DiceImageWithShadow(
+private fun RevealScope.DiceImageWithShadow(
     imageSize: Dp,
     diceState: Dice,
     index: Int,
@@ -110,10 +113,19 @@ private fun DiceImageWithShadow(
 ) {
     CustomDiceShadow(shadowSize = imageSize)
 
+    val modifier =
+        when (index) {
+            4 -> Modifier.revealable(key = GameRevealableKeys.ScoringDice, padding = PaddingValues(0.dp))
+            2 -> Modifier.revealable(GameRevealableKeys.ThreeOfKindFirstDice, padding = PaddingValues(0.dp))
+            3 -> Modifier.revealable(GameRevealableKeys.ThreeOfKindSecondDice, padding = PaddingValues(0.dp))
+            5 -> Modifier.revealable(GameRevealableKeys.ThreeOfKindThirdDice, padding = PaddingValues(0.dp))
+            else -> Modifier
+        }
+
     Image(
         painter = painterResource(id = diceState.image),
         contentDescription = "Dice $index",
-        modifier = Modifier
+        modifier = modifier
             .padding(2.dp)
             .size(imageSize)
             .animatedCircularBorder(

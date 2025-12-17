@@ -8,19 +8,28 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.unit.dp
+import com.svenjacobs.reveal.RevealScope
 import pl.kazoroo.tavernFarkle.R
+import pl.kazoroo.tavernFarkle.singleplayer.presentation.GameRevealableKeys
 
 @Composable
-fun GameButtons(buttonsInfo: List<ButtonInfo>) {
+fun RevealScope.GameButtons(buttonsInfo: List<ButtonInfo>) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(bottom = 15.dp)
     ) {
-        buttonsInfo.forEach { buttonInfo ->
+        buttonsInfo.forEachIndexed { index, buttonInfo ->
+        val modifier =
+            when (index) {
+                0 -> Modifier.revealable(key = GameRevealableKeys.ScoreButton)
+                1 -> Modifier.revealable(key = GameRevealableKeys.PassButton)
+                else -> Modifier
+            }
+
             DiceButton(
                 buttonInfo,
-                modifier = Modifier
+                modifier = modifier
                     .height(dimensionResource(R.dimen.game_button_height))
                     .weight(0.5f)
                     .padding(
