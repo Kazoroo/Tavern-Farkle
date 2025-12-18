@@ -13,13 +13,16 @@ import pl.kazoroo.tavernFarkle.shop.domain.usecase.Result
 
 class ShopViewModel(
     private val buySpecialDiceUseCase: BuySpecialDiceUseCase,
-    private val coinsAmount: Int,
     private val takeCoins: (Int) -> Unit
 ): ViewModel() {
     private val _toastMessage = MutableSharedFlow<String>()
     val toastMessage: SharedFlow<String> = _toastMessage
 
-    fun buySpecialDice(specialDice: SpecialDice, context: Context) {
+    fun buySpecialDice(
+        specialDice: SpecialDice,
+        context: Context,
+        coinsAmount: Int
+    ) {
         viewModelScope.launch {
             val result = buySpecialDiceUseCase(
                 specialDice = specialDice,

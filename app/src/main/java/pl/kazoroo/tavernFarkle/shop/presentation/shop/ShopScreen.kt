@@ -52,8 +52,7 @@ fun ShopScreen(
 ) {
     val viewModel =  remember {
         ShopViewModel(
-            buySpecialDiceUseCase,
-            coinsViewModel.coinsAmount.value.toInt()
+            buySpecialDiceUseCase
         ) { amount ->
             coinsViewModel.takeCoinsFromWallet(amount)
         }
@@ -105,7 +104,8 @@ fun ShopScreen(
                         onClick = {
                             viewModel.buySpecialDice(
                                 specialDiceList[index],
-                                context = context
+                                context = context,
+                                coinsAmount = coinsAmount.toInt()
                             )
                         },
                         coinsAmount = coinsAmount.toInt()
