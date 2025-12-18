@@ -10,6 +10,7 @@ import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.admanager.AdManagerAdRequest
 import com.google.android.gms.ads.rewarded.RewardedAd
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
+import pl.kazoroo.tavernFarkle.R
 
 object AdManager {
     private var rewardedAd: RewardedAd? = null
@@ -25,7 +26,6 @@ object AdManager {
             object : RewardedAdLoadCallback() {
                 override fun onAdFailedToLoad(adError: LoadAdError) {
                     Log.d(TAG, "The ad failed to load - $adError")
-                    Toast.makeText(context, "Ad failed to load. Try again", Toast.LENGTH_SHORT).show()
                     
                     rewardedAd = null
                 }
@@ -65,7 +65,8 @@ object AdManager {
             loadRewardedAd(context)
         } ?: run {
             Log.d(TAG, "The rewarded ad wasn't ready yet.")
-            Toast.makeText(context, "The ad was not ready yet. Try again.", Toast.LENGTH_LONG).show()
+            Toast.makeText(context,
+                context.getString(R.string.currently_there_are_no_ads_to_display_please_try_again_later), Toast.LENGTH_LONG).show()
             loadRewardedAd(context)
         }
     }

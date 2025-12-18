@@ -52,4 +52,5 @@
     <string name="you_can_wait_or_create_one">You can wait or create one.</string>
     <string name="you_don_t_have_enough_coins">You don\'t have enough coins</string>
     <string name="tap_a_die_to_add_or_remove_from_your_set">Tap a die to add or remove from your set</string>
+    <string name="currently_there_are_no_ads_to_display_please_try_again_later">Currently there are no ads to display. Please try again later.</string>
 </resources>
