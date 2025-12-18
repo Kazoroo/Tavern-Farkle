@@ -40,29 +40,15 @@ class MusicService : Service() {
         }
     }
 
-    fun resumeMusic() {
+    fun resumeMusic(respectMusicSetting: Boolean = true) {
+        if(!musicEnabled && respectMusicSetting) return
+
         if (!::mediaPlayer.isInitialized) {
             playRandomSong()
         } else if (isPaused) {
             mediaPlayer.start()
             isPaused = false
         }
-    }
-
-    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        intent?.let {
-            musicEnabled = it.getBooleanExtra("MUSIC_ENABLED", true)
-        }
-        if (musicEnabled) {
-            if (!::mediaPlayer.isInitialized || !mediaPlayer.isPlaying) {
-                playRandomSong()
-            }
-        } else {
-            if (::mediaPlayer.isInitialized && mediaPlayer.isPlaying) {
-                pauseMusic()
-            }
-        }
-        return START_STICKY
     }
 
     override fun onDestroy() {
@@ -73,6 +59,7 @@ class MusicService : Service() {
     }
 
     override fun onBind(intent: Intent?): IBinder {
+        musicEnabled = intent?.getBooleanExtra("MUSIC_ENABLED", true) ?: true
         return LocalBinder()
     }
 }

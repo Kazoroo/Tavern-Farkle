@@ -16,9 +16,9 @@ import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.android.gms.ads.MobileAds
 import pl.kazoroo.tavernFarkle.core.presentation.CoinsViewModel
@@ -60,6 +60,13 @@ class MainActivity : ComponentActivity() {
             musicService = binder.getService()
             settingsViewModel.initializeMusicService(musicService!!)
             serviceBound = true
+
+            if(
+                settingsViewModel.loadMusicPreference() &&
+                lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)
+            ) {
+                musicService?.resumeMusic()
+            }
         }
 
         override fun onServiceDisconnected(name: ComponentName?) {
@@ -85,7 +92,6 @@ class MainActivity : ComponentActivity() {
         val musicServiceIntent = Intent(this, MusicService::class.java).apply {
             putExtra("MUSIC_ENABLED", isMusicEnabled)
         }
-        startService(musicServiceIntent)
         bindService(musicServiceIntent, serviceConnection, BIND_AUTO_CREATE)
 
         setContent {
@@ -104,13 +110,6 @@ class MainActivity : ComponentActivity() {
 
             DicesTheme {
                 enableEdgeToEdge()
-                
-                LaunchedEffect(Unit) {
-                    val intent = Intent(this@MainActivity, MusicService::class.java).apply {
-                        putExtra("MUSIC_ENABLED", isMusicEnabled)
-                    }
-                    this@MainActivity.startService(intent)
-                }
 
                 Surface(
                     modifier = Modifier.fillMaxSize(),

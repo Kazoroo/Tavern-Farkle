@@ -45,7 +45,7 @@ class SettingsViewModel(
     fun togglePlayback(isMusicEnabled: Boolean) {
         viewModelScope.launch {
             if (isMusicEnabled) {
-                musicService?.get()?.resumeMusic()
+                musicService?.get()?.resumeMusic(respectMusicSetting = false)
                 saveUserDataUseCase.invoke(true, UserDataKey.IS_MUSIC_ENABLED)
             } else {
                 musicService?.get()?.pauseMusic()
