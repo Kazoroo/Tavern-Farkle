@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
@@ -226,7 +225,7 @@ private fun LobbyCard(lobbyData: Lobby, onJoinClick: () -> Unit) {
                 vertical = dimensionResource(R.dimen.small_padding),
             )
             .fillMaxWidth()
-            .wrapContentHeight()
+            .height(160.dp)
     ) {
         Box(
             modifier = Modifier.fillMaxSize()
