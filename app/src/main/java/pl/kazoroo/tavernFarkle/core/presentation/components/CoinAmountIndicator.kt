@@ -47,8 +47,7 @@ fun CoinAmountIndicator(
 
         Text(
             text = coinsText,
-            color = Color.White,
-            modifier = Modifier.width(coinsAmount.length.dp * 13)
+            color = Color.White
         )
 
         Spacer(modifier = Modifier.width(4.dp))
