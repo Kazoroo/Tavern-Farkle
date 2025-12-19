@@ -163,6 +163,10 @@ fun GameScreen(
                 delay(400)
                 revealState.reveal(GameRevealableKeys.ThreeOfKindThirdDice)
             }
+            GameRevealableKeys.SelectedPoints.ordinal -> {
+                delay(400)
+                revealState.reveal(GameRevealableKeys.SelectedPoints)
+            }
             GameRevealableKeys.PassButton.ordinal -> {
                 delay(400)
                 revealState.reveal(GameRevealableKeys.PassButton)
@@ -248,8 +252,18 @@ fun GameContent(
                     viewModel.toggleDiceSelection(5)
                     viewModel.nextOnboardingStage()
                 }
+                GameRevealableKeys.SelectedPoints -> {
+                    viewModel.nextOnboardingStage()
+                }
                 GameRevealableKeys.PassButton -> {
                     viewModel.onPass()
+                    viewModel.nextOnboardingStage()
+                }
+            }
+        },
+        onOverlayClick = { key ->
+            when(key) {
+                GameRevealableKeys.SelectedPoints -> {
                     viewModel.nextOnboardingStage()
                 }
             }

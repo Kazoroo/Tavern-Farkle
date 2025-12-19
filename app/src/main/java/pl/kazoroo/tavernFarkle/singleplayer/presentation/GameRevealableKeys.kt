@@ -6,6 +6,7 @@ enum class GameRevealableKeys {
     ThreeOfKindFirstDice,
     ThreeOfKindSecondDice,
     ThreeOfKindThirdDice,
+    SelectedPoints,
     PassButton,
     Hide
 }

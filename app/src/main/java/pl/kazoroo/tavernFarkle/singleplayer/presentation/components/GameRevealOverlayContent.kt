@@ -42,6 +42,12 @@ fun RevealOverlayScope.GameRevealOverlayContent(key: Key) {
                 text = "...and third."
             )
         }
+        GameRevealableKeys.SelectedPoints -> {
+            OverlayItem(
+                alignModifier = Modifier.align(verticalArrangement = RevealOverlayArrangement.Bottom),
+                text = "As you see, three of a kind (or more) scores the die value × 100 points."
+            )
+        }
         GameRevealableKeys.PassButton -> {
             OverlayItem(
                 alignModifier = Modifier.align(verticalArrangement = RevealOverlayArrangement.Top, horizontalAlignment = Alignment.End),

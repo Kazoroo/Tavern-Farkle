@@ -32,16 +32,18 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.svenjacobs.reveal.RevealScope
 import io.github.windedge.table.DataTable
 import io.github.windedge.table.components.Divider
 import pl.kazoroo.tavernFarkle.R
 import pl.kazoroo.tavernFarkle.core.domain.model.TableData
+import pl.kazoroo.tavernFarkle.singleplayer.presentation.GameRevealableKeys
 import pl.kazoroo.tavernFarkle.ui.theme.DarkGoldenBrown
 import pl.kazoroo.tavernFarkle.ui.theme.DarkRed
 import pl.kazoroo.tavernFarkle.ui.theme.HalfTransparentBlack
 
 @Composable
-fun PointsTable(
+fun RevealScope.PointsTable(
     data: List<TableData>,
     isOpponentTurn: Boolean
 ) {
@@ -107,8 +109,10 @@ fun PointsTable(
                 }
             }
         ) {
-            data.forEach { record ->
-                row {
+            data.forEachIndexed { index, record ->
+                row(
+                    modifier = if(index == 2) Modifier.revealable(key = GameRevealableKeys.SelectedPoints) else Modifier
+                ) {
                     cell {
                         Text(
                             text = record.pointsType,
