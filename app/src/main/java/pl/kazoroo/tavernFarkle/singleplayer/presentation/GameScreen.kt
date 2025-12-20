@@ -19,6 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
@@ -61,6 +62,7 @@ fun GameScreen(
     coinsViewModel: CoinsViewModel,
     revealCanvasState: RevealCanvasState
 ) {
+
     val state by viewModel.gameState.collectAsStateWithLifecycle()
 
     val revealState = rememberRevealState()
@@ -72,6 +74,14 @@ fun GameScreen(
     val lifecycleOwner = LocalLifecycleOwner.current
     val context = LocalContext.current
     var playerLeftGameThroughDialog by remember { mutableStateOf(false) }
+    val view = LocalView.current
+
+    DisposableEffect(Unit) {
+        view.keepScreenOn = true
+        onDispose {
+            view.keepScreenOn = false
+        }
+    }
 
     DisposableEffect(lifecycleOwner) {
         val observer = LifecycleEventObserver { _, event ->
