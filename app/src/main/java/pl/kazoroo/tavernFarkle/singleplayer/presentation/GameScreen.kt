@@ -379,19 +379,19 @@ private fun GameDialogs(
         SoundPlayer.playSound(SoundType.FAILURE)
 
         GameResultAndSkuchaDialog(
-            text = "Defeat",
+            text = stringResource(R.string.defeat),
             textColor = DarkRed,
-            extraText = if (coinsBefore.value == 0) "+ 50 starter coins to continue playing"
-            else "- ${betValue.value} coins"
+            extraText = if (coinsBefore.value == 0) stringResource(R.string._50_starter_coins_to_continue_playing)
+            else stringResource(R.string.minus_coins, betValue.value)
         )
     } else if (isGameResultDialogVisible) {
         SoundPlayer.playSound(SoundType.WIN)
 
         GameResultAndSkuchaDialog(
-            text = "Win!",
+            text = stringResource(R.string.win),
             textColor = Color.Green,
-            extraText = if (coinsBefore.value == 0 && betValue.value.toInt() == 0) "+ 50 starter coins to continue playing"
-            else "+ ${betValue.value} coins"
+            extraText = if (coinsBefore.value == 0 && betValue.value.toInt() == 0) stringResource(R.string._50_starter_coins_to_continue_playing)
+            else stringResource(R.string.plus_coins, betValue.value)
         )
     }
 
@@ -401,8 +401,8 @@ private fun GameDialogs(
         GameResultAndSkuchaDialog(
             text = "Win by giving up",
             textColor = Color.Green,
-            extraText = if (coinsBefore.value == 0 && betValue.value.toInt() == 0) "+ 50 starter coins to continue playing"
-            else "Opponent leave the game\n+${betValue.value} coins",
+            extraText = if (coinsBefore.value == 0 && betValue.value.toInt() == 0) stringResource(R.string._50_starter_coins_to_continue_playing)
+            else stringResource(R.string.opponent_leave_the_game_coins, betValue.value),
         )
     }
 
@@ -410,7 +410,7 @@ private fun GameDialogs(
         GameResultAndSkuchaDialog(
             text = viewModel.timerValue.toString(),
             textColor = Color.White,
-            extraText = "Waiting for opponent to return"
+            extraText = stringResource(R.string.waiting_for_opponent_to_return)
         )
     }
 }

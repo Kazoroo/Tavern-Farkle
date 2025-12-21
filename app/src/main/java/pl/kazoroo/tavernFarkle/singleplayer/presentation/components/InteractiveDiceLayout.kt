@@ -38,6 +38,7 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.svenjacobs.reveal.RevealScope
@@ -65,7 +66,7 @@ fun RevealScope.InteractiveDiceLayout(
 
         if(activePlayer != 2) {
             Text(
-                text = "Waiting for player to join...",
+                text = stringResource(R.string.waiting_for_player_to_join),
                 modifier = Modifier.padding(top = 60.dp),
                 color = Color.White
             )
