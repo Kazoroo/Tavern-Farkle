@@ -23,8 +23,8 @@ android {
         applicationId "com.kazoroo.tavernFarkle"
         minSdk 28
         targetSdk 36
-        versionCode 35
-        versionName "3.2.3"
+        versionCode 36
+        versionName "3.2.4"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -117,7 +117,7 @@ dependencies {
 
     //Reveal
     implementation("com.svenjacobs.reveal:reveal-core:4.0.0")
-    implementation "org.jetbrains.kotlin:kotlin-test:2.2.0"
+    implementation "org.jetbrains.kotlin:kotlin-test:2.3.0"
 
     //Work Manager
     implementation("androidx.work:work-runtime-ktx:2.11.0")
