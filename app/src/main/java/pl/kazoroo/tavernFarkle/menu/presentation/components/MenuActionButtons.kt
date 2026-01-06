@@ -95,7 +95,7 @@ fun ActionIconButton(
                 shadow = Shadow(
                     color = Color(0x80000000),
                     radius = 10.dp,
-                    offset = DpOffset(5.dp, 12.dp)
+                    offset = DpOffset(2.dp, 4.dp)
                 )
             )
     ) {

@@ -1,10 +1,12 @@
 package pl.kazoroo.tavernFarkle.singleplayer.presentation
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.runtime.Composable
@@ -18,12 +20,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
@@ -302,12 +306,20 @@ fun GameContent(
                         modifier = Modifier
                             .align(Alignment.TopStart)
                             .systemBarsPadding()
-                            .padding(start = dimensionResource(R.dimen.medium_padding)),
+                            .padding(start = dimensionResource(R.dimen.medium_padding), top = 2.dp),
                         painterIcon = painterResource(R.drawable.help_outline_24),
                     ) {
                         isHelpDialogVisible = !isHelpDialogVisible
                     }
                 }
+
+                Image(
+                    painter = painterResource(id = R.drawable.light_gold_fancy_border),
+                    contentDescription = "vintage frame",
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                )
 
                 InteractiveDiceLayout(
                     diceState = state.players[currentPlayerIndex].diceSet,
