@@ -113,12 +113,11 @@ fun RevealScope.PointsTable(
                 row(
                     modifier = if(index == 2) Modifier.revealable(key = GameRevealableKeys.SelectedPoints) else Modifier
                 ) {
-                    cell {
+                    cell(contentAlignment = Alignment.Center) {
                         Text(
                             text = record.pointsType,
                             textAlign = TextAlign.Center,
                             modifier = Modifier
-                                .width(dimensionResource(R.dimen.table_cell_width))
                                 .semantics { contentDescription = "points type ${record.pointsType}" },
                             maxLines = 1
                         )

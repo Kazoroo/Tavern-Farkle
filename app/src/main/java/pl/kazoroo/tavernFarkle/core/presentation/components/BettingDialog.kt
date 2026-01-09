@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -51,7 +50,6 @@ fun BettingDialog(
     ) {
         Column(
             modifier = Modifier
-                .height(400.dp)
                 .background(
                     color = Color.White,
                     shape = RoundedCornerShape(dimensionResource(R.dimen.medium_padding))
@@ -122,8 +120,6 @@ fun BettingDialog(
             QuickBetButtons(coinsAmount) {
                 betAmount = it
             }
-
-            Spacer(modifier = Modifier.weight(1f))
 
             Button(
                 onClick = {
