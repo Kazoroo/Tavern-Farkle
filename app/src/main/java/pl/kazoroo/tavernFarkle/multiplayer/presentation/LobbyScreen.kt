@@ -112,6 +112,7 @@ fun LobbyScreen(
                     LobbyList(lobbyList, lobbyViewModel, inventoryViewModel, navController, coinsViewModel, context)
                 }
 
+                val hasNetwork = lobbyViewModel.hasNetwork(context)
                 Button(
                     onClick = {
                         isBettingDialogVisible = true
@@ -126,12 +127,13 @@ fun LobbyScreen(
                         .dropShadow(
                             shape = RoundedCornerShape(dimensionResource(R.dimen.rounded_corner)),
                             shadow = Shadow(
-                                color = Color(0x80000000),
+                                color = if(hasNetwork) Color(0x80000000) else Color(0x00000000),
                                 radius = 10.dp,
                                 offset = DpOffset(5.dp, 12.dp)
                             )
                         ),
-                    shape = RoundedCornerShape(20.dp)
+                    shape = RoundedCornerShape(20.dp),
+                    enabled = hasNetwork
                 ) {
                     Text(
                         text = stringResource(R.string.create_lobby),
@@ -171,7 +173,21 @@ private fun BoxScope.LobbyList(
     coinsViewModel: CoinsViewModel,
     context: Context
 ) {
-    if (lobbyList.isEmpty()) {
+    if(!lobbyViewModel.hasNetwork(context)) {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Text(
+                text = "No internet connection",
+                fontWeight = FontWeight.W700,
+                fontSize = MaterialTheme.typography.displayMedium.fontSize,
+                color = Color.White,
+                textAlign = TextAlign.Center
+            )
+        }
+    } else if (lobbyList.isEmpty()) {
         Column(
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,

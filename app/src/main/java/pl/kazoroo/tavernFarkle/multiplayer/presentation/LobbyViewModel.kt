@@ -1,6 +1,8 @@
 package pl.kazoroo.tavernFarkle.multiplayer.presentation
 
 import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -38,6 +40,14 @@ class LobbyViewModel(
             remoteGameRepository.observeLobbyList()
         }
     }
+
+    fun hasNetwork(context: Context): Boolean {
+        val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val network = connectivityManager.activeNetwork ?: return false
+        val capabilities = connectivityManager.getNetworkCapabilities(network) ?: return false
+        return capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED)
+    }
+
 
     fun startNewGame(
         bet: Int,

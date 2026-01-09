@@ -8,7 +8,6 @@ import pl.kazoroo.tavernFarkle.core.domain.repository.GameRepository
 import pl.kazoroo.tavernFarkle.shop.domain.model.SpecialDiceName
 import java.util.UUID
 import kotlin.coroutines.resume
-import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
 class StartNewGameUseCase(
@@ -69,10 +68,10 @@ suspend fun signInAnonymouslyOrGetExistingUid(): String = suspendCoroutine { con
 
     auth.signInAnonymously()
         .addOnSuccessListener { result ->
-            cont.resume(result.user?.uid ?: error("No UID"))
+            cont.resume(result.user?.uid ?: UUID.randomUUID().toString())
         }
-        .addOnFailureListener { exception ->
-            cont.resumeWithException(exception)
+        .addOnFailureListener {
+            cont.resume(UUID.randomUUID().toString())
         }
 }
 
