@@ -391,7 +391,7 @@ private fun GameDialogs(
         SoundPlayer.playSound(SoundType.FAILURE)
 
         GameResultAndSkuchaDialog(
-            text = stringResource(R.string.defeat),
+            text = stringResource(R.string.you_lost),
             textColor = DarkRed,
             extraText = if (coinsBefore.value == 0) stringResource(R.string._50_starter_coins_to_continue_playing)
             else stringResource(R.string.minus_coins, betValue.value)
@@ -400,7 +400,7 @@ private fun GameDialogs(
         SoundPlayer.playSound(SoundType.WIN)
 
         GameResultAndSkuchaDialog(
-            text = stringResource(R.string.win),
+            text = stringResource(R.string.you_win),
             textColor = Color.Green,
             extraText = if (coinsBefore.value == 0 && betValue.value.toInt() == 0) stringResource(R.string._50_starter_coins_to_continue_playing)
             else stringResource(R.string.plus_coins, betValue.value)

@@ -57,13 +57,13 @@
     <string name="opponent_leave_the_game_coins">Opponent leave the game +%1$s coins</string>
     <string name="_50_starter_coins_to_continue_playing">+ 50 starter coins to continue playing</string>
     <string name="plus_coins">+ %1$s coins</string>
-    <string name="win">Win!</string>
-    <string name="defeat">Defeat</string>
+    <string name="you_win">You win!</string>
+    <string name="you_lost">You lost</string>
     <string name="minus_coins">- %1$s coins</string>
     <string name="if_you_don_t_want_to_risk_more_click_pass_to_finish_your_round_then_your_opponent_takes_their_turn">If you don\'t want to risk more, click Pass to finish your round. Then your opponent takes their turn.</string>
     <string name="as_you_see_three_of_a_kind_or_more_scores_the_die_value_100_points">As you see, three of a kind (or more) scores the die value × 100 points.</string>
-    <string name="and_third">...and third.</string>
-    <string name="select_second_dice_of_kind">Select second dice of kind...</string>
+    <string name="and_third">…and third.</string>
+    <string name="select_second_dice_of_kind">Select second dice of kind…</string>
     <string name="three_or_more_of_kind_also_gives_you_points_select_first_one">Three or more of kind also gives you points. Select first one.</string>
     <string name="tap_here_to_score_your_points_and_play_further">Tap here to score your points and play further.</string>
     <string name="click_dice_with_value_1_or_5_to_get_points">Click dice with value 1 or 5 to get points.</string>
@@ -74,5 +74,5 @@
     <string name="not_sure_how_to_play_farkle_click_here_to_learn_the_rules_you_can_also_check_them_anytime_while_playing">Not sure how to play Farkle? Click here to learn the rules. You can also check them anytime while playing.</string>
     <string name="a_good_strategy_starts_with_choosing_the_right_dice_tap_here_to_open_the_shop_and_buy_special_dice">A good strategy starts with choosing the right dice. Tap here to open the shop and buy special dice.</string>
     <string name="after_buying_special_dice_don_t_forget_to_select_them_in_your_inventory_you_can_choose_up_to_6_special_dice">After buying special dice, don’t forget to select them in your Inventory. You can choose up to 6 special dice.</string>
-    <string name="waiting_for_player_to_join">Waiting for player to join...</string>
+    <string name="waiting_for_player_to_join">Waiting for player to join…</string>
 </resources>
