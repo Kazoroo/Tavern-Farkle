@@ -76,4 +76,5 @@
     <string name="a_good_strategy_starts_with_choosing_the_right_dice_tap_here_to_open_the_shop_and_buy_special_dice">Una buena estrategia empieza eligiendo los dados adecuados. Toca aquí para abrir la tienda y comprar dados especiales.</string>
     <string name="after_buying_special_dice_don_t_forget_to_select_them_in_your_inventory_you_can_choose_up_to_6_special_dice">Después de comprar dados especiales, no olvides seleccionarlos en tu Inventario. Puedes elegir hasta 6 dados especiales.</string>
     <string name="waiting_for_player_to_join">Esperando a que el jugador se una…</string>
+    <string name="continue_to_menu">Continuar al menú</string>
 </resources>

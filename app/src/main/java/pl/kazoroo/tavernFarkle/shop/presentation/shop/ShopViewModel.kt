@@ -21,7 +21,8 @@ class ShopViewModel(
     fun buySpecialDice(
         specialDice: SpecialDice,
         context: Context,
-        coinsAmount: Int
+        coinsAmount: Int,
+        readCoins: () -> Unit
     ) {
         viewModelScope.launch {
             val result = buySpecialDiceUseCase(
@@ -41,6 +42,8 @@ class ShopViewModel(
                             context.getString(specialDice.name.displayNameRes)
                         )
                     )
+
+                    readCoins()
                 }
             }
         }

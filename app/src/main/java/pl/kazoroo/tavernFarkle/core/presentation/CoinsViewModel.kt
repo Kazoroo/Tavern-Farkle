@@ -33,23 +33,19 @@ class CoinsViewModel(
     }
 
     fun handleGameEndRewards(isWin: Boolean) {
-        viewModelScope.launch {
-            delay(1000L)
-
-            if (isWin) {
-                if(coinsAmountAfterBetting.value == 0 && betValue.value.toInt() == 0) {
-                    takeCoinsFromWallet(coinsAmount.value.toInt() - 50)
-                    SoundPlayer.playSound(SoundType.FALLING_COINS)
-                } else {
-                    addBetCoinsToTotalCoinsAmount()
-                }
+        if (isWin) {
+            if(coinsAmountAfterBetting.value == 0 && betValue.value.toInt() == 0) {
+                takeCoinsFromWallet(coinsAmount.value.toInt() - 50)
+                SoundPlayer.playSound(SoundType.FALLING_COINS)
             } else {
-                if(coinsAmountAfterBetting.value == 0) {
-                    takeCoinsFromWallet(coinsAmount.value.toInt() - 50)
-                    SoundPlayer.playSound(SoundType.FALLING_COINS)
-                } else {
-                    takeCoinsFromWallet(betValue.value.toInt())
-                }
+                addBetCoinsToTotalCoinsAmount()
+            }
+        } else {
+            if(coinsAmountAfterBetting.value == 0) {
+                takeCoinsFromWallet(coinsAmount.value.toInt() - 50)
+                SoundPlayer.playSound(SoundType.FALLING_COINS)
+            } else {
+                takeCoinsFromWallet(betValue.value.toInt())
             }
         }
     }
@@ -65,8 +61,6 @@ class CoinsViewModel(
                 value = newCoinBalanceString,
                 key = UserDataKey.COINS
             )
-            readCoinsAmount()
-            _coinsAmount.value = newCoinBalanceString
         }
     }
 
@@ -76,7 +70,7 @@ class CoinsViewModel(
         _coinsAmountAfterBetting.value = coinsAmount.value.toInt() - betAmount.toInt()
     }
 
-    private fun readCoinsAmount(): String {
+    fun readCoinsAmount(): String {
         val coins = readUserDataUseCase.invoke<String>(UserDataKey.COINS)
         val absoluteCoinsValue = abs(coins.toInt()).toString()
 
@@ -85,17 +79,23 @@ class CoinsViewModel(
         return absoluteCoinsValue
     }
 
-    fun addBetCoinsToTotalCoinsAmount() {
+    fun readCoinsWithDelay() {
+        viewModelScope.launch {
+            delay(1000)
+
+            readCoinsAmount()
+        }
+    }
+
+    private fun addBetCoinsToTotalCoinsAmount() {
         viewModelScope.launch {
             var coins = (coinsAmount.value.toInt() + _betValue.value.toInt())
             if(coins < 0) coins = Int.MAX_VALUE
-            _coinsAmount.value = coins.toString()
 
             saveUserDataUseCase.invoke(
-                value = _coinsAmount.value,
+                value = coins.toString(),
                 key = UserDataKey.COINS
             )
-            readCoinsAmount()
 
             if(betValue.value.toInt() != 0) {
                 SoundPlayer.playSound(SoundType.FALLING_COINS)
@@ -111,8 +111,6 @@ class CoinsViewModel(
                 value = newCoinBalance,
                 key = UserDataKey.COINS
             )
-
-            readCoinsAmount()
         }
     }
 }

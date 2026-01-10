@@ -76,4 +76,5 @@
     <string name="a_good_strategy_starts_with_choosing_the_right_dice_tap_here_to_open_the_shop_and_buy_special_dice">İyi bir strateji doğru zarları seçmekle başlar. Özel zarlar satın almak için buraya dokun.</string>
     <string name="after_buying_special_dice_don_t_forget_to_select_them_in_your_inventory_you_can_choose_up_to_6_special_dice">Özel zarları satın aldıktan sonra Envanterinde seçmeyi unutma. En fazla 6 özel zar seçebilirsin.</string>
     <string name="waiting_for_player_to_join">Oyuncunun katılması bekleniyor…</string>
+    <string name="continue_to_menu">Menüye devam et</string>
 </resources>

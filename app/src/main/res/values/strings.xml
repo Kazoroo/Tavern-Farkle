@@ -75,4 +75,5 @@
     <string name="a_good_strategy_starts_with_choosing_the_right_dice_tap_here_to_open_the_shop_and_buy_special_dice">A good strategy starts with choosing the right dice. Tap here to open the shop and buy special dice.</string>
     <string name="after_buying_special_dice_don_t_forget_to_select_them_in_your_inventory_you_can_choose_up_to_6_special_dice">After buying special dice, don’t forget to select them in your Inventory. You can choose up to 6 special dice.</string>
     <string name="waiting_for_player_to_join">Waiting for player to join…</string>
+    <string name="continue_to_menu">Continue to menu</string>
 </resources>

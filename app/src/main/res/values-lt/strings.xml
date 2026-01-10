@@ -76,4 +76,5 @@
     <string name="a_good_strategy_starts_with_choosing_the_right_dice_tap_here_to_open_the_shop_and_buy_special_dice">Gera strategija prasideda nuo tinkamų kauliukų pasirinkimo. Bakstelėk čia, kad atidarytum parduotuvę ir nusipirktum specialius kauliukus.</string>
     <string name="after_buying_special_dice_don_t_forget_to_select_them_in_your_inventory_you_can_choose_up_to_6_special_dice">Nusipirkęs specialius kauliukus, nepamiršk jų pasirinkti Inventoriuje. Gali pasirinkti iki 6 specialių kauliukų.</string>
     <string name="waiting_for_player_to_join">Laukiama, kol žaidėjas prisijungs…</string>
+    <string name="continue_to_menu">Tęsti meniu</string>
 </resources>

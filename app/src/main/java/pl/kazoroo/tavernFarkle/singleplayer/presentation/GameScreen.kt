@@ -19,7 +19,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
@@ -43,19 +42,17 @@ import pl.kazoroo.tavernFarkle.core.domain.model.GameState
 import pl.kazoroo.tavernFarkle.core.domain.model.TableData
 import pl.kazoroo.tavernFarkle.core.presentation.CoinsViewModel
 import pl.kazoroo.tavernFarkle.core.presentation.components.BackgroundImage
+import pl.kazoroo.tavernFarkle.core.presentation.navigation.Screen
 import pl.kazoroo.tavernFarkle.menu.presentation.components.ActionIconButton
 import pl.kazoroo.tavernFarkle.menu.presentation.components.HowToPlayDialog
-import pl.kazoroo.tavernFarkle.menu.sound.SoundPlayer
-import pl.kazoroo.tavernFarkle.menu.sound.SoundType
 import pl.kazoroo.tavernFarkle.multiplayer.data.remote.PlayerStatus
 import pl.kazoroo.tavernFarkle.singleplayer.presentation.components.ButtonInfo
 import pl.kazoroo.tavernFarkle.singleplayer.presentation.components.ExitDialog
 import pl.kazoroo.tavernFarkle.singleplayer.presentation.components.GameButtons
-import pl.kazoroo.tavernFarkle.singleplayer.presentation.components.GameResultAndSkuchaDialog
+import pl.kazoroo.tavernFarkle.singleplayer.presentation.components.GameDialogs
 import pl.kazoroo.tavernFarkle.singleplayer.presentation.components.GameRevealOverlayContent
 import pl.kazoroo.tavernFarkle.singleplayer.presentation.components.InteractiveDiceLayout
 import pl.kazoroo.tavernFarkle.singleplayer.presentation.components.PointsTable
-import pl.kazoroo.tavernFarkle.ui.theme.DarkRed
 
 private const val ONBOARDING_INITIAL_DELAY_MS = 2000L
 
@@ -66,7 +63,6 @@ fun GameScreen(
     coinsViewModel: CoinsViewModel,
     revealCanvasState: RevealCanvasState
 ) {
-
     val state by viewModel.gameState.collectAsStateWithLifecycle()
 
     val revealState = rememberRevealState()
@@ -102,6 +98,8 @@ fun GameScreen(
                     if(player.statusTimestamp < System.currentTimeMillis() - 30_000 && player.status == PlayerStatus.PAUSED) {
                         coinsViewModel.handleGameEndRewards(false)
 
+                        coinsViewModel.readCoinsWithDelay()
+
                         navController.navigateUp()
 
                         return@LifecycleEventObserver
@@ -126,7 +124,6 @@ fun GameScreen(
 
     LaunchedEffect(true) {
         viewModel.onGameEnd(
-            navController,
             handleGameEndRewards = { isWin -> coinsViewModel.handleGameEndRewards(isWin) }
         )
         viewModel.observePlayerStatus(navController) {
@@ -145,6 +142,7 @@ fun GameScreen(
                         coinsViewModel.takeCoinsFromWallet(amount = state.betAmount)
                     }
                 )
+                coinsViewModel.readCoinsWithDelay()
                 navController.navigateUp()
             }
         )
@@ -198,7 +196,8 @@ fun GameScreen(
         revealCanvasState = revealCanvasState,
         revealState = revealState,
         state = state,
-        myPlayerIndex = myPlayerIndex
+        myPlayerIndex = myPlayerIndex,
+        navController = navController
     )
 }
 
@@ -209,7 +208,8 @@ fun GameContent(
     revealCanvasState: RevealCanvasState,
     revealState: RevealState,
     state: GameState,
-    myPlayerIndex: Int
+    myPlayerIndex: Int,
+    navController: NavHostController
 ) {
     val isOpponentTurn = viewModel.isOpponentTurn.collectAsState().value
     val currentPlayerIndex = state.getCurrentPlayerIndex()
@@ -364,65 +364,16 @@ fun GameContent(
             coinsViewModel,
             isGameResultDialogVisible,
             isOpponentTurn,
-            viewModel
-        )
-    }
-}
+            viewModel,
+            continueToMenu = {
+                coinsViewModel.readCoinsWithDelay()
 
-@Composable
-private fun GameDialogs(
-    isSkuchaDialogVisible: Boolean,
-    coinsViewModel: CoinsViewModel,
-    isGameResultDialogVisible: Boolean,
-    isOpponentTurn: Boolean,
-    viewModel: GameViewModel
-) {
-    val coinsBefore = coinsViewModel.coinsAmountAfterBetting.collectAsState()
-    val betValue = coinsViewModel.betValue.collectAsState()
-
-    if (isSkuchaDialogVisible) {
-        GameResultAndSkuchaDialog(
-            text = "Skucha!", textColor = Color(212, 212, 212),
-            extraText = null
-        )
-    }
-
-    if (isGameResultDialogVisible && isOpponentTurn) {
-        SoundPlayer.playSound(SoundType.FAILURE)
-
-        GameResultAndSkuchaDialog(
-            text = stringResource(R.string.you_lost),
-            textColor = DarkRed,
-            extraText = if (coinsBefore.value == 0) stringResource(R.string._50_starter_coins_to_continue_playing)
-            else stringResource(R.string.minus_coins, betValue.value)
-        )
-    } else if (isGameResultDialogVisible) {
-        SoundPlayer.playSound(SoundType.WIN)
-
-        GameResultAndSkuchaDialog(
-            text = stringResource(R.string.you_win),
-            textColor = Color.Green,
-            extraText = if (coinsBefore.value == 0 && betValue.value.toInt() == 0) stringResource(R.string._50_starter_coins_to_continue_playing)
-            else stringResource(R.string.plus_coins, betValue.value)
-        )
-    }
-
-    if (viewModel.playerQuit) {
-        SoundPlayer.playSound(SoundType.WIN)
-
-        GameResultAndSkuchaDialog(
-            text = "Win by giving up",
-            textColor = Color.Green,
-            extraText = if (coinsBefore.value == 0 && betValue.value.toInt() == 0) stringResource(R.string._50_starter_coins_to_continue_playing)
-            else stringResource(R.string.opponent_leave_the_game_coins, betValue.value),
-        )
-    }
-
-    if (viewModel.timerValue > -1) {
-        GameResultAndSkuchaDialog(
-            text = viewModel.timerValue.toString(),
-            textColor = Color.White,
-            extraText = stringResource(R.string.waiting_for_opponent_to_return)
+                navController.navigate(Screen.MainScreen.withArgs()) {
+                    popUpTo(
+                        Screen.GameScreen.withArgs(viewModel.isMultiplayer)
+                    ) { inclusive = true }
+                }
+            }
         )
     }
 }

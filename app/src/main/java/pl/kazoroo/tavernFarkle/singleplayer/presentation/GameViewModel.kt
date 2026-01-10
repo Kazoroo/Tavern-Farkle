@@ -34,7 +34,6 @@ import pl.kazoroo.tavernFarkle.core.domain.usecase.game.CalculatePointsUseCase
 import pl.kazoroo.tavernFarkle.core.domain.usecase.game.DrawDiceUseCase
 import pl.kazoroo.tavernFarkle.core.domain.usecase.userdata.ReadUserDataUseCase
 import pl.kazoroo.tavernFarkle.core.domain.usecase.userdata.SaveUserDataUseCase
-import pl.kazoroo.tavernFarkle.core.presentation.navigation.Screen
 import pl.kazoroo.tavernFarkle.menu.sound.SoundPlayer
 import pl.kazoroo.tavernFarkle.menu.sound.SoundType
 import pl.kazoroo.tavernFarkle.multiplayer.data.UpdatePlayerStatusWorker
@@ -106,25 +105,18 @@ class GameViewModel(
     }
 
     fun onGameEnd(
-        navController: NavHostController,
         handleGameEndRewards: (Boolean) -> Unit
     ) {
         viewModelScope.launch {
             repository.gameState.collect { game ->
                 if (game.isGameEnd) {
-                    delay(1000L)
-                    _showGameEndDialog.value = true
-                    delay(3000L)
-                    _showGameEndDialog.value = false
-
                     val isWin = repository.gameState.value.currentPlayerUuid == repository.myUuidState.value
                     handleGameEndRewards(isWin)
 
-                    repository.removeLobbyNode()
+                    delay(1000L)
+                    _showGameEndDialog.value = true
 
-                    navController.navigate(Screen.MainScreen.withArgs()) {
-                        popUpTo(Screen.GameScreen.withArgs(isMultiplayer)) { inclusive = true }
-                    }
+                    repository.removeLobbyNode()
                 }
             }
         }
@@ -290,12 +282,8 @@ class GameViewModel(
                             when (it) {
                                 PlayerStatus.LEFT -> {
                                     playerQuit = true
-                                    delay(2500L)
-                                    playerQuit = false
-                                    repository.removeLobbyNode()
-
                                     handleGameEndRewards()
-                                    navController.navigateUp()
+                                    repository.removeLobbyNode()
                                 }
                                 PlayerStatus.PAUSED -> {
                                     startTimer(navController, handleGameEndRewards)

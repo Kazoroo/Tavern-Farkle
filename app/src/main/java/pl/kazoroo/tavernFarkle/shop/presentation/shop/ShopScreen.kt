@@ -105,7 +105,8 @@ fun ShopScreen(
                             viewModel.buySpecialDice(
                                 specialDiceList[index],
                                 context = context,
-                                coinsAmount = coinsAmount.toInt()
+                                coinsAmount = coinsAmount.toInt(),
+                                readCoins = { coinsViewModel.readCoinsAmount() }
                             )
                         },
                         coinsAmount = coinsAmount.toInt()
@@ -131,6 +132,7 @@ private fun RewardedVideoSection(
                     onReward = {
                         coinsViewModel.grantRewardCoins(it)
                         SoundPlayer.playSound(SoundType.FALLING_COINS)
+                        coinsViewModel.readCoinsAmount()
                     }
                 )
             }

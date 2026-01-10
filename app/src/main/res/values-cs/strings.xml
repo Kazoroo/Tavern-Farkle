@@ -76,4 +76,5 @@
     <string name="a_good_strategy_starts_with_choosing_the_right_dice_tap_here_to_open_the_shop_and_buy_special_dice">Dobrá strategie začíná výběrem správných kostek. Klepni sem pro otevření obchodu a nákup speciálních kostek.</string>
     <string name="after_buying_special_dice_don_t_forget_to_select_them_in_your_inventory_you_can_choose_up_to_6_special_dice">Po zakoupení speciálních kostek je nezapomeň vybrat ve svém inventáři. Můžeš zvolit až 6 speciálních kostek.</string>
     <string name="waiting_for_player_to_join">Čekání na připojení hráče…</string>
+    <string name="continue_to_menu">Pokračovat do menu</string>
 </resources>
