@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
@@ -56,7 +57,7 @@ fun BettingDialog(
                 )
         ) {
             DialogHeader(
-                headerText = stringResource(R.string.determining_the_amount)
+                headerText = stringResource(R.string.enter_game_stake),
             )
 
             val isBetAmountNumeric = betAmount.contains(regex = Regex("^[0-9]*\$"))
@@ -65,13 +66,44 @@ fun BettingDialog(
                 modifier = Modifier
                     .fillMaxWidth()
             ) {
-                Text(
-                    text = stringResource(R.string.enter_the_amount),
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
-                        .padding(
-                            start = dimensionResource(R.dimen.large_padding)
+                        .fillMaxWidth()
+                ) {
+                    Text(
+                        text = stringResource(R.string.your_coins),
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(
+                                start = dimensionResource(R.dimen.large_padding)
+                            )
+                    )
+
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.wrapContentWidth()
+                    ) {
+                        Text(
+                            text = coinsAmount.toString(),
+                            modifier = Modifier
+                                .padding(
+                                    end = dimensionResource(R.dimen.small_padding)
+                                )
                         )
-                )
+
+                        Image(
+                            painter = painterResource(R.drawable.coin),
+                            contentDescription = "Coin icon",
+                            modifier = Modifier
+                                .padding(
+                                    start = 3.dp,
+                                    end = dimensionResource(R.dimen.large_padding)
+                                )
+                                .size(32.dp)
+                        )
+                    }
+                }
 
                 TextField(
                     value = betAmount,
@@ -87,14 +119,6 @@ fun BettingDialog(
                         .fillMaxWidth()
                         .padding(horizontal = dimensionResource(R.dimen.large_padding)),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                    trailingIcon = {
-                        Image(
-                            painter = painterResource(R.drawable.coin),
-                            contentDescription = "Coin icon",
-                            modifier = Modifier
-                                .size(dimensionResource(R.dimen.coin_icon_size))
-                        )
-                    },
                     colors = TextFieldDefaults.colors(
                         focusedContainerColor = Color.Transparent,
                         unfocusedContainerColor = Color.Transparent,
@@ -156,6 +180,14 @@ fun BettingDialog(
 
 @Composable
 private fun QuickBetButtons(coinsAmount: Int, updateBetAmount: (String) -> Unit) {
+    Text(
+        text = stringResource(R.string.quick_bet),
+        modifier = Modifier.padding(
+            top = dimensionResource(R.dimen.large_padding),
+            start = dimensionResource(R.dimen.large_padding)
+        )
+    )
+
     Row(
         modifier = Modifier
             .fillMaxWidth()

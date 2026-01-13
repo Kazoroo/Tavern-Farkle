@@ -13,7 +13,7 @@
     <string name="how_to_play_long_tutorial">Tvým cílem je jako první získat 4000 bodů. Ve svém kole hodíš šest kostek, poté vybereš ty, které ti přinesou body. Každá kostka s hodnotou 1 nebo 5 dává 100 a 50 bodů, resp. Když vybereš tři kostky se stejnou hodnotou, získáš 100 bodů krát hodnotu kostky. Každá další kostka se stejnou hodnotou zdvojnásobí body získané ze tří původních kostek.\n \n⚀ - 100 bodů\n⚄ - 50 bodů\n⚃ ⚃ ⚃ - 400 bodů\n⚅ ⚅ ⚅ ⚅ - 1200 bodů\n⚀ ⚀ ⚀ - 1000 bodů\n⚅ ⚅ ⚅ ⚅ ⚅ - 1800 bodů\nJsou zde také posloupnosti.\n⚀ ⚁ ⚂ ⚃ ⚄ - 500 bodů\n⚁ ⚂ ⚃ ⚄ ⚅ - 750 bodů\n⚀ ⚁ ⚂ ⚃ ⚄ ⚅ - 1500 bodů\n \nV případě, že nemáš žádnou kostku, která by dávala body, dojde k tzv. farklu a ztratíš své kolo a všechny body, které jsi v něm získal, takže buď opatrný!</string>
     <string name="determining_the_amount">Určování částky</string>
     <string name="how_to_play">Jak hrát?</string>
-    <string name="enter_the_amount">Zadejte částku: </string>
+    <string name="enter_game_stake">Zadat sázku ve hře</string>
     <string name="play">Hraj!</string>
     <string name="text_field_cannot_be_empty">Textové pole nesmí být prázdné!</string>
     <string name="text_field_must_contain_only_numbers_0_9">Textové pole může obsahovat pouze číslice od 0 do 9</string>
@@ -77,4 +77,6 @@
     <string name="after_buying_special_dice_don_t_forget_to_select_them_in_your_inventory_you_can_choose_up_to_6_special_dice">Po zakoupení speciálních kostek je nezapomeň vybrat ve svém inventáři. Můžeš zvolit až 6 speciálních kostek.</string>
     <string name="waiting_for_player_to_join">Čekání na připojení hráče…</string>
     <string name="continue_to_menu">Pokračovat do menu</string>
+    <string name="your_coins">Vaše mince:</string>
+    <string name="quick_bet">Rychlá volba:</string>
 </resources>

@@ -13,7 +13,7 @@
     <string name="how_to_play_long_tutorial">Tavo tikslas – pirmas surinkti 4000 taškų. Savo ėjime mesi šešis kauliukus, po to pažymi tuos, kurie duos tau taškų. Kiekvienas kauliukas, rodantis 1 arba 5, duoda 100 ir 50 taškų atitinkamai. Pažymėjus tris tos pačios vertės kauliukus, gausi 100 taškų, padaugintų iš kauliuko vertės. Kiekvienas papildomas tos pačios vertės kauliukas suteikia dvigubą tų trijų kauliukų vertę.\n \n⚀ - 100 taškų\n⚄ - 50 taškų\n⚀ ⚀ ⚀ - 1000 taškų\n⚃ ⚃ ⚃ - 400 taškų\n⚅ ⚅ ⚅ ⚅ - 1200 taškų\n⚅ ⚅ ⚅ ⚅ ⚅ - 1800 taškų\n Taip pat yra sekos.\n⚀ ⚁ ⚂ ⚃ ⚄ - 500 taškų\n⚁ ⚂ ⚃ ⚄ ⚅ - 750 taškų\n⚀ ⚁ ⚂ ⚃ ⚄ ⚅ - 1500 taškų\n \nJei neturi jokio kauliuko, suteikiančio taškų, įvyksta pralaimėjimas ir prarandi savo ėjimą bei visus tuo metu surinktus taškus, todėl būk atsargus!</string>
     <string name="determining_the_amount">Suma nustatoma</string>
     <string name="how_to_play">Kaip žaisti?</string>
-    <string name="enter_the_amount">Įveskite sumą: </string>
+    <string name="enter_game_stake">Įvesti žaidimo statymą</string>
     <string name="play">Žaisk!</string>
     <string name="text_field_cannot_be_empty">Įvesties laukas negali būti tuščias!</string>
     <string name="text_field_must_contain_only_numbers_0_9">Tekstų laukas gali turėti tik skaičius nuo 0 iki 9</string>
@@ -77,4 +77,6 @@
     <string name="after_buying_special_dice_don_t_forget_to_select_them_in_your_inventory_you_can_choose_up_to_6_special_dice">Nusipirkęs specialius kauliukus, nepamiršk jų pasirinkti Inventoriuje. Gali pasirinkti iki 6 specialių kauliukų.</string>
     <string name="waiting_for_player_to_join">Laukiama, kol žaidėjas prisijungs…</string>
     <string name="continue_to_menu">Tęsti meniu</string>
+    <string name="your_coins">Jūsų monetos:</string>
+    <string name="quick_bet">Greitas pasirinkimas:</string>
 </resources>

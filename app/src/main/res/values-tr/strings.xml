@@ -13,7 +13,7 @@
     <string name="how_to_play_long_tutorial">Amacın, ilk olarak 4000 puan toplamaktır. Sıranda, altı zar atarsın, sonra puan kazandıracak zarları seçersin. Her zar, değeri 1 veya 5 ise sırasıyla 100 ve 50 puan verir. Aynı değerden üç zar seçersen, zarın değeriyle çarpılmış 100 puan alırsın. Aynı değerden her ek zar, üç zarın puanının iki katını verir.\n \n⚀ - 100 puan\n⚄ - 50 puan\n⚃ ⚃ ⚃ - 400 puan\n⚀ ⚀ ⚀ - 1000 puan\n⚅ ⚅ ⚅ ⚅ - 1200 puan\n⚅ ⚅ ⚅ ⚅ ⚅ - 1800 puan\n Ayrıca diziler de vardır.\n⚀ ⚁ ⚂ ⚃ ⚄ - 500 puan\n⚁ ⚂ ⚃ ⚄ ⚅ - 750 puan\n⚀ ⚁ ⚂ ⚃ ⚄ ⚅ - 1500 puan\n \nEğer puan getiren hiçbir zarın yoksa, farkle olur ve sıranı ile o sırada kazandığın tüm puanları kaybedersin, bu yüzden dikkatli ol!</string>
     <string name="determining_the_amount">Miktar belirleniyor</string>
     <string name="how_to_play">Nasıl oynanır?</string>
-    <string name="enter_the_amount">Miktarı girin: </string>
+    <string name="enter_game_stake">Oyun bahsini girin:</string>
     <string name="play">Oyna!</string>
     <string name="text_field_cannot_be_empty">Metin alanı boş bırakılamaz!</string>
     <string name="text_field_must_contain_only_numbers_0_9">Metin alanı yalnızca 0–9 arasındaki rakamları içerebilir</string>
@@ -77,4 +77,6 @@
     <string name="after_buying_special_dice_don_t_forget_to_select_them_in_your_inventory_you_can_choose_up_to_6_special_dice">Özel zarları satın aldıktan sonra Envanterinde seçmeyi unutma. En fazla 6 özel zar seçebilirsin.</string>
     <string name="waiting_for_player_to_join">Oyuncunun katılması bekleniyor…</string>
     <string name="continue_to_menu">Menüye devam et</string>
+    <string name="your_coins">Paralarınız:</string>
+    <string name="quick_bet">Hızlı seçim:</string>
 </resources>

@@ -13,7 +13,7 @@
     <string name="how_to_play_long_tutorial">Tu objetivo es ser el primero en alcanzar 4000 puntos. En tu turno, lanzas seis dados, luego seleccionas aquellos que te otorguen puntos. Cada dado con un valor de 1 o 5 otorga 100 y 50 puntos respectivamente. Cuando selecciones tres dados del mismo valor, obtendrás 100 puntos multiplicados por el valor del dado. Cada dado adicional del mismo valor duplica la puntuación de los tres dados iniciales.\n \n⚀ - 100 puntos\n⚄ - 50 puntos\n⚃ ⚃ ⚃ - 400 puntos\n⚀ ⚀ ⚀ - 1000 puntos\n⚅ ⚅ ⚅ ⚅ - 1200 puntos\n⚅ ⚅ ⚅ ⚅ ⚅ - 1800 puntos\n También existen secuencias.\n⚀ ⚁ ⚂ ⚃ ⚄ - 500 puntos\n⚁ ⚂ ⚃ ⚄ ⚅ - 750 puntos\n⚀ ⚁ ⚂ ⚃ ⚄ ⚅ - 1500 puntos\n \nEn caso de que no tengas ningún dado que otorgue puntos, se produce un fallo y pierdes tu turno y todos los puntos obtenidos durante el mismo, ¡así que ten cuidado!</string>
     <string name="determining_the_amount">Determinando la cantidad</string>
     <string name="how_to_play">¿Cómo jugar?</string>
-    <string name="enter_the_amount">"Introduce la cantidad: "</string>
+    <string name="enter_game_stake">Introducir la apuesta del juego</string>
     <string name="play">¡Juega!</string>
     <string name="text_field_cannot_be_empty">¡El campo de texto no puede estar vacío!</string>
     <string name="text_field_must_contain_only_numbers_0_9">El campo de texto solo puede contener números del 0 al 9</string>
@@ -77,4 +77,6 @@
     <string name="after_buying_special_dice_don_t_forget_to_select_them_in_your_inventory_you_can_choose_up_to_6_special_dice">Después de comprar dados especiales, no olvides seleccionarlos en tu Inventario. Puedes elegir hasta 6 dados especiales.</string>
     <string name="waiting_for_player_to_join">Esperando a que el jugador se una…</string>
     <string name="continue_to_menu">Continuar al menú</string>
+    <string name="your_coins">Tus monedas:</string>
+    <string name="quick_bet">Selección rápida:</string>
 </resources>
