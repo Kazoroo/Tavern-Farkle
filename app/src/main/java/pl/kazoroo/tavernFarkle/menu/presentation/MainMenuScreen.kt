@@ -37,6 +37,7 @@ import pl.kazoroo.tavernFarkle.menu.presentation.components.AppTitleText
 import pl.kazoroo.tavernFarkle.menu.presentation.components.CustomRhombusShadow
 import pl.kazoroo.tavernFarkle.menu.presentation.components.MenuActionButtons
 import pl.kazoroo.tavernFarkle.menu.presentation.components.MenuNavigationButtons
+import pl.kazoroo.tavernFarkle.menu.presentation.components.MultipleEventsCutter
 import pl.kazoroo.tavernFarkle.menu.presentation.components.RevealOverlayContent
 import pl.kazoroo.tavernFarkle.menu.sound.SoundPlayer
 import pl.kazoroo.tavernFarkle.menu.sound.SoundType
@@ -56,6 +57,14 @@ fun MainMenuScreen(
     val revealState = rememberRevealState()
     val isFirstLaunch = mainMenuViewModel.isFirstLaunch.collectAsState().value
     val onboardingStage = mainMenuViewModel.onboardingStage.collectAsState().value
+    val multipleEventsCutter = remember { MultipleEventsCutter() }
+
+    LaunchedEffect(Unit) {
+        mainMenuViewModel.navigateToGame.collect {
+            SoundPlayer.playSound(SoundType.CLICK)
+            navController.navigate(Screen.GameScreen.withArgs(false))
+        }
+    }
 
     LaunchedEffect(key1 = onboardingStage) {
         if(isFirstLaunch) {
@@ -105,13 +114,14 @@ fun MainMenuScreen(
                 isBettingDialogVisible = false
             },
             onClick = { betAmount ->
-                mainMenuViewModel.startNewGame(
-                    betAmount = betAmount.toInt(),
-                    userSpecialDiceNames = inventoryViewModel.getSelectedSpecialDiceNames()
-                )
-                SoundPlayer.playSound(SoundType.CLICK)
-                navController.navigate(Screen.GameScreen.withArgs(false))
-                coinsViewModel.setBetValue(betAmount)
+                multipleEventsCutter.processEvent {
+                    mainMenuViewModel.startNewGame(
+                        betAmount = betAmount.toInt(),
+                        userSpecialDiceNames = inventoryViewModel.getSelectedSpecialDiceNames()
+                    )
+
+                    coinsViewModel.setBetValue(betAmount)
+                }
             },
             coinsAmount = coinsViewModel.coinsAmount.collectAsState().value.toInt()
         )

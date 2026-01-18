@@ -75,7 +75,6 @@ suspend fun signInAnonymouslyOrGetExistingUid(): String = suspendCoroutine { con
         }
 }
 
-
 fun createDiceSet(specialDiceNames: List<SpecialDiceName?>, gameRepository: GameRepository, drawDiceUseCase: DrawDiceUseCase, checkForSkucha: Boolean = true) =
     drawDiceUseCase(
         List(6) { index ->
@@ -84,7 +83,6 @@ fun createDiceSet(specialDiceNames: List<SpecialDiceName?>, gameRepository: Game
         repository = gameRepository,
         checkForSkucha = checkForSkucha,
     )
-
 
 fun List<SpecialDiceName?>.padWithNullsToSix(): List<SpecialDiceName?> =
     take(6) + List((6 - size).coerceAtLeast(0)) { null }

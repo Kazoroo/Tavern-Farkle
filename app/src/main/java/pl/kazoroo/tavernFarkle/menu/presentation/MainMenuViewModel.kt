@@ -2,8 +2,10 @@ package pl.kazoroo.tavernFarkle.menu.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import pl.kazoroo.tavernFarkle.core.data.local.UserDataKey
@@ -26,6 +28,9 @@ class MainMenuViewModel(
     private val _isFirstLaunch = MutableStateFlow<Boolean>(readUserDataUseCase(UserDataKey.IS_FIRST_LAUNCH))
     val isFirstLaunch: StateFlow<Boolean> = _isFirstLaunch.asStateFlow()
 
+    private val _navigateToGame = MutableSharedFlow<Unit>()
+    val navigateToGame = _navigateToGame.asSharedFlow()
+
     fun nextOnboardingStage() {
         _onboardingStage.value++
     }
@@ -46,6 +51,8 @@ class MainMenuViewModel(
                     userSpecialDiceNames,
                     isMultiplayer = false
                 )
+
+            _navigateToGame.emit(Unit)
         }
     }
 }

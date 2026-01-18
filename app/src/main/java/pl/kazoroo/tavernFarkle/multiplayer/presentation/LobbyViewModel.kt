@@ -48,7 +48,6 @@ class LobbyViewModel(
         return capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED)
     }
 
-
     fun startNewGame(
         bet: Int,
         selectedSpecialDiceNames: List<SpecialDiceName>,
