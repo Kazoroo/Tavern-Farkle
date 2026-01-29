@@ -26,10 +26,12 @@ class UserDataRepository private constructor(private val dataStore: DataStore<Pr
     }
 
     suspend fun <T : Any> saveValue(value: T, key: UserDataKey) {
-        when (val type = key.type) {
-            String::class -> saveString(value as String, key)
-            Boolean::class -> saveBoolean(value as Boolean, key)
-            else -> throw IllegalArgumentException("Unsupported type: ${type.simpleName}")
+        when (key) {
+            UserDataKey.COINS -> saveString(value as String, key)
+            UserDataKey.IS_SOUND_ENABLED,
+            UserDataKey.IS_MUSIC_ENABLED,
+            UserDataKey.IS_FIRST_LAUNCH,
+            UserDataKey.IS_FIRST_GAME -> saveBoolean(value as Boolean, key)
         }
     }
 
