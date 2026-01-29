@@ -8,7 +8,7 @@ import android.os.IBinder
 import pl.kazoroo.tavernFarkle.R
 
 class MusicService : Service() {
-    private lateinit var mediaPlayer: MediaPlayer
+    private var mediaPlayer: MediaPlayer? = null
     private val musicFiles = listOf(R.raw.tavern, R.raw.kempps, R.raw.arabish, R.raw.sonnical, R.raw.inki, R.raw.cowboy)
     private var isPaused = false
     private var musicEnabled = true
@@ -18,9 +18,7 @@ class MusicService : Service() {
     }
 
     private fun playRandomSong() {
-        if(::mediaPlayer.isInitialized) {
-            mediaPlayer.release()
-        }
+        mediaPlayer?.release()
 
         val randomResId = musicFiles.random()
 
@@ -34,27 +32,28 @@ class MusicService : Service() {
     }
 
     fun pauseMusic() {
-        if (::mediaPlayer.isInitialized && mediaPlayer.isPlaying) {
-            mediaPlayer.pause()
-            isPaused = true
+        mediaPlayer?.let {
+            if (it.isPlaying) {
+                it.pause()
+                isPaused = true
+            }
         }
     }
 
     fun resumeMusic(respectMusicSetting: Boolean = true) {
         if(!musicEnabled && respectMusicSetting) return
 
-        if (!::mediaPlayer.isInitialized) {
+        if (mediaPlayer == null) {
             playRandomSong()
         } else if (isPaused) {
-            mediaPlayer.start()
+            mediaPlayer?.start()
             isPaused = false
         }
     }
 
     override fun onDestroy() {
-        if (::mediaPlayer.isInitialized) {
-            mediaPlayer.release()
-        }
+        mediaPlayer?.release()
+
         super.onDestroy()
     }
 

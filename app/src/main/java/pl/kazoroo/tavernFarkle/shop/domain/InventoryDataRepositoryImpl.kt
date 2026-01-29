@@ -10,25 +10,14 @@ import pl.kazoroo.tavernFarkle.shop.data.model.OwnedSpecialDice
 import pl.kazoroo.tavernFarkle.shop.data.repository.InventoryDataRepository
 import pl.kazoroo.tavernFarkle.shop.domain.model.SpecialDiceName
 
-private val Context.protoDataStore by dataStore(
+val Context.protoDataStore by dataStore(
     fileName = "dice_inventory.json",
     serializer = OwnedSpecialDiceSerializer
 )
 
-class InventoryDataRepositoryImpl private constructor(
+class InventoryDataRepositoryImpl(
     private val protoDataStore: DataStore<List<OwnedSpecialDice>>
 ) : InventoryDataRepository {
-    companion object {
-        @Volatile
-        private var instance: InventoryDataRepositoryImpl? = null
-
-        fun getInstance(context: Context): InventoryDataRepositoryImpl {
-            return instance ?: synchronized(this) {
-                instance ?: InventoryDataRepositoryImpl(context.applicationContext.protoDataStore)
-                    .also { instance = it }
-            }
-        }
-    }
 
     override suspend fun addNewSpecialDice(dice: OwnedSpecialDice) {
         protoDataStore.updateData { list ->

@@ -19,6 +19,7 @@ import pl.kazoroo.tavernFarkle.multiplayer.data.repository.RemoteGameRepository
 import pl.kazoroo.tavernFarkle.multiplayer.presentation.LobbyViewModel
 import pl.kazoroo.tavernFarkle.settings.presentation.SettingsViewModel
 import pl.kazoroo.tavernFarkle.shop.domain.InventoryDataRepositoryImpl
+import pl.kazoroo.tavernFarkle.shop.domain.protoDataStore
 import pl.kazoroo.tavernFarkle.shop.presentation.inventory.InventoryViewModel
 import pl.kazoroo.tavernFarkle.singleplayer.data.repository.LocalGameRepository
 import pl.kazoroo.tavernFarkle.singleplayer.domain.usecase.PlayOpponentTurnUseCase
@@ -33,7 +34,7 @@ class DependencyContainer(
         UserDataRepository.getInstance(appContext)
     }
     val inventoryDataRepository by lazy {
-        InventoryDataRepositoryImpl.getInstance(appContext)
+        InventoryDataRepositoryImpl(appContext.protoDataStore)
     }
     val saveUserDataUseCase by lazy {
         SaveUserDataUseCase(userDataRepository)
