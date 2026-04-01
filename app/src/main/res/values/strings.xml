@@ -78,4 +78,6 @@
     <string name="continue_to_menu">Continue to menu</string>
     <string name="your_coins">Your coins:</string>
     <string name="quick_bet">Quick bet:</string>
+    <string name="tagDescription" translatable="false">Tavern Farkle tag description</string>
+    <string name="empty" translatable="false"></string>
 </resources>

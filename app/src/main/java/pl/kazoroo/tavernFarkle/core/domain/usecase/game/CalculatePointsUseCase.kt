@@ -3,7 +3,7 @@ package pl.kazoroo.tavernFarkle.core.domain.usecase.game
 import pl.kazoroo.tavernFarkle.core.domain.model.Dice
 import pl.kazoroo.tavernFarkle.core.domain.repository.GameRepository
 
-class CalculatePointsUseCase() {
+class CalculatePointsUseCase {
     /**
      * Calculates selected points and update state. Includes sequences and single dice values.
      *

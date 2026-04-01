@@ -33,4 +33,7 @@
         </activity>
         <service android:name=".menu.sound.MusicService" />
     </application>
+
+    <attribution android:tag="@string/empty" android:label="@string/tagDescription" />
+    <attribution android:tag="audioPlayback" android:label="@string/tagDescription" />
 </manifest>
