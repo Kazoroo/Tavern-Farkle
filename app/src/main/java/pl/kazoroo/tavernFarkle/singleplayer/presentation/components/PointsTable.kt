@@ -155,7 +155,7 @@ private fun AnimatedTableCell(cellValue: String) {
                 slideOutHorizontally(
                     targetOffsetX = { (it * initialOffsetMultiplier).toInt() }
                 ) + fadeOut()
-            }.using(SizeTransform(clip = false))
+            }.using(SizeTransform(clip = true))
         },
         label = "Animated points"
     ) { targetCount ->
