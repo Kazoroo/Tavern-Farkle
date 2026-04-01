@@ -11,11 +11,7 @@ import androidx.navigation.NavHostController
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -45,12 +41,10 @@ class GameViewModel(
     private val calculatePointsUseCase: CalculatePointsUseCase,
     private val drawDiceUseCase: DrawDiceUseCase,
     private val playOpponentTurnUseCase: PlayOpponentTurnUseCase,
-    dispatcher: CoroutineDispatcher = Dispatchers.Main,
     val isMultiplayer: Boolean,
     private val saveUserDataUseCase: SaveUserDataUseCase,
     readUserDataUseCase: ReadUserDataUseCase,
 ): ViewModel() {
-    private val scope = CoroutineScope(dispatcher + SupervisorJob())
     val gameState: StateFlow<GameState> = repository.gameState
 
     private val _onboardingStage = MutableStateFlow(GameRevealableKeys.ScoringDice.ordinal)
@@ -146,7 +140,7 @@ class GameViewModel(
 
         if(checkForGameEnd()) return
 
-        scope.launch {
+        viewModelScope.launch {
             repository.toggleDiceRowAnimation()
             delay(600L)
             repository.resetDiceState()
@@ -167,7 +161,7 @@ class GameViewModel(
     fun onScoreAndRollAgain() {
         repository.sumRoundPoints()
 
-        scope.launch {
+        viewModelScope.launch {
             repository.hideSelectedDice()
             repository.toggleDiceRowAnimation()
             delay(600L)
@@ -335,4 +329,3 @@ class GameViewModel(
         WorkManager.getInstance(context).enqueue(workRequest)
     }
 }
-
