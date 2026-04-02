@@ -46,6 +46,7 @@ import pl.kazoroo.tavernFarkle.core.presentation.navigation.Screen
 import pl.kazoroo.tavernFarkle.menu.presentation.components.ActionIconButton
 import pl.kazoroo.tavernFarkle.menu.presentation.components.HowToPlayDialog
 import pl.kazoroo.tavernFarkle.multiplayer.data.remote.PlayerStatus
+import pl.kazoroo.tavernFarkle.shop.domain.AdManager
 import pl.kazoroo.tavernFarkle.singleplayer.presentation.components.ButtonInfo
 import pl.kazoroo.tavernFarkle.singleplayer.presentation.components.ExitDialog
 import pl.kazoroo.tavernFarkle.singleplayer.presentation.components.GameButtons
@@ -142,8 +143,11 @@ fun GameScreen(
                         coinsViewModel.takeCoinsFromWallet(amount = state.betAmount)
                     }
                 )
-                coinsViewModel.readCoinsWithDelay()
-                navController.navigateUp()
+
+                AdManager.showInterstitial(context) {
+                    navController.navigateUp()
+                    coinsViewModel.readCoinsWithDelay()
+                }
             }
         )
     }
@@ -359,6 +363,8 @@ fun GameContent(
             }
         }
 
+        val context = LocalContext.current
+
         GameDialogs(
             isSkuchaDialogVisible,
             coinsViewModel,
@@ -366,12 +372,13 @@ fun GameContent(
             isOpponentTurn,
             viewModel,
             continueToMenu = {
-                coinsViewModel.readCoinsWithDelay()
-
-                navController.navigate(Screen.MainScreen.withArgs()) {
-                    popUpTo(
-                        Screen.GameScreen.withArgs(viewModel.isMultiplayer)
-                    ) { inclusive = true }
+                AdManager.showInterstitial(context) {
+                    navController.navigate(Screen.MainScreen.withArgs()) {
+                        popUpTo(
+                            Screen.GameScreen.withArgs(viewModel.isMultiplayer)
+                        ) { inclusive = true }
+                    }
+                    coinsViewModel.readCoinsWithDelay()
                 }
             }
         )

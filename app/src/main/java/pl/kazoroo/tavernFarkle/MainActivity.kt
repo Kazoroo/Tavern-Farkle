@@ -79,8 +79,10 @@ class MainActivity : ComponentActivity() {
         showSplashScreen()
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
-        MobileAds.initialize(this)
-        AdManager.loadRewardedAd(context = this)
+        MobileAds.initialize(this) {
+            AdManager.loadRewardedAd(context = this)
+            AdManager.loadInterstitialAd(context = this)
+        }
 
         SoundPlayer.initialize(context = applicationContext)
         powerManager = getSystemService(POWER_SERVICE) as PowerManager
