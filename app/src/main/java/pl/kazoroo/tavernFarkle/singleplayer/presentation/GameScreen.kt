@@ -128,12 +128,12 @@ fun GameScreen(
         viewModel.effects.collect {
             when(it) {
                 is GameLoopEvent.GameEnd -> coinsViewModel.handleGameEndRewards(it.isWin)
+                GameLoopEvent.PlayerStatusLeft -> coinsViewModel.handleGameEndRewards(true)
+                GameLoopEvent.PlayerStatusPaused -> viewModel.startTimer(navController) {
+                    coinsViewModel.handleGameEndRewards(true)
+                }
                 else -> {}
             }
-        }
-
-        viewModel.observePlayerStatus(navController) {
-            coinsViewModel.handleGameEndRewards(true)
         }
     }
 
