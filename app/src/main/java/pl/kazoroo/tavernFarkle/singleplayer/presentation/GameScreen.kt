@@ -51,6 +51,7 @@ import pl.kazoroo.tavernFarkle.singleplayer.presentation.components.ButtonInfo
 import pl.kazoroo.tavernFarkle.singleplayer.presentation.components.ExitDialog
 import pl.kazoroo.tavernFarkle.singleplayer.presentation.components.GameButtons
 import pl.kazoroo.tavernFarkle.singleplayer.presentation.components.GameDialogs
+import pl.kazoroo.tavernFarkle.singleplayer.presentation.components.GameLoopEvent
 import pl.kazoroo.tavernFarkle.singleplayer.presentation.components.GameRevealOverlayContent
 import pl.kazoroo.tavernFarkle.singleplayer.presentation.components.InteractiveDiceLayout
 import pl.kazoroo.tavernFarkle.singleplayer.presentation.components.PointsTable
@@ -124,9 +125,13 @@ fun GameScreen(
     }
 
     LaunchedEffect(true) {
-        viewModel.onGameEnd(
-            handleGameEndRewards = { isWin -> coinsViewModel.handleGameEndRewards(isWin) }
-        )
+        viewModel.effects.collect {
+            when(it) {
+                is GameLoopEvent.GameEnd -> coinsViewModel.handleGameEndRewards(it.isWin)
+                else -> {}
+            }
+        }
+
         viewModel.observePlayerStatus(navController) {
             coinsViewModel.handleGameEndRewards(true)
         }
