@@ -255,7 +255,7 @@ fun GameContent(
                     viewModel.nextOnboardingStage()
                 }
                 GameRevealableKeys.ScoreButton -> {
-                    viewModel.onScoreAndRollAgain()
+                    viewModel.onScoreAndRoll()
                     viewModel.nextOnboardingStage()
                 }
                 GameRevealableKeys.ThreeOfKindFirstDice -> {
@@ -344,7 +344,7 @@ fun GameContent(
                     ButtonInfo(
                         text = stringResource(id = R.string.score_and_roll_again),
                         onClick = {
-                            viewModel.onScoreAndRollAgain()
+                            viewModel.onScoreAndRoll()
                         },
                         enabled = isActionAllowed,
                     ),

@@ -12,6 +12,7 @@ import androidx.work.Data
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -35,6 +36,7 @@ import pl.kazoroo.tavernFarkle.menu.sound.SoundType
 import pl.kazoroo.tavernFarkle.multiplayer.data.UpdatePlayerStatusWorker
 import pl.kazoroo.tavernFarkle.multiplayer.data.remote.PlayerStatus
 import pl.kazoroo.tavernFarkle.singleplayer.domain.usecase.PlayOpponentTurnUseCase
+import pl.kazoroo.tavernFarkle.singleplayer.presentation.components.GameLoopEvent
 
 class GameViewModel(
     private val repository: GameRepository,
@@ -80,10 +82,12 @@ class GameViewModel(
 
     private var skuchaEvents: MutableSharedFlow<Unit> = MutableSharedFlow(extraBufferCapacity = 64)
 
+    private val gameLoopChannel = Channel<GameLoopEvent>(Channel.UNLIMITED)
+
     init {
-        handleSkuchaQueue()
         observeSkucha()
         observeDiceAnimation()
+        processGameLoop()
     }
 
     fun finishOnboarding() {
@@ -96,6 +100,18 @@ class GameViewModel(
 
     fun nextOnboardingStage() {
         _onboardingStage.value++
+    }
+
+    private fun processGameLoop() {
+        viewModelScope.launch {
+            for (event in gameLoopChannel) {
+                when (event) {
+                    GameLoopEvent.Pass -> handlePass()
+                    GameLoopEvent.ScoreAndRoll -> handleScoreAndRoll()
+                    GameLoopEvent.Skucha -> handleSkucha()
+                }
+            }
+        }
     }
 
     fun onGameEnd(
@@ -136,6 +152,12 @@ class GameViewModel(
     }
 
     fun onPass() {
+        viewModelScope.launch {
+            gameLoopChannel.send(GameLoopEvent.Pass)
+        }
+    }
+
+    fun handlePass() {
         repository.sumTotalPoints()
 
         if(checkForGameEnd()) return
@@ -158,7 +180,13 @@ class GameViewModel(
         }
     }
 
-    fun onScoreAndRollAgain() {
+    fun onScoreAndRoll() {
+        viewModelScope.launch {
+            gameLoopChannel.send(GameLoopEvent.ScoreAndRoll)
+        }
+    }
+
+    fun handleScoreAndRoll() {
         repository.sumRoundPoints()
 
         viewModelScope.launch {
@@ -184,21 +212,13 @@ class GameViewModel(
                 .distinctUntilChanged()
                 .collect { isSkucha ->
                     if (isSkucha) {
-                        skuchaEvents.tryEmit(Unit)
+                        gameLoopChannel.send(GameLoopEvent.Skucha)
                     }
                 }
         }
     }
 
-    fun handleSkuchaQueue() {
-        viewModelScope.launch {
-            skuchaEvents.collect {
-                runSkuchaSequence()
-            }
-        }
-    }
-
-    private suspend fun runSkuchaSequence() {
+    private suspend fun handleSkucha() {
         delay(2000)
         SoundPlayer.playSound(SoundType.SKUCHA)
         _showSkuchaDialog.value = true
@@ -207,22 +227,20 @@ class GameViewModel(
 
         val isHost = gameState.value.players[0].uuid == repository.myUuidState.value
 
-        if (isHost) {
-            repository.setSkucha(false)
-            repository.resetRoundAndSelectedPoints()
-            repository.toggleDiceRowAnimation()
-        }
+        if (!isHost) return
 
-        if (isHost) {
-            delay(600)
-            repository.resetDiceState()
-            repository.changeCurrentPlayer()
+        repository.setSkucha(false)
+        repository.resetRoundAndSelectedPoints()
+        repository.toggleDiceRowAnimation()
 
-            drawDiceUseCase(
-                repository.gameState.value.players[gameState.value.getCurrentPlayerIndex()].diceSet,
-                repository = repository
-            )
-        }
+        delay(600)
+        repository.resetDiceState()
+        repository.changeCurrentPlayer()
+
+        drawDiceUseCase(
+            repository.gameState.value.players[gameState.value.getCurrentPlayerIndex()].diceSet,
+            repository = repository
+        )
 
         val isOpponentTurn = repository.gameState.value.currentPlayerUuid != repository.myUuidState.value
 

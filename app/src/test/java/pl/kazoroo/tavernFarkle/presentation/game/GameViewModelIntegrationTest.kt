@@ -85,7 +85,7 @@ class GameViewModelIntegrationTest {
     fun `onScoreAndRollAgain should sum round points, hide selected dice and draw dice`() = runTest {
         viewModel.toggleDiceSelection(2)
         viewModel.toggleDiceSelection(3)
-        viewModel.onScoreAndRollAgain()
+        viewModel.onScoreAndRoll()
 
         advanceUntilIdle()
 
@@ -153,7 +153,7 @@ class GameViewModelIntegrationTest {
         viewModel.toggleDiceSelection(4)
         viewModel.toggleDiceSelection(5)
 
-        viewModel.onScoreAndRollAgain()
+        viewModel.onScoreAndRoll()
 
         advanceUntilIdle()
 
