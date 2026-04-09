@@ -94,6 +94,7 @@ class GameViewModel(
         observeDiceAnimation()
         processGameLoop()
         observeGameEnd()
+        observePlayerStatus()
     }
 
     fun finishOnboarding() {
@@ -116,6 +117,7 @@ class GameViewModel(
                     GameLoopEvent.ScoreAndRoll -> handleScoreAndRoll()
                     GameLoopEvent.Skucha -> handleSkucha()
                     is GameLoopEvent.GameEnd -> handleGameEnd()
+                    GameLoopEvent.PlayerStatusLeft, GameLoopEvent.PlayerStatusPaused -> {}
                 }
             }
         }
@@ -143,7 +145,7 @@ class GameViewModel(
     }
 
     fun checkForGameEnd(): Boolean {
-        if(repository.gameState.value.players[repository.gameState.value.getCurrentPlayerIndex()].totalPoints >= 500) {
+        if(repository.gameState.value.players[repository.gameState.value.getCurrentPlayerIndex()].totalPoints >= 4000) {
             repository.setGameEnd(true)
 
             return true
@@ -288,7 +290,7 @@ class GameViewModel(
         }
     }
 
-    fun observePlayerStatus(navController: NavHostController, handleGameEndRewards: () -> Unit) {
+    fun observePlayerStatus() {
         viewModelScope.launch {
             opponentPlayerIndex
                 .filterNotNull()
@@ -304,11 +306,11 @@ class GameViewModel(
                             when (it) {
                                 PlayerStatus.LEFT -> {
                                     playerQuit = true
-                                    handleGameEndRewards()
+                                    _effects.emit(GameLoopEvent.PlayerStatusLeft)
                                     repository.removeLobbyNode()
                                 }
                                 PlayerStatus.PAUSED -> {
-                                    startTimer(navController, handleGameEndRewards)
+                                    _effects.emit(GameLoopEvent.PlayerStatusPaused)
                                 }
 
                                 PlayerStatus.IN_GAME -> {
@@ -322,7 +324,7 @@ class GameViewModel(
     }
 
     private var timerJob: Job? = null
-    private fun startTimer(navController: NavHostController, handleGameEndRewards: () -> Unit) {
+    fun startTimer(navController: NavHostController, handleGameEndRewards: () -> Unit) {
         timerJob?.cancel()
 
         timerJob = viewModelScope.launch {
