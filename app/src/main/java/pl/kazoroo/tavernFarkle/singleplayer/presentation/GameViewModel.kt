@@ -22,10 +22,11 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.merge
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import pl.kazoroo.tavernFarkle.core.data.local.UserDataKey
@@ -90,11 +91,50 @@ class GameViewModel(
     private val gameLoopChannel = Channel<GameLoopEvent>(Channel.UNLIMITED)
 
     init {
-        observeSkucha()
-        observeDiceAnimation()
         processGameLoop()
-        observeGameEnd()
+        observeGameEvents()
         observePlayerStatus()
+    }
+
+    fun observeGameEvents() {
+        viewModelScope.launch {
+            val skuchaFlow = repository.gameState
+                .map { it.isSkucha }
+                .distinctUntilChanged()
+                .filter { it }
+                .map { GameLoopEvent.Skucha }
+
+            val gameEndFlow = repository.gameState
+                .map { it.isGameEnd }
+                .distinctUntilChanged()
+                .filter { it }
+                .map { GameLoopEvent.GameEnd(true) }
+
+            val diceAnimationFlow = repository.gameState
+                .map { it.isAnimating }
+                .distinctUntilChanged()
+                .onEach {
+                    delay(200L)
+                    _isDiceAnimating.value = true
+                    delay(500L)
+                    SoundPlayer.playSound(SoundType.DICE_ROLLING)
+                    delay(500L)
+                    _isDiceAnimating.value = false
+                }
+                .map { null }
+
+            val merged = merge(
+                skuchaFlow,
+                gameEndFlow,
+                diceAnimationFlow
+            )
+
+            merged.collect { event ->
+                event?.let {
+                    gameLoopChannel.send(it)
+                }
+            }
+        }
     }
 
     fun finishOnboarding() {
@@ -120,17 +160,6 @@ class GameViewModel(
                     GameLoopEvent.PlayerStatusLeft, GameLoopEvent.PlayerStatusPaused -> {}
                 }
             }
-        }
-    }
-
-    fun observeGameEnd() {
-        viewModelScope.launch {
-            repository.gameState
-                .filter { it.isGameEnd }
-                .distinctUntilChangedBy { it.isGameEnd }
-                .collect {
-                    gameLoopChannel.send(GameLoopEvent.GameEnd(true))
-                }
         }
     }
 
@@ -217,19 +246,6 @@ class GameViewModel(
         }
     }
 
-    fun observeSkucha() {
-        viewModelScope.launch {
-            repository.gameState
-                .map { it.isSkucha }
-                .distinctUntilChanged()
-                .collect { isSkucha ->
-                    if (isSkucha) {
-                        gameLoopChannel.send(GameLoopEvent.Skucha)
-                    }
-                }
-        }
-    }
-
     private suspend fun handleSkucha() {
         delay(2000)
         SoundPlayer.playSound(SoundType.SKUCHA)
@@ -261,22 +277,6 @@ class GameViewModel(
         }
     }
 
-    private fun observeDiceAnimation() {
-        viewModelScope.launch {
-            repository.gameState
-                .map { it.isAnimating }
-                .distinctUntilChanged()
-                .collect {
-                    delay(200L)
-                    _isDiceAnimating.value = true
-                    delay(500L)
-                    SoundPlayer.playSound(SoundType.DICE_ROLLING)
-                    delay(500L)
-                    _isDiceAnimating.value = false
-                }
-        }
-    }
-
     fun onQuit(takeBet: () -> Unit) {
         if(gameState.value.players.size == 1) {
             repository.removeLobbyNode()
@@ -290,7 +290,7 @@ class GameViewModel(
         }
     }
 
-    fun observePlayerStatus() {
+    private fun observePlayerStatus() {
         viewModelScope.launch {
             opponentPlayerIndex
                 .filterNotNull()
