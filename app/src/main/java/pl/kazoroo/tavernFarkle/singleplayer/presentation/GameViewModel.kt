@@ -16,10 +16,14 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.distinctUntilChangedBy
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
@@ -80,7 +84,8 @@ class GameViewModel(
     var timerValue by mutableIntStateOf(-1)
         private set
 
-    private var skuchaEvents: MutableSharedFlow<Unit> = MutableSharedFlow(extraBufferCapacity = 64)
+    private val _effects = MutableSharedFlow<GameLoopEvent>(extraBufferCapacity = 8)
+    val effects: SharedFlow<GameLoopEvent> = _effects.asSharedFlow()
 
     private val gameLoopChannel = Channel<GameLoopEvent>(Channel.UNLIMITED)
 
@@ -88,6 +93,7 @@ class GameViewModel(
         observeSkucha()
         observeDiceAnimation()
         processGameLoop()
+        observeGameEnd()
     }
 
     fun finishOnboarding() {
@@ -109,31 +115,35 @@ class GameViewModel(
                     GameLoopEvent.Pass -> handlePass()
                     GameLoopEvent.ScoreAndRoll -> handleScoreAndRoll()
                     GameLoopEvent.Skucha -> handleSkucha()
+                    is GameLoopEvent.GameEnd -> handleGameEnd()
                 }
             }
         }
     }
 
-    fun onGameEnd(
-        handleGameEndRewards: (Boolean) -> Unit
-    ) {
+    fun observeGameEnd() {
         viewModelScope.launch {
-            repository.gameState.collect { game ->
-                if (game.isGameEnd) {
-                    val isWin = repository.gameState.value.currentPlayerUuid == repository.myUuidState.value
-                    handleGameEndRewards(isWin)
-
-                    delay(1000L)
-                    _showGameEndDialog.value = true
-
-                    repository.removeLobbyNode()
+            repository.gameState
+                .filter { it.isGameEnd }
+                .distinctUntilChangedBy { it.isGameEnd }
+                .collect {
+                    gameLoopChannel.send(GameLoopEvent.GameEnd(true))
                 }
-            }
         }
+    }
+
+    suspend fun handleGameEnd() {
+        val isWin = repository.gameState.value.currentPlayerUuid == repository.myUuidState.value
+        _effects.emit(GameLoopEvent.GameEnd(isWin))
+
+        delay(1000L)
+        _showGameEndDialog.value = true
+
+        repository.removeLobbyNode()
     }
 
     fun checkForGameEnd(): Boolean {
-        if(repository.gameState.value.players[repository.gameState.value.getCurrentPlayerIndex()].totalPoints >= 4000) {
+        if(repository.gameState.value.players[repository.gameState.value.getCurrentPlayerIndex()].totalPoints >= 500) {
             repository.setGameEnd(true)
 
             return true
