@@ -33,6 +33,7 @@ import pl.kazoroo.tavernFarkle.multiplayer.presentation.LobbyViewModel
 import pl.kazoroo.tavernFarkle.settings.presentation.SettingsViewModel
 import pl.kazoroo.tavernFarkle.shop.domain.AdManager
 import pl.kazoroo.tavernFarkle.shop.presentation.inventory.InventoryViewModel
+import pl.kazoroo.tavernFarkle.shop.presentation.shop.ShopViewModel
 import pl.kazoroo.tavernFarkle.ui.theme.DicesTheme
 
 class MainActivity : ComponentActivity() {
@@ -109,6 +110,9 @@ class MainActivity : ComponentActivity() {
             val lobbyViewModel = viewModel<LobbyViewModel>(
                 factory = dependencyContainer.lobbyViewModelFactory
             )
+            val shopViewModel = viewModel<ShopViewModel>(
+                factory = dependencyContainer.shopViewModelFactory
+            )
 
             DicesTheme {
                 enableEdgeToEdge()
@@ -123,7 +127,8 @@ class MainActivity : ComponentActivity() {
                         inventoryViewModel = inventoryViewModel,
                         settingsViewModel = settingsViewModel,
                         dependencyContainer = dependencyContainer,
-                        lobbyViewModel = lobbyViewModel
+                        lobbyViewModel = lobbyViewModel,
+                        shopViewModel = shopViewModel
                     )
                 }
             }

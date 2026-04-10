@@ -79,4 +79,6 @@
     <string name="continue_to_menu">Tęsti meniu</string>
     <string name="your_coins">Jūsų monetos:</string>
     <string name="quick_bet">Greitas pasirinkimas:</string>
+    <string name="onboarding_special_dice">Specialūs kauliukai keičia tam tikrų reikšmių iškritimo dažnį. Pavyzdžiui, žemiau esantis kauliukas turi 18,2% tikimybę išmesti 1.</string>
+    <string name="onboarding_strategy">Į žaidimą galite pasiimti iki 6 kauliukų. Maišykite specialius ir įprastus kauliukus, kad sukurtumėte savo strategiją.</string>
 </resources>

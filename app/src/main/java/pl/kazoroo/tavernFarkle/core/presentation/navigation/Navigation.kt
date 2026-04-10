@@ -20,10 +20,10 @@ import pl.kazoroo.tavernFarkle.multiplayer.presentation.LobbyScreen
 import pl.kazoroo.tavernFarkle.multiplayer.presentation.LobbyViewModel
 import pl.kazoroo.tavernFarkle.settings.presentation.SettingsScreen
 import pl.kazoroo.tavernFarkle.settings.presentation.SettingsViewModel
-import pl.kazoroo.tavernFarkle.shop.domain.usecase.BuySpecialDiceUseCase
 import pl.kazoroo.tavernFarkle.shop.presentation.inventory.InventoryScreen
 import pl.kazoroo.tavernFarkle.shop.presentation.inventory.InventoryViewModel
 import pl.kazoroo.tavernFarkle.shop.presentation.shop.ShopScreen
+import pl.kazoroo.tavernFarkle.shop.presentation.shop.ShopViewModel
 import pl.kazoroo.tavernFarkle.singleplayer.presentation.GameScreen
 import pl.kazoroo.tavernFarkle.singleplayer.presentation.GameViewModel
 
@@ -34,7 +34,8 @@ fun Navigation(
     coinsViewModel: CoinsViewModel,
     inventoryViewModel: InventoryViewModel,
     settingsViewModel: SettingsViewModel,
-    lobbyViewModel: LobbyViewModel
+    lobbyViewModel: LobbyViewModel,
+    shopViewModel: ShopViewModel
 ) {
     val navController = rememberNavController()
     val revealCanvasState = rememberRevealCanvasState()
@@ -93,8 +94,9 @@ fun Navigation(
             ) {
                 ShopScreen(
                     coinsViewModel = coinsViewModel,
-                    buySpecialDiceUseCase = BuySpecialDiceUseCase(dependencyContainer.inventoryDataRepository),
-                    navController = navController
+                    navController = navController,
+                    revealCanvasState = revealCanvasState,
+                    shopViewModel = shopViewModel
                 )
             }
 

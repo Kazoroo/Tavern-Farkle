@@ -31,6 +31,7 @@ class UserDataRepository private constructor(private val dataStore: DataStore<Pr
             UserDataKey.IS_SOUND_ENABLED,
             UserDataKey.IS_MUSIC_ENABLED,
             UserDataKey.IS_FIRST_LAUNCH,
+            UserDataKey.IS_FIRST_SHOP_OPEN,
             UserDataKey.IS_FIRST_GAME -> saveBoolean(value as Boolean, key)
         }
     }

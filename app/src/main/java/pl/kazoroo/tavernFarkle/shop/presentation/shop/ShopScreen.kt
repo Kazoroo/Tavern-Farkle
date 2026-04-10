@@ -16,7 +16,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -27,7 +26,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.svenjacobs.reveal.Reveal
+import com.svenjacobs.reveal.RevealCanvasState
+import com.svenjacobs.reveal.rememberRevealState
 import io.github.windedge.table.components.Divider
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import pl.kazoroo.tavernFarkle.R
 import pl.kazoroo.tavernFarkle.core.data.local.repository.SpecialDiceList.specialDiceList
@@ -37,8 +40,9 @@ import pl.kazoroo.tavernFarkle.core.presentation.components.CoinAmountIndicator
 import pl.kazoroo.tavernFarkle.core.presentation.components.NavigateBackButton
 import pl.kazoroo.tavernFarkle.menu.sound.SoundPlayer
 import pl.kazoroo.tavernFarkle.menu.sound.SoundType
-import pl.kazoroo.tavernFarkle.shop.domain.usecase.BuySpecialDiceUseCase
 import pl.kazoroo.tavernFarkle.shop.presentation.AdViewModel
+import pl.kazoroo.tavernFarkle.shop.presentation.components.ShopRevealOverlayContent
+import pl.kazoroo.tavernFarkle.shop.presentation.components.ShopRevealableKeys
 import pl.kazoroo.tavernFarkle.shop.presentation.components.SpecialDiceCard
 import pl.kazoroo.tavernFarkle.singleplayer.presentation.components.ButtonInfo
 import pl.kazoroo.tavernFarkle.singleplayer.presentation.components.DiceButton
@@ -46,71 +50,99 @@ import pl.kazoroo.tavernFarkle.singleplayer.presentation.components.DiceButton
 @Composable
 fun ShopScreen(
     coinsViewModel: CoinsViewModel,
+    shopViewModel: ShopViewModel,
     adViewModel: AdViewModel = viewModel(),
-    buySpecialDiceUseCase: BuySpecialDiceUseCase,
-    navController: NavController
+    navController: NavController,
+    revealCanvasState: RevealCanvasState
 ) {
-    val viewModel =  remember {
-        ShopViewModel(
-            buySpecialDiceUseCase
-        ) { amount ->
-            coinsViewModel.takeCoinsFromWallet(amount)
-        }
-    }
     val context = LocalContext.current
     val coinsAmount = coinsViewModel.coinsAmount.collectAsState().value
+    val onboardingStage = shopViewModel.onboardingStage.collectAsState().value
+    val isFirstShopOpen = shopViewModel.isFirstShopOpen.collectAsState().value
+    val revealState = rememberRevealState()
 
-    LaunchedEffect(viewModel.toastMessage) {
-        viewModel.toastMessage.collectLatest { message ->
+    LaunchedEffect(shopViewModel.toastMessage) {
+        shopViewModel.toastMessage.collectLatest { message ->
             Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
         }
     }
 
-    Box(modifier = Modifier.fillMaxSize()) {
-        BackgroundImage()
-
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .systemBarsPadding()
-        ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .align(Alignment.Start),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                NavigateBackButton {
-                    navController.navigateUp()
+    LaunchedEffect(key1 = onboardingStage) {
+        if (isFirstShopOpen) {
+            when (onboardingStage) {
+                ShopRevealableKeys.SpecialDice.ordinal -> {
+                    delay(500)
+                    revealState.reveal(ShopRevealableKeys.SpecialDice)
                 }
-
-                CoinAmountIndicator(
-                    coinsAmount = coinsAmount
-                )
+                ShopRevealableKeys.Strategy.ordinal -> {
+                    revealState.reveal(ShopRevealableKeys.Strategy)
+                }
+                ShopRevealableKeys.Hide.ordinal -> {
+                    revealState.hide()
+                   shopViewModel.finishOnboarding()
+                }
             }
+        }
+    }
 
-            LazyColumn {
-                item {
-                    RewardedVideoSection(adViewModel, context, coinsViewModel)
+    val onboardingOnClick = { shopViewModel.nextOnboardingStage() }
+
+    Reveal(
+        revealCanvasState = revealCanvasState,
+        revealState = revealState,
+        onRevealableClick = { onboardingOnClick() },
+        onOverlayClick = { onboardingOnClick() },
+        overlayContent = { key -> ShopRevealOverlayContent(key) },
+        modifier = Modifier
+            .fillMaxSize(),
+    ) {
+        Box(modifier = Modifier.fillMaxSize()) {
+            BackgroundImage()
+
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .systemBarsPadding()
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .align(Alignment.Start),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    NavigateBackButton {
+                        navController.navigateUp()
+                    }
+
+                    CoinAmountIndicator(
+                        coinsAmount = coinsAmount
+                    )
                 }
-                
-                items(specialDiceList.size) { index ->
-                    SpecialDiceCard(
-                        name = specialDiceList[index].name,
-                        image = specialDiceList[index].image[0],
-                        chancesOfDrawingValue = specialDiceList[index].chancesOfDrawingValue,
-                        price = specialDiceList[index].price,
-                        onClick = {
-                            viewModel.buySpecialDice(
+
+                LazyColumn {
+                    item {
+                        RewardedVideoSection(adViewModel, context, coinsViewModel)
+                    }
+
+                    items(specialDiceList.size) { index ->
+                        SpecialDiceCard(
+                            modifier = if(index == 0) Modifier.revealable(ShopRevealableKeys.SpecialDice, ShopRevealableKeys.Strategy) else Modifier,
+                            name = specialDiceList[index].name,
+                            image = specialDiceList[index].image[0],
+                            chancesOfDrawingValue = specialDiceList[index].chancesOfDrawingValue,
+                            price = specialDiceList[index].price,
+                            coinsAmount = coinsAmount.toInt()
+                        ) {
+                            shopViewModel.buySpecialDice(
                                 specialDiceList[index],
                                 context = context,
                                 coinsAmount = coinsAmount.toInt(),
-                                readCoins = { coinsViewModel.readCoinsAmount() }
+                                readCoins = { coinsViewModel.readCoinsAmount() },
+                                takeCoins = { coinsViewModel.takeCoinsFromWallet(specialDiceList[index].price) }
                             )
-                        },
-                        coinsAmount = coinsAmount.toInt()
-                    )
+                        }
+                    }
                 }
             }
         }

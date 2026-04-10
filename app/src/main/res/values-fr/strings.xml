@@ -78,4 +78,6 @@
     <string name="continue_to_menu">Retour au menu</string>
     <string name="your_coins">Vos pièces :</string>
     <string name="quick_bet">Mise rapide :</string>
+    <string name="onboarding_special_dice">Les dés spéciaux modifient la fréquence à laquelle certaines valeurs sont lancées. Le dé ci-dessous, par exemple, a 18,2% de chances de faire un 1.</string>
+    <string name="onboarding_strategy">Vous pouvez emporter jusqu\'à 6 dés dans une partie. Mélangez dés spéciaux et ordinaires pour façonner votre stratégie.</string>
 </resources>

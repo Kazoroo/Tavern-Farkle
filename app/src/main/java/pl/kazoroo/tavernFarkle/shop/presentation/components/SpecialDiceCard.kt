@@ -37,6 +37,7 @@ import pl.kazoroo.tavernFarkle.ui.theme.DarkGreen
 
 @Composable
 fun SpecialDiceCard(
+    modifier: Modifier = Modifier,
     name: SpecialDiceName,
     image: Int,
     chancesOfDrawingValue: List<Float>,
@@ -47,7 +48,7 @@ fun SpecialDiceCard(
     onClick: () -> Unit
 ) {
     Card(
-        modifier = Modifier
+        modifier = modifier
             .padding(dimensionResource(R.dimen.medium_padding))
             .fillMaxWidth()
             .height(dimensionResource(R.dimen.special_dice_card_height))
