@@ -79,4 +79,6 @@
     <string name="continue_to_menu">Menüye devam et</string>
     <string name="your_coins">Paralarınız:</string>
     <string name="quick_bet">Hızlı seçim:</string>
+    <string name="onboarding_special_dice">Özel zarlar, belirli değerlerin atılma sıklığını değiştirir. Aşağıdaki zar, örneğin, 1 gelme ihtimaline %18,2 sahiptir.</string>
+    <string name="onboarding_strategy">Bir oyuna en fazla 6 zar götürebilirsin. Stratejini oluşturmak için özel ve normal zarları karıştır.</string>
 </resources>

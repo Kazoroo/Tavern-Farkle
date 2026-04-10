@@ -14,6 +14,7 @@ class ReadUserDataUseCase(private val userDataRepository: UserDataRepository) {
             UserDataKey.IS_SOUND_ENABLED,
             UserDataKey.IS_MUSIC_ENABLED,
             UserDataKey.IS_FIRST_LAUNCH,
+            UserDataKey.IS_FIRST_SHOP_OPEN,
             UserDataKey.IS_FIRST_GAME -> userDataRepository.getBooleanFlow(key).first() ?: true
         } as T
     }

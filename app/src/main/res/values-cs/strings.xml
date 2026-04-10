@@ -79,4 +79,6 @@
     <string name="continue_to_menu">Pokračovat do menu</string>
     <string name="your_coins">Vaše mince:</string>
     <string name="quick_bet">Rychlá volba:</string>
+    <string name="onboarding_special_dice">Speciální kostky mění četnost hodu určitých hodnot. Níže uvedená kostka má například 18,2% šanci hodit 1.</string>
+    <string name="onboarding_strategy">Do hry můžeš vzít až 6 kostek. Kombinuj speciální a obyčejné kostky a vytvoř si svou strategii.</string>
 </resources>

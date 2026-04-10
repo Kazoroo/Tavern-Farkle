@@ -79,4 +79,6 @@
     <string name="continue_to_menu">Continuar al menú</string>
     <string name="your_coins">Tus monedas:</string>
     <string name="quick_bet">Selección rápida:</string>
+    <string name="onboarding_special_dice">Los dados especiales cambian la frecuencia con la que se lanzan ciertos valores. El dado de abajo, por ejemplo, tiene un 18,2% de probabilidad de sacar un 1.</string>
+    <string name="onboarding_strategy">Puedes llevar hasta 6 dados a una partida. Combina dados especiales y normales para diseñar tu estrategia</string>
 </resources>

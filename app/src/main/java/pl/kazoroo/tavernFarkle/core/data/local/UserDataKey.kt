@@ -5,5 +5,6 @@ enum class UserDataKey() {
     IS_SOUND_ENABLED,
     IS_MUSIC_ENABLED,
     IS_FIRST_LAUNCH,
-    IS_FIRST_GAME
+    IS_FIRST_GAME,
+    IS_FIRST_SHOP_OPEN
 }

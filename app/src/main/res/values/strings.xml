@@ -80,4 +80,6 @@
     <string name="quick_bet">Quick bet:</string>
     <string name="tagDescription" translatable="false">Tavern Farkle tag description</string>
     <string name="empty" translatable="false"></string>
+    <string name="onboarding_special_dice">Special dice change how often certain values are rolled. The die below, for example, has an 18.2% chance of rolling a 1.</string>
+    <string name="onboarding_strategy">You can bring up to 6 dice into a game. Mix special and regular dice to shape your strategy.</string>
 </resources>

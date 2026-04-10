@@ -20,7 +20,9 @@ import pl.kazoroo.tavernFarkle.multiplayer.presentation.LobbyViewModel
 import pl.kazoroo.tavernFarkle.settings.presentation.SettingsViewModel
 import pl.kazoroo.tavernFarkle.shop.domain.InventoryDataRepositoryImpl
 import pl.kazoroo.tavernFarkle.shop.domain.protoDataStore
+import pl.kazoroo.tavernFarkle.shop.domain.usecase.BuySpecialDiceUseCase
 import pl.kazoroo.tavernFarkle.shop.presentation.inventory.InventoryViewModel
+import pl.kazoroo.tavernFarkle.shop.presentation.shop.ShopViewModel
 import pl.kazoroo.tavernFarkle.singleplayer.data.repository.LocalGameRepository
 import pl.kazoroo.tavernFarkle.singleplayer.domain.usecase.PlayOpponentTurnUseCase
 import pl.kazoroo.tavernFarkle.singleplayer.presentation.GameViewModel
@@ -94,6 +96,14 @@ class DependencyContainer(
             CoinsViewModel(
                 saveUserDataUseCase = saveUserDataUseCase,
                 readUserDataUseCase = readUserDataUseCase
+            )
+        }
+    val shopViewModelFactory: ViewModelProvider.Factory
+        get() = viewModelFactoryHelper {
+            ShopViewModel(
+                buySpecialDiceUseCase = BuySpecialDiceUseCase(inventoryDataRepository),
+                readUserDataUseCase = readUserDataUseCase,
+                saveUserDataUseCase = saveUserDataUseCase,
             )
         }
     val mainMenuViewModelFactory: ViewModelProvider.Factory
