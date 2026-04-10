@@ -7,4 +7,5 @@ sealed class GameLoopEvent {
     data class GameEnd(val isWin: Boolean) : GameLoopEvent()
     data object PlayerStatusLeft : GameLoopEvent()
     data object PlayerStatusPaused : GameLoopEvent()
+    data object NavigateUp: GameLoopEvent()
 }

@@ -7,7 +7,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.navigation.NavHostController
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
@@ -26,7 +25,6 @@ import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.merge
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import pl.kazoroo.tavernFarkle.core.data.local.UserDataKey
@@ -94,9 +92,9 @@ class GameViewModel(
         processGameLoop()
         observeGameEvents()
         observePlayerStatus()
+        observeDiceAnimation()
     }
-
-    fun observeGameEvents() {
+    private fun observeGameEvents() {
         viewModelScope.launch {
             val skuchaFlow = repository.gameState
                 .map { it.isSkucha }
@@ -110,10 +108,25 @@ class GameViewModel(
                 .filter { it }
                 .map { GameLoopEvent.GameEnd(true) }
 
-            val diceAnimationFlow = repository.gameState
+            val merged = merge(
+                skuchaFlow,
+                gameEndFlow,
+            )
+
+            merged.collect { event ->
+                event.let {
+                    gameLoopChannel.send(it)
+                }
+            }
+        }
+    }
+
+    private fun observeDiceAnimation() {
+        viewModelScope.launch {
+            repository.gameState
                 .map { it.isAnimating }
                 .distinctUntilChanged()
-                .onEach {
+                .collect {
                     delay(200L)
                     _isDiceAnimating.value = true
                     delay(500L)
@@ -121,19 +134,6 @@ class GameViewModel(
                     delay(500L)
                     _isDiceAnimating.value = false
                 }
-                .map { null }
-
-            val merged = merge(
-                skuchaFlow,
-                gameEndFlow,
-                diceAnimationFlow
-            )
-
-            merged.collect { event ->
-                event?.let {
-                    gameLoopChannel.send(it)
-                }
-            }
         }
     }
 
@@ -157,13 +157,13 @@ class GameViewModel(
                     GameLoopEvent.ScoreAndRoll -> handleScoreAndRoll()
                     GameLoopEvent.Skucha -> handleSkucha()
                     is GameLoopEvent.GameEnd -> handleGameEnd()
-                    GameLoopEvent.PlayerStatusLeft, GameLoopEvent.PlayerStatusPaused -> {}
+                    GameLoopEvent.PlayerStatusLeft, GameLoopEvent.PlayerStatusPaused, GameLoopEvent.NavigateUp -> {}
                 }
             }
         }
     }
 
-    suspend fun handleGameEnd() {
+    private suspend fun handleGameEnd() {
         val isWin = repository.gameState.value.currentPlayerUuid == repository.myUuidState.value
         _effects.emit(GameLoopEvent.GameEnd(isWin))
 
@@ -173,7 +173,7 @@ class GameViewModel(
         repository.removeLobbyNode()
     }
 
-    fun checkForGameEnd(): Boolean {
+    private fun checkForGameEnd(): Boolean {
         if(repository.gameState.value.players[repository.gameState.value.getCurrentPlayerIndex()].totalPoints >= 4000) {
             repository.setGameEnd(true)
 
@@ -198,26 +198,24 @@ class GameViewModel(
         }
     }
 
-    fun handlePass() {
+    private suspend fun handlePass() {
         repository.sumTotalPoints()
 
         if(checkForGameEnd()) return
 
-        viewModelScope.launch {
-            repository.toggleDiceRowAnimation()
-            delay(600L)
-            repository.resetDiceState()
-            repository.changeCurrentPlayer()
-            drawDiceUseCase(
-                repository.gameState.value.players[gameState.value.getCurrentPlayerIndex()].diceSet,
-                repository = repository
-            )
+        repository.toggleDiceRowAnimation()
+        delay(600L)
+        repository.resetDiceState()
+        repository.changeCurrentPlayer()
+        drawDiceUseCase(
+            repository.gameState.value.players[gameState.value.getCurrentPlayerIndex()].diceSet,
+            repository = repository
+        )
 
-            val isOpponentTurn = repository.gameState.value.currentPlayerUuid != repository.myUuidState.value
+        val isOpponentTurn = repository.gameState.value.currentPlayerUuid != repository.myUuidState.value
 
-            if(isOpponentTurn && !isMultiplayer) {
-                playOpponentTurnUseCase { checkForGameEnd() }
-            }
+        if(isOpponentTurn && !isMultiplayer) {
+            playOpponentTurnUseCase { checkForGameEnd() }
         }
     }
 
@@ -227,23 +225,21 @@ class GameViewModel(
         }
     }
 
-    fun handleScoreAndRoll() {
+    private suspend fun handleScoreAndRoll() {
         repository.sumRoundPoints()
 
-        viewModelScope.launch {
-            repository.hideSelectedDice()
-            repository.toggleDiceRowAnimation()
-            delay(600L)
+        repository.hideSelectedDice()
+        repository.toggleDiceRowAnimation()
+        delay(600L)
 
-            if(repository.gameState.value.players[gameState.value.getCurrentPlayerIndex()].diceSet.all { !it.isVisible }) {
-                repository.resetDiceState()
-            }
-
-            drawDiceUseCase(
-                repository.gameState.value.players[gameState.value.getCurrentPlayerIndex()].diceSet,
-                repository = repository
-            )
+        if(repository.gameState.value.players[gameState.value.getCurrentPlayerIndex()].diceSet.all { !it.isVisible }) {
+            repository.resetDiceState()
         }
+
+        drawDiceUseCase(
+            repository.gameState.value.players[gameState.value.getCurrentPlayerIndex()].diceSet,
+            repository = repository
+        )
     }
 
     private suspend fun handleSkucha() {
@@ -324,7 +320,7 @@ class GameViewModel(
     }
 
     private var timerJob: Job? = null
-    fun startTimer(navController: NavHostController, handleGameEndRewards: () -> Unit) {
+    fun startTimer(handleGameEndRewards: () -> Unit) {
         timerJob?.cancel()
 
         timerJob = viewModelScope.launch {
@@ -335,7 +331,7 @@ class GameViewModel(
 
             timerValue = -1
             handleGameEndRewards()
-            navController.navigateUp()
+            _effects.emit(GameLoopEvent.NavigateUp)
             repository.removeLobbyNode()
         }
     }

@@ -124,14 +124,15 @@ fun GameScreen(
         showExitDialog.value = true
     }
 
-    LaunchedEffect(true) {
+    LaunchedEffect(Unit) {
         viewModel.effects.collect {
             when(it) {
                 is GameLoopEvent.GameEnd -> coinsViewModel.handleGameEndRewards(it.isWin)
                 GameLoopEvent.PlayerStatusLeft -> coinsViewModel.handleGameEndRewards(true)
-                GameLoopEvent.PlayerStatusPaused -> viewModel.startTimer(navController) {
+                GameLoopEvent.PlayerStatusPaused -> viewModel.startTimer {
                     coinsViewModel.handleGameEndRewards(true)
                 }
+                GameLoopEvent.NavigateUp -> navController.navigateUp()
                 else -> {}
             }
         }
@@ -158,7 +159,8 @@ fun GameScreen(
     }
 
     LaunchedEffect(key1 = onboardingStage) {
-        if(!isFirstLaunch || viewModel.isMultiplayer)  return@LaunchedEffect
+        if(!isFirstLaunch || viewModel.isMultiplayer) return@LaunchedEffect
+
         while(viewModel.isDiceAnimating.value) {
             delay(50)
         }
