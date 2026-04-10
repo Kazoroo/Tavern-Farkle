@@ -23,8 +23,8 @@ android {
         applicationId "com.kazoroo.tavernFarkle"
         minSdk 28
         targetSdk 36
-        versionCode 42
-        versionName "3.3.0"
+        versionCode 43
+        versionName "3.4.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -98,7 +98,7 @@ dependencies {
     //Datastore
     implementation("androidx.datastore:datastore-preferences:1.2.1")
     implementation("androidx.datastore:datastore:1.2.1")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.10.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.11.0")
 
     //Table
     implementation("io.github.windedge.table:table-m3:0.3.0")
@@ -107,7 +107,7 @@ dependencies {
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.14'
 
     //Firebase
-    implementation platform('com.google.firebase:firebase-bom:34.11.0')
+    implementation platform('com.google.firebase:firebase-bom:34.12.0')
     implementation ("com.google.firebase:firebase-analytics")
     implementation("com.google.firebase:firebase-crashlytics")
     implementation("com.google.firebase:firebase-database")
