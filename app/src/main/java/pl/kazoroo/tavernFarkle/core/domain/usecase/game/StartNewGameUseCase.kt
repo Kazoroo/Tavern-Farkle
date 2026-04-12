@@ -1,6 +1,7 @@
 package pl.kazoroo.tavernFarkle.core.domain.usecase.game
 
 import com.google.firebase.auth.FirebaseAuth
+import kotlinx.coroutines.suspendCancellableCoroutine
 import pl.kazoroo.tavernFarkle.core.domain.model.Dice
 import pl.kazoroo.tavernFarkle.core.domain.model.GameState
 import pl.kazoroo.tavernFarkle.core.domain.model.Player
@@ -8,7 +9,6 @@ import pl.kazoroo.tavernFarkle.core.domain.repository.GameRepository
 import pl.kazoroo.tavernFarkle.shop.domain.model.SpecialDiceName
 import java.util.UUID
 import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
 
 class StartNewGameUseCase(
     private val gameRepository: GameRepository,
@@ -19,8 +19,6 @@ class StartNewGameUseCase(
         userDiceNames: List<SpecialDiceName>,
         isMultiplayer: Boolean
     ) {
-        gameRepository.resetState()
-
         val paddedUserDiceNames = userDiceNames.padWithNullsToSix()
         val userDiceSet = createDiceSet(paddedUserDiceNames, gameRepository, drawDiceUseCase, !isMultiplayer)
 
@@ -58,12 +56,12 @@ class StartNewGameUseCase(
     }
 }
 
-suspend fun signInAnonymouslyOrGetExistingUid(): String = suspendCoroutine { cont ->
+suspend fun signInAnonymouslyOrGetExistingUid(): String = suspendCancellableCoroutine { cont ->
     val auth = FirebaseAuth.getInstance()
 
     auth.currentUser?.uid?.let {
         cont.resume(it)
-        return@suspendCoroutine
+        return@suspendCancellableCoroutine
     }
 
     auth.signInAnonymously()

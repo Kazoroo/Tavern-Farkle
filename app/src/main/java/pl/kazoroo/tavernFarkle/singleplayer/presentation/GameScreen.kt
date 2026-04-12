@@ -32,6 +32,7 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.svenjacobs.reveal.Reveal
 import com.svenjacobs.reveal.RevealCanvasState
 import com.svenjacobs.reveal.RevealState
@@ -222,6 +223,8 @@ fun GameContent(
     myPlayerIndex: Int,
     navController: NavHostController
 ) {
+    FirebaseCrashlytics.getInstance().log("Multiplayer: ${viewModel.isMultiplayer}; State: $state")
+
     val isOpponentTurn = viewModel.isOpponentTurn.collectAsState().value
     val currentPlayerIndex = state.getCurrentPlayerIndex()
     val isGameResultDialogVisible = viewModel.showGameEndDialog.collectAsState().value
