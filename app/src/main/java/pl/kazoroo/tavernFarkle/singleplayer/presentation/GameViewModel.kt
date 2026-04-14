@@ -209,7 +209,8 @@ class GameViewModel(
         repository.changeCurrentPlayer()
         drawDiceUseCase(
             repository.gameState.value.players[gameState.value.getCurrentPlayerIndex()].diceSet,
-            repository = repository
+            repository = repository,
+            isMultiplayer = isMultiplayer
         )
 
         val isOpponentTurn = repository.gameState.value.currentPlayerUuid != repository.myUuidState.value
@@ -238,7 +239,8 @@ class GameViewModel(
 
         drawDiceUseCase(
             repository.gameState.value.players[gameState.value.getCurrentPlayerIndex()].diceSet,
-            repository = repository
+            repository = repository,
+            isMultiplayer = isMultiplayer
         )
     }
 
@@ -263,7 +265,8 @@ class GameViewModel(
 
         drawDiceUseCase(
             repository.gameState.value.players[gameState.value.getCurrentPlayerIndex()].diceSet,
-            repository = repository
+            repository = repository,
+            isMultiplayer = isMultiplayer
         )
 
         val isOpponentTurn = repository.gameState.value.currentPlayerUuid != repository.myUuidState.value

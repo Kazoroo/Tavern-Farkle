@@ -22,7 +22,12 @@ class JoinLobbyUseCase(
     ) {
         val currentPlayerId = signInAnonymouslyOrGetExistingUid()
         val paddedUserDiceNames = userDiceNames.padWithNullsToSix()
-        val userDiceSet = createDiceSet(paddedUserDiceNames, gameRepository, drawDiceUseCase)
+        val userDiceSet = createDiceSet(
+            specialDiceNames = paddedUserDiceNames,
+            gameRepository = gameRepository,
+            drawDiceUseCase = drawDiceUseCase,
+            isMultiplayer = true
+        )
         val player = Player(currentPlayerId, diceSet = userDiceSet)
         firebaseDataSource.addPlayerToLobby(gameUuid, player.toDto())
 

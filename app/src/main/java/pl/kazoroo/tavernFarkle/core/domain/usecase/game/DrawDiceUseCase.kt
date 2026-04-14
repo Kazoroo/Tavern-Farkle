@@ -32,14 +32,15 @@ open class DrawDiceUseCase(
     open operator fun invoke(
         diceSet: List<Dice>,
         repository: GameRepository,
-        checkForSkucha: Boolean = true
+        checkForSkucha: Boolean = true,
+        isMultiplayer: Boolean
     ): List<Dice> {
         val isFirstGame = readUserDataUseCase.invoke<Boolean>(UserDataKey.IS_FIRST_GAME)
 
         val newDiceSet = diceSet.mapIndexed { index, dice ->
             val specialDice = dice.specialDiceName
                 ?.let { name -> SpecialDiceList.specialDiceList.first { it.name == name } }
-            val value = if(isFirstGame) {
+            val value = if(isFirstGame && !isMultiplayer) {
                 listOf(6, 4, 2, 2, 1, 2)[index]
             } else {
                 getRandomWithProbability(specialDice?.chancesOfDrawingValue ?: normalDiceProbability)
