@@ -23,8 +23,8 @@ android {
         applicationId "com.kazoroo.tavernFarkle"
         minSdk 28
         targetSdk 36
-        versionCode 43
-        versionName "3.4.0"
+        versionCode 44
+        versionName "3.4.1"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -114,7 +114,7 @@ dependencies {
     implementation("com.google.firebase:firebase-auth")
 
     //Ads
-    implementation("com.google.android.gms:play-services-ads:25.1.0")
+    implementation("com.google.android.gms:play-services-ads:25.2.0")
 
     //Reveal
     implementation("com.svenjacobs.reveal:reveal-core:4.1.0")

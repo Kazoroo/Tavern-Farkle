@@ -20,7 +20,13 @@ class StartNewGameUseCase(
         isMultiplayer: Boolean
     ) {
         val paddedUserDiceNames = userDiceNames.padWithNullsToSix()
-        val userDiceSet = createDiceSet(paddedUserDiceNames, gameRepository, drawDiceUseCase, !isMultiplayer)
+        val userDiceSet = createDiceSet(
+            specialDiceNames = paddedUserDiceNames,
+            gameRepository = gameRepository,
+            drawDiceUseCase = drawDiceUseCase,
+            isMultiplayer = isMultiplayer,
+            checkForSkucha = !isMultiplayer
+        )
 
         val players = if(isMultiplayer) {
             listOf(Player(
@@ -36,7 +42,15 @@ class StartNewGameUseCase(
 
             listOf(
                 Player(uuid = UUID.randomUUID().toString(), diceSet = userDiceSet),
-                Player(uuid = UUID.randomUUID().toString(), diceSet = createDiceSet(opponentDiceNames, gameRepository, drawDiceUseCase))
+                Player(
+                    uuid = UUID.randomUUID().toString(),
+                    diceSet = createDiceSet(
+                        opponentDiceNames,
+                        gameRepository,
+                        drawDiceUseCase,
+                        isMultiplayer = false
+                    )
+                )
             )
         }
 
@@ -73,13 +87,20 @@ suspend fun signInAnonymouslyOrGetExistingUid(): String = suspendCancellableCoro
         }
 }
 
-fun createDiceSet(specialDiceNames: List<SpecialDiceName?>, gameRepository: GameRepository, drawDiceUseCase: DrawDiceUseCase, checkForSkucha: Boolean = true) =
+fun createDiceSet(
+    specialDiceNames: List<SpecialDiceName?>,
+    gameRepository: GameRepository,
+    drawDiceUseCase: DrawDiceUseCase,
+    isMultiplayer: Boolean,
+    checkForSkucha: Boolean = true
+) =
     drawDiceUseCase(
         List(6) { index ->
             Dice(value = 0, image = 0, specialDiceName = specialDiceNames[index])
         },
         repository = gameRepository,
         checkForSkucha = checkForSkucha,
+        isMultiplayer = isMultiplayer
     )
 
 fun List<SpecialDiceName?>.padWithNullsToSix(): List<SpecialDiceName?> =

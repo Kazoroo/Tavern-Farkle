@@ -73,7 +73,8 @@ class PlayOpponentTurnUseCase(
 
         drawDiceUseCase(
             currentPlayer.diceSet,
-            repository = repository
+            repository = repository,
+            isMultiplayer = false
         )
     }
 
@@ -93,7 +94,8 @@ class PlayOpponentTurnUseCase(
 
         drawDiceUseCase(
             currentPlayer.diceSet,
-            repository = repository
+            repository = repository,
+            isMultiplayer = false
         )
     }
 }
