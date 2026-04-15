@@ -79,7 +79,7 @@ fun ShopScreen(
                 }
                 ShopRevealableKeys.Hide.ordinal -> {
                     revealState.hide()
-                   shopViewModel.finishOnboarding()
+                    shopViewModel.finishOnboarding()
                 }
             }
         }
@@ -120,7 +120,9 @@ fun ShopScreen(
                     )
                 }
 
-                LazyColumn {
+                LazyColumn(
+                    userScrollEnabled = !isFirstShopOpen
+                ) {
                     item {
                         RewardedVideoSection(adViewModel, context, coinsViewModel)
                     }
