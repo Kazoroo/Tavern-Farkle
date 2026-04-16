@@ -147,4 +147,16 @@ class FirebaseDataSource {
 
         ref.setValue(timestamp)
     }
+
+    fun updateSkucha(gameUuid: String, skucha: Boolean) {
+        val ref = database.getReference("$gameUuid/skucha")
+
+        ref.setValue(skucha)
+    }
+
+    fun setGameEnd(gameUuid: String, gameEnd: Boolean) {
+        val ref = database.getReference("$gameUuid/gameEnd")
+
+        ref.setValue(gameEnd)
+    }
 }

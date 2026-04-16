@@ -161,13 +161,13 @@ class RemoteGameRepository(
     }
 
     override fun setSkucha(skucha: Boolean) {
-        val newState = updater.toggleSkucha(_gameState.value, skucha)
-        firebaseDataSource.setGameState(newState)
+        firebaseDataSource.updateSkucha(gameState.value.gameUuid.toString(), skucha)
     }
 
     override fun setGameEnd(gameEnd: Boolean) {
         _gameState.update { updater.setGameEnd(it, gameEnd) }
-        firebaseDataSource.setGameState(_gameState.value)
+
+        firebaseDataSource.setGameEnd(gameState.value.gameUuid.toString(), gameEnd)
     }
 
     fun observeLobbyList() {
