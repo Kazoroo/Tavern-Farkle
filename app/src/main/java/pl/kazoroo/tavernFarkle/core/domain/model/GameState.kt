@@ -5,6 +5,7 @@ import java.util.UUID
 
 data class GameState(
     val gameUuid: UUID,
+    val hostConnected: Boolean = true,
     val betAmount: Int,
     val isSkucha: Boolean = false,
     val isAnimating: Boolean = false,
@@ -17,6 +18,7 @@ data class GameState(
 
     fun toDto() = GameStateDto(
         gameUuid = gameUuid.toString(),
+        hostConnected = hostConnected,
         betAmount = betAmount,
         skucha = isSkucha,
         animating = isAnimating,

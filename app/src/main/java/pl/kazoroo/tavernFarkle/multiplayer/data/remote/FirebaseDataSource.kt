@@ -58,6 +58,7 @@ class FirebaseDataSource {
         val ref = database.getReference(gameState.gameUuid.toString())
 
         ref.setValue(gameState.toDto())
+        ref.child("hostConnected").onDisconnect().setValue(false)
     }
 
     fun updateDiceSelection(gameUuid: String, playerIndex: Int, index: Int, value: Boolean) {
@@ -70,6 +71,8 @@ class FirebaseDataSource {
 
     fun observeLobbyList(onUpdated: (List<Lobby>) -> Unit) {
         val ref = database.getReference("")
+            .orderByChild("hostConnected")
+            .equalTo(true)
 
         ref.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
