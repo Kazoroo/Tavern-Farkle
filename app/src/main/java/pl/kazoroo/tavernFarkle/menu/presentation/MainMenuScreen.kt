@@ -113,11 +113,12 @@ fun MainMenuScreen(
             onCloseClick = {
                 isBettingDialogVisible = false
             },
-            onClick = { betAmount ->
+            onClick = { betAmount, targetScore ->
                 multipleEventsCutter.processEvent {
                     mainMenuViewModel.startNewGame(
                         betAmount = betAmount.toInt(),
-                        userSpecialDiceNames = inventoryViewModel.getSelectedSpecialDiceNames()
+                        userSpecialDiceNames = inventoryViewModel.getSelectedSpecialDiceNames(),
+                        targetScore = targetScore
                     )
 
                     coinsViewModel.setBetValue(betAmount)

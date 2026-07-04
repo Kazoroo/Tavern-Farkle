@@ -13,6 +13,7 @@ data class GameStateDto(
     val currentPlayerUuid: String = "",
     val animating: Boolean = false,
     val gameEnd: Boolean = false,
+    val targetScore: Int = GameState.DEFAULT_TARGET_SCORE,
     val players: List<PlayerDto> = emptyList()
 ) {
     fun toDomain(): GameState? {
@@ -27,6 +28,7 @@ data class GameStateDto(
             isAnimating = animating,
             currentPlayerUuid = currentPlayerUuid,
             isGameEnd = gameEnd,
+            targetScore = targetScore,
             players = players.map { it.toDomain() }
         )
     }

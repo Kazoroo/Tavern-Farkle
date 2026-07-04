@@ -17,7 +17,8 @@ class StartNewGameUseCase(
     suspend operator fun invoke(
         betAmount: Int,
         userDiceNames: List<SpecialDiceName>,
-        isMultiplayer: Boolean
+        isMultiplayer: Boolean,
+        targetScore: Int = GameState.DEFAULT_TARGET_SCORE
     ) {
         val paddedUserDiceNames = userDiceNames.padWithNullsToSix()
         val userDiceSet = createDiceSet(
@@ -63,6 +64,7 @@ class StartNewGameUseCase(
             currentPlayerUuid = players.first().uuid,
             players = players,
             isGameEnd = false,
+            targetScore = targetScore,
         )
 
         gameRepository.saveGameState(gameState)

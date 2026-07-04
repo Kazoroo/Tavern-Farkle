@@ -79,6 +79,7 @@
     <string name="continue_to_menu">Kontynuuj do menu</string>
     <string name="your_coins">Twoje monety:</string>
     <string name="quick_bet">Szybki wybór:</string>
+    <string name="points_to_win">Punkty do wygranej: %1$d</string>
     <string name="onboarding_special_dice">Specjalne kości zmieniają częstotliwość wyrzucania określonych wartości. Na przykład kość poniżej ma 18,2% szansy na wyrzucenie 1.</string>
     <string name="onboarding_strategy">Do gry możesz zabrać do 6 kości. Mieszaj specjalne i zwykłe kości, aby kształtować swoją strategię.</string>
 </resources>

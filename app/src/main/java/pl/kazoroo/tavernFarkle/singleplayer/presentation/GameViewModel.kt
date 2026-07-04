@@ -174,7 +174,8 @@ class GameViewModel(
     }
 
     private fun checkForGameEnd(): Boolean {
-        if(repository.gameState.value.players[repository.gameState.value.getCurrentPlayerIndex()].totalPoints >= 4000) {
+        val currentState = repository.gameState.value
+        if(currentState.players[currentState.getCurrentPlayerIndex()].totalPoints >= currentState.targetScore) {
             repository.setGameEnd(true)
 
             return true

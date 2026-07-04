@@ -148,10 +148,11 @@ fun LobbyScreen(
                 onCloseClick = {
                     isBettingDialogVisible = false
                 },
-                onClick = { betAmount ->
+                onClick = { betAmount, targetScore ->
                     lobbyViewModel.startNewGame(
                         betAmount.toInt(),
                         inventoryViewModel.getSelectedSpecialDiceNames(),
+                        targetScore = targetScore,
                         onNavigate = { navController.navigate(Screen.GameScreen.withArgs(true)) },
                         setBetValue = { bet ->
                             coinsViewModel.setBetValue(bet)
@@ -241,7 +242,7 @@ private fun LobbyCard(lobbyData: Lobby, onJoinClick: () -> Unit) {
                 vertical = dimensionResource(R.dimen.small_padding),
             )
             .fillMaxWidth()
-            .height(160.dp)
+            .height(200.dp)
     ) {
         Box(
             modifier = Modifier.fillMaxSize()
@@ -287,6 +288,18 @@ private fun LobbyCard(lobbyData: Lobby, onJoinClick: () -> Unit) {
                         modifier = Modifier
                             .size(dimensionResource(R.dimen.coin_icon_size))
                             .padding(start = dimensionResource(R.dimen.small_padding))
+                    )
+                }
+
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = dimensionResource(R.dimen.small_padding))
+                ) {
+                    Text(
+                        text = stringResource(R.string.points_to_win, lobbyData.targetScore)
                     )
                 }
 

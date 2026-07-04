@@ -43,13 +43,14 @@ class MainMenuViewModel(
         }
     }
 
-    fun startNewGame(betAmount: Int, userSpecialDiceNames: List<SpecialDiceName>) {
+    fun startNewGame(betAmount: Int, userSpecialDiceNames: List<SpecialDiceName>, targetScore: Int) {
         viewModelScope.launch {
             StartNewGameUseCase(gameRepository, drawDiceUseCase)
                 .invoke(
                     betAmount,
                     userSpecialDiceNames,
-                    isMultiplayer = false
+                    isMultiplayer = false,
+                    targetScore = targetScore
                 )
 
             _navigateToGame.emit(Unit)

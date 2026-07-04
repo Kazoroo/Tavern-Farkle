@@ -11,6 +11,7 @@ data class GameState(
     val isAnimating: Boolean = false,
     val currentPlayerUuid: String,
     val isGameEnd: Boolean = false,
+    val targetScore: Int = DEFAULT_TARGET_SCORE,
     val players: List<Player>
 ) {
     fun getCurrentPlayerIndex(): Int = players.indexOfFirst { it.uuid == currentPlayerUuid }
@@ -24,6 +25,11 @@ data class GameState(
         animating = isAnimating,
         currentPlayerUuid = currentPlayerUuid,
         gameEnd = isGameEnd,
+        targetScore = targetScore,
         players = players.map { it.toDto() }
     )
+
+    companion object {
+        const val DEFAULT_TARGET_SCORE = 4000
+    }
 }

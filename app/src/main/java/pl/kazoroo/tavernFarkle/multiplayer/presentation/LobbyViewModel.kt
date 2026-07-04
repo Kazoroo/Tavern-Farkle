@@ -51,6 +51,7 @@ class LobbyViewModel(
     fun startNewGame(
         bet: Int,
         selectedSpecialDiceNames: List<SpecialDiceName>,
+        targetScore: Int,
         onNavigate: () -> Unit,
         setBetValue: (bet: String) -> Unit
     ) {
@@ -64,7 +65,8 @@ class LobbyViewModel(
                 .invoke(
                     bet,
                     selectedSpecialDiceNames,
-                    isMultiplayer = true
+                    isMultiplayer = true,
+                    targetScore = targetScore
                 )
 
             remoteGameRepository.saveGameDataToDatabase()

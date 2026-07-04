@@ -80,11 +80,14 @@ class FirebaseDataSource {
                     val gameUuid = lobbySnapshot.child("gameUuid").getValue(String::class.java) ?: return@mapNotNull null
                     val betAmount = lobbySnapshot.child("betAmount").getValue(Int::class.java) ?: 0
                     val playerCount = lobbySnapshot.child("players").childrenCount.toInt()
+                    val targetScore = lobbySnapshot.child("targetScore").getValue(Int::class.java)
+                        ?: GameState.DEFAULT_TARGET_SCORE
 
                     Lobby(
                         gameUuid = gameUuid,
                         betAmount = betAmount,
-                        playerCount = playerCount
+                        playerCount = playerCount,
+                        targetScore = targetScore
                     )
                 }
                 onUpdated(lobbies)
