@@ -78,6 +78,7 @@
     <string name="continue_to_menu">Continue to menu</string>
     <string name="your_coins">Your coins:</string>
     <string name="quick_bet">Quick bet:</string>
+    <string name="points_to_win">Points to win: %1$d</string>
     <string name="tagDescription" translatable="false">Tavern Farkle tag description</string>
     <string name="empty" translatable="false"></string>
     <string name="onboarding_special_dice">Special dice change how often certain values are rolled. The die below, for example, has an 18.2% chance of rolling a 1.</string>

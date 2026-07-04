@@ -14,11 +14,13 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -35,16 +37,23 @@ import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import pl.kazoroo.tavernFarkle.R
+import pl.kazoroo.tavernFarkle.core.domain.model.GameState
 import pl.kazoroo.tavernFarkle.menu.presentation.components.DialogHeader
 import pl.kazoroo.tavernFarkle.ui.theme.DarkRed
+import kotlin.math.roundToInt
+
+private const val TARGET_SCORE_MIN = 2000
+private const val TARGET_SCORE_MAX = 10000
+private const val TARGET_SCORE_STEP = 500
 
 @Composable
 fun BettingDialog(
-    onClick: (betAmount: String) -> Unit,
+    onClick: (betAmount: String, targetScore: Int) -> Unit,
     onCloseClick: () -> Unit,
     coinsAmount: Int,
 ) {
     var betAmount by remember { mutableStateOf("") }
+    var targetScore by remember { mutableIntStateOf(GameState.DEFAULT_TARGET_SCORE) }
 
     Dialog(
         onDismissRequest = onCloseClick
@@ -145,9 +154,29 @@ fun BettingDialog(
                 betAmount = it
             }
 
+            Text(
+                text = stringResource(R.string.points_to_win, targetScore),
+                modifier = Modifier.padding(
+                    top = dimensionResource(R.dimen.large_padding),
+                    start = dimensionResource(R.dimen.large_padding)
+                )
+            )
+
+            Slider(
+                value = targetScore.toFloat(),
+                onValueChange = { newValue ->
+                    targetScore = (newValue / TARGET_SCORE_STEP).roundToInt() * TARGET_SCORE_STEP
+                },
+                valueRange = TARGET_SCORE_MIN.toFloat()..TARGET_SCORE_MAX.toFloat(),
+                steps = (TARGET_SCORE_MAX - TARGET_SCORE_MIN) / TARGET_SCORE_STEP - 1,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = dimensionResource(R.dimen.large_padding))
+            )
+
             Button(
                 onClick = {
-                    onClick(betAmount)
+                    onClick(betAmount, targetScore)
                 },
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
