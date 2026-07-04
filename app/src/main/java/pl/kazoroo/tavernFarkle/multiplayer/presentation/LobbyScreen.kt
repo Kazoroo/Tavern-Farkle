@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
@@ -42,6 +43,7 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
@@ -261,33 +263,46 @@ private fun LobbyCard(lobbyData: Lobby, onJoinClick: () -> Unit) {
             ) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Center,
+                    horizontalArrangement = Arrangement.SpaceBetween,
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(vertical = dimensionResource(R.dimen.small_padding))
                 ) {
-                    val formattedBet = lobbyData.betAmount.toString()
-                        .reversed()
-                        .chunked(3)
-                        .joinToString(" ")
-                        .reversed()
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center,
+                        modifier = Modifier
+                            .wrapContentWidth()
+                    ) {
+                        val formattedBet = lobbyData.betAmount.toString()
+                            .reversed()
+                            .chunked(3)
+                            .joinToString(" ")
+                            .reversed()
+
+                        Text(
+                            text = buildAnnotatedString {
+                                withStyle(style = SpanStyle(fontWeight = FontWeight.W700)) {
+                                    append("Bet: ")
+                                }
+                                append(formattedBet)
+                            },
+                            modifier = Modifier.weight(1f, fill = false),
+                            overflow = TextOverflow.MiddleEllipsis
+                        )
+
+                        Image(
+                            painter = painterResource(R.drawable.coin),
+                            contentDescription = null,
+                            modifier = Modifier
+                                .size(dimensionResource(R.dimen.coin_icon_size))
+                                .padding(start = dimensionResource(R.dimen.small_padding))
+                        )
+                    }
 
                     Text(
-                        text = buildAnnotatedString {
-                            withStyle(style = SpanStyle(fontWeight = FontWeight.W700)) {
-                                append("Bet: ")
-                            }
-                            append(formattedBet)
-                        },
-                        modifier = Modifier.weight(1f, fill = false)
-                    )
-
-                    Image(
-                        painter = painterResource(R.drawable.coin),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .size(dimensionResource(R.dimen.coin_icon_size))
-                            .padding(start = dimensionResource(R.dimen.small_padding))
+                        text = "Players: ${lobbyData.playerCount} / 2",
+                        textAlign = TextAlign.Center
                     )
                 }
 
@@ -305,19 +320,11 @@ private fun LobbyCard(lobbyData: Lobby, onJoinClick: () -> Unit) {
 
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween,
+                    horizontalArrangement = Arrangement.Center,
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(vertical = dimensionResource(R.dimen.small_padding))
                 ) {
-                    Text(
-                        text = "${lobbyData.playerCount} / 2\nplayers",
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier
-                            .border(1.dp, Color.DarkGray, RoundedCornerShape(5.dp))
-                            .padding(horizontal = 20.dp, vertical = 8.dp)
-                    )
-
                     Button(
                         onClick = onJoinClick,
                         shape = RoundedCornerShape(12.dp),
@@ -335,4 +342,3 @@ private fun LobbyCard(lobbyData: Lobby, onJoinClick: () -> Unit) {
         }
     }
 }
-
